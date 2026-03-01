@@ -418,8 +418,8 @@
                     <i class="fa-solid fa-chevron-down chevron"></i>
                 </div>
                 <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('Peta JOBJ', 'peta_jobj', 'table', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta JOBJ</span></li>
-                    <li class="nav-item" onclick="loadPage('Peta Surge', 'peta_surge', 'table', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta Surge</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta JOBJ', 'peta_jobj', 'map', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta JOBJ</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta Surge', 'peta_surge', 'map', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta Surge</span></li>
                 </ul>
 
                 <div class="nav-category" onclick="toggleMenu(this)">
@@ -574,6 +574,11 @@
                         </table>
                     </div>
                 </div>
+
+                <div id="section-map" class="card hidden" style="height: calc(100vh - 140px); margin-bottom: 0;">
+                    <iframe id="map-iframe" src="" style="width: 100%; height: 100%; border: none; border-radius: 8px;"></iframe>
+                </div>
+
             </section>
         </div>
     </div> 
@@ -1124,6 +1129,7 @@
 
             const secOverview = document.getElementById('section-overview');
             const secTable = document.getElementById('section-table');
+            const secMap = document.getElementById('section-map');
             const mainToolbar = document.getElementById('main-table-toolbar');
             const toolbarSemuaProyek = document.getElementById('toolbar-semua-proyek');
             
@@ -1143,10 +1149,23 @@
             if (type === 'overview') {
                 secOverview.classList.remove('hidden');
                 secTable.classList.add('hidden');
+                if(secMap) secMap.classList.add('hidden');
                 renderOverviewChart(collectionName);
+            } else if (type === 'map') {
+                secOverview.classList.add('hidden');
+                secTable.classList.add('hidden');
+                if(secMap) secMap.classList.remove('hidden');
+
+                const mapFrame = document.getElementById('map-iframe');
+                if (collectionName === 'peta_jobj') {
+                    mapFrame.src = "https://www.google.com/maps/d/embed?mid=1xhJ2oTziYlfWiAK6MDlMOYanNlMJO3Y";
+                } else if (collectionName === 'peta_surge') {
+                    mapFrame.src = "https://www.google.com/maps/d/embed?mid=1UiPL0zV_tPWcza-5yMVMtWuyr5DHCTI";
+                }
             } else {
                 secOverview.classList.add('hidden');
                 secTable.classList.remove('hidden');
+                if(secMap) secMap.classList.add('hidden');
                 resetDataView();
 
                 if (activePages.includes(collectionName)) {

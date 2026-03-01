@@ -200,6 +200,8 @@
         .action-add:hover { background: var(--primary-hover); color: #ffffff; border-color: var(--primary-hover); }
         .action-excel { color: #10b981; }
         .action-excel:hover { color: #059669; border-color: #10b981; background: rgba(16, 185, 129, 0.1); }
+        .action-pdf { color: #ef4444; }
+        .action-pdf:hover { color: #dc2626; border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
         
         .filter-active::after { content: ''; position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; background: #ef4444; border-radius: 50%; }
 
@@ -408,7 +410,7 @@
                     <div class="user-profile">
                         <div style="text-align: right;">
                             <div style="font-size: 13px;" id="displayUsername">User</div>
-                            <div style="color: #10b981; font-size: 10px; font-weight: 500;">● Administrator</div>
+                            <div style="color: #10b981; font-size: 10px; font-weight: 500;" id="displayRole">● Administrator</div>
                         </div>
                         <div class="avatar" id="displayAvatar">U</div>
                     </div>
@@ -468,6 +470,7 @@
                                 <div style="display: flex; gap: 8px;">
                                     <button class="btn-icon" id="btnResetData" title="Reset Filter"><i class="fa-solid fa-rotate-right"></i></button>
                                     <button class="btn-icon action-excel" id="btnExportExcel" title="Export Excel"><i class="fa-solid fa-file-excel"></i></button>
+                                    <button class="btn-icon action-pdf" id="btnExportPdf" title="Export PDF"><i class="fa-solid fa-file-pdf"></i></button>
                                     <button class="btn-icon action-add" id="btnTambahProyek" title="Tambah Data"><i class="fa-solid fa-plus"></i></button>
                                 </div>
                             </div>
@@ -488,7 +491,9 @@
                 </div>
             </section>
         </div>
-    </div> <div class="modal-overlay" id="projectModal">
+    </div> 
+    
+    <div class="modal-overlay" id="projectModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-title">Form Data</h3>
@@ -513,15 +518,15 @@
                         <input type="text" class="form-control" id="form-uraian" placeholder="Deskripsi Singkat">
                     </div>
                     <div class="form-group">
-                        <label>Nilai Proyek (Rp)</label>
+                        <label>Nilai Proyek</label>
                         <input type="number" class="form-control" id="form-nilai_proyek" placeholder="0">
                     </div>
                     <div class="form-group">
-                        <label>Nilai Invoice (Rp)</label>
+                        <label>Nilai Invoice</label>
                         <input type="number" class="form-control" id="form-nilai_invoice" placeholder="0">
                     </div>
                     <div class="form-group">
-                        <label>Nilai Terbayar (Rp)</label>
+                        <label>Nilai Terbayar</label>
                         <input type="number" class="form-control" id="form-nilai_terbayar" placeholder="0">
                     </div>
                     <div class="form-group">
@@ -595,9 +600,9 @@
     </div>
 
     <script type="module">
+        // --- IMPORT DITAMBAHKAN addDoc, updateDoc, doc ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // IMPORT 'where' DITAMBAHKAN DISINI UNTUK FUNGSI LOGIN
-        import { getFirestore, collection, getDocs, orderBy, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, orderBy, query, where, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCo-CYydpivABwE3NFJOaM45yT-nO1f4OY",
@@ -614,7 +619,7 @@
         const db = getFirestore(app);
 
         // ==========================================
-        // FITUR LOGIN & LOGOUT
+        // FITUR LOGIN & RBAC (ROLE-BASED ACCESS CONTROL)
         // ==========================================
         const loginScreen = document.getElementById('loginScreen');
         const appContainer = document.getElementById('appContainer');
@@ -623,14 +628,42 @@
         const loginBtnText = document.getElementById('loginBtnText');
         const displayUsername = document.getElementById('displayUsername');
         const displayAvatar = document.getElementById('displayAvatar');
+        const displayRole = document.getElementById('displayRole');
 
-        // Cek sesi login saat halaman dimuat ulang
+        window.applyRolePermissions = function() {
+            const role = sessionStorage.getItem('loggedRole') || 'Guest';
+            const btnAdd = document.getElementById('btnTambahProyek');
+            const btnExportEx = document.getElementById('btnExportExcel');
+            const btnExportPd = document.getElementById('btnExportPdf');
+
+            if (role === 'Admin') {
+                if(btnAdd) btnAdd.style.display = 'flex';
+                if(btnExportEx) btnExportEx.style.display = 'flex';
+                if(btnExportPd) btnExportPd.style.display = 'flex';
+            } else if (role === 'User') {
+                if(btnAdd) btnAdd.style.display = 'none';
+                if(btnExportEx) btnExportEx.style.display = 'flex';
+                if(btnExportPd) btnExportPd.style.display = 'flex';
+            } else if (role === 'Viewer') {
+                if(btnAdd) btnAdd.style.display = 'none';
+                if(btnExportEx) btnExportEx.style.display = 'flex';
+                if(btnExportPd) btnExportPd.style.display = 'flex';
+            } else if (role === 'Guest') {
+                if(btnAdd) btnAdd.style.display = 'none';
+                if(btnExportEx) btnExportEx.style.display = 'none';
+                if(btnExportPd) btnExportPd.style.display = 'none';
+            }
+        };
+
         if (sessionStorage.getItem('isLoggedIn') === 'true') {
             loginScreen.style.display = 'none';
             appContainer.style.display = 'flex';
             const savedUser = sessionStorage.getItem('loggedUsername') || 'User';
+            const savedRole = sessionStorage.getItem('loggedRole') || 'Guest';
             displayUsername.textContent = savedUser;
             displayAvatar.textContent = savedUser.charAt(0).toUpperCase();
+            displayRole.textContent = `● ${savedRole}`;
+            applyRolePermissions();
         }
 
         loginForm.addEventListener('submit', async (e) => {
@@ -647,21 +680,25 @@
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
-                    // Berhasil Login
+                    const userData = querySnapshot.docs[0].data();
+                    const userRole = userData.Role || 'Guest'; 
+                    
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('loggedUsername', usernameInput);
+                    sessionStorage.setItem('loggedRole', userRole);
                     
                     displayUsername.textContent = usernameInput;
                     displayAvatar.textContent = usernameInput.charAt(0).toUpperCase();
+                    displayRole.textContent = `● ${userRole}`;
                     
                     loginForm.reset();
                     loginScreen.style.display = 'none';
                     appContainer.style.display = 'flex';
                     
-                    // Render halaman awal (Overview) jika diperlukan
-                    // loadPage('Overview', 'dball', 'overview', document.querySelector('.nav-item.active'));
+                    applyRolePermissions();
+                    // Render halaman awal 
+                    loadPage('Overview', 'dball', 'overview', document.querySelector('.nav-item.active'));
                 } else {
-                    // Gagal Login
                     loginError.textContent = "Username atau Password salah!";
                     loginError.style.display = 'block';
                 }
@@ -677,9 +714,9 @@
         document.getElementById('btnLoginLogout').addEventListener('click', () => {
             const confirmLogout = confirm("Apakah Anda yakin ingin keluar (Logout)?");
             if(confirmLogout) {
-                // Hapus sesi dan kembalikan ke layar login
                 sessionStorage.removeItem('isLoggedIn');
                 sessionStorage.removeItem('loggedUsername');
+                sessionStorage.removeItem('loggedRole');
                 
                 loginForm.reset();
                 appContainer.style.display = 'none';
@@ -687,7 +724,6 @@
                 loginError.style.display = 'none';
             }
         });
-        // ==========================================
 
 
         // --- MAPPING KOLOM SPESIFIK BERDASARKAN DATABASE ---
@@ -729,6 +765,7 @@
         const activePages = ['dball', 'db1', 'db2', 'db3', 'db4', 'db5', 'db6', 'db7', 'db8', 'db9', 'db10', 'db11', 'db12', 'db13', 'db14', 'db15', 'db16', 'db25', 'db26', 'db27', 'db28', 'db29', 'db30', 'db31', 'db32', 'pembayaran'];
 
         window.currentCollection = "dball";
+        window.currentEditId = null; // --- VARIABEL UNTUK MELACAK ID DOKUMEN ---
 
         // --- THEME TOGGLE ---
         const btnThemeToggle = document.getElementById('btnThemeToggle');
@@ -1030,6 +1067,7 @@
                     toolbarSemuaProyek.style.display = 'none';
                 }
                 await renderTable(collectionName);
+                applyRolePermissions(); 
             }
         };
 
@@ -1051,13 +1089,18 @@
                 }
 
                 const allData = [];
-                snapshot.forEach(doc => allData.push(doc.data()));
+                // --- UPDATE DITAMBAHKAN ID DOKUMEN KE DALAM ARRAY ---
+                snapshot.forEach(doc => {
+                    let data = doc.data();
+                    data.id = doc.id; 
+                    allData.push(data);
+                });
 
                 let columns = tableHeaders[colName];
                 if (!columns) {
                     columns = Object.keys(allData[0]);
                     if(columns.includes("No")) {
-                        columns = ["No", ...columns.filter(c => c !== "No")];
+                        columns = ["No", ...columns.filter(c => c !== "No" && c !== "id")];
                     }
                 }
 
@@ -1123,7 +1166,10 @@
                 let totalNilaiProyek = 0, totalInvoice = 0, totalTerbayar = 0;
 
                 let displayColumns = [...columns];
-                if (activePages.includes(colName)) {
+                const currentRole = sessionStorage.getItem('loggedRole') || 'Guest';
+                
+                // Cek Role sebelum menambahkan kolom 'Aksi'
+                if (activePages.includes(colName) && (currentRole === 'Admin' || currentRole === 'User')) {
                     displayColumns.push("Aksi");
                 }
 
@@ -1144,8 +1190,9 @@
                 allData.forEach(row => {
                     bodyHTML += '<tr class="data-row">';
                     displayColumns.forEach(col => {
+                        // --- UPDATE SISIPKAN ID KE BUTTON ---
                         if (col === "Aksi") {
-                            bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" style="color:var(--primary-blue);" onclick="openEditModal(this)" title="Edit Proyek"><i class="fa-solid fa-pen"></i></button></td>`;
+                            bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" style="color:var(--primary-blue);" onclick="openEditModal(this)" title="Edit Proyek"><i class="fa-solid fa-pen"></i></button></td>`;
                             return;
                         }
 
@@ -1527,7 +1574,9 @@
             });
         }
 
+        // --- UPDATE TOMBOL TAMBAH DATA UNTUK MERESET ID ---
         document.getElementById('btnTambahProyek').addEventListener('click', () => {
+            window.currentEditId = null; 
             if (window.currentCollection !== 'dball') {
                 document.getElementById('modal-title').textContent = "Tambah Data Baru";
                 document.getElementById('modal-static-form').style.display = 'none';
@@ -1543,7 +1592,9 @@
             document.getElementById('projectModal').classList.add('show');
         });
 
+        // --- UPDATE TOMBOL EDIT UNTUK MELACAK ID ---
         window.openEditModal = function(btnElement) {
+            window.currentEditId = btnElement.getAttribute('data-id'); 
             const row = btnElement.closest('tr');
             if (window.currentCollection !== 'dball') {
                 document.getElementById('modal-title').textContent = "Edit Data";
@@ -1575,9 +1626,63 @@
             document.getElementById('projectModal').classList.add('show');
         }
 
-        window.saveProjectData = function() {
-            alert("Memproses penyimpnan data menuju Database.");
-            closeModal('projectModal');
+        // --- UPDATE FUNGSI SIMPAN FIREBASE ---
+        window.saveProjectData = async function() {
+            const btnSave = document.querySelector('#projectModal .btn-primary');
+            const originalText = btnSave.innerHTML;
+            btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+            btnSave.disabled = true;
+
+            try {
+                let dataToSave = {};
+
+                // Mengumpulkan data berdasarkan form yang sedang aktif
+                if (window.currentCollection === 'dball') {
+                    dataToSave = {
+                        "Tanggal PO": document.getElementById('form-tanggal').value,
+                        "Nomor Proyek": document.getElementById('form-nomor').value,
+                        "Pemberi Proyek": document.getElementById('form-pemberi').value,
+                        "Uraian Proyek": document.getElementById('form-uraian').value,
+                        "Nilai Proyek": document.getElementById('form-nilai_proyek').value,
+                        "Nilai Invoice": document.getElementById('form-nilai_invoice').value,
+                        "Nilai Terbayar": document.getElementById('form-nilai_terbayar').value,
+                        "Status Proyek": document.getElementById('form-status').value,
+                        "Keterangan": document.getElementById('form-keterangan').value
+                    };
+                } else {
+                    const container = document.getElementById('modal-dynamic-form');
+                    const groups = container.querySelectorAll('.form-group');
+                    
+                    groups.forEach(group => {
+                        const label = group.querySelector('label').textContent;
+                        const input = group.querySelector('.form-control');
+                        if (input) {
+                            dataToSave[label] = input.value;
+                        }
+                    });
+                }
+
+                // Cek apakah mode Edit (Update) atau Tambah Baru (Add)
+                if (window.currentEditId) {
+                    const docRef = doc(db, window.currentCollection, window.currentEditId);
+                    await updateDoc(docRef, dataToSave);
+                } else {
+                    const colRef = collection(db, window.currentCollection);
+                    await addDoc(colRef, dataToSave);
+                }
+
+                closeModal('projectModal');
+                
+                // Refresh tabel langsung secara otomatis agar real-time
+                renderTable(window.currentCollection);
+
+            } catch (error) {
+                console.error("Error saat menyimpan data: ", error);
+                alert("Gagal menyimpan data! Silakan periksa koneksi dan konsol browser.");
+            } finally {
+                btnSave.innerHTML = originalText;
+                btnSave.disabled = false;
+            }
         }
 
         document.getElementById('btnExportExcel').addEventListener('click', () => {
@@ -1591,7 +1696,19 @@
             XLSX.writeFile(wb, "System_Data_Export.xlsx");
         });
 
-        loadPage('Overview', 'dball', 'overview', document.querySelector('.nav-item.active'));
+        document.getElementById('btnExportPdf').addEventListener('click', () => {
+            const element = document.getElementById('main-table');
+            if (!element) return;
+            const opt = {
+                margin:       0.3,
+                filename:     'System_Data_Export.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
+            };
+            html2pdf().set(opt).from(element).save();
+        });
+
     </script>
 </body>
 </html>

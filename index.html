@@ -185,7 +185,7 @@
 
         /* CONTENT AREA */
         .content { flex: 1; padding: 24px; overflow-y: auto; }
-        .page-header { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; color: var(--text-main); }
+        .page-header { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; color: var(--text-main); }
         .page-header i { color: var(--primary-blue); font-size: 16px; }
         
         /* --- OVERVIEW KPI CARDS --- */
@@ -414,6 +414,11 @@
                     <button class="btn-toggle" id="btnToggleSidebar" title="Toggle Sidebar">
                         <i class="fa-solid fa-bars" style="color: var(--text-main);"></i>
                     </button>
+                    
+                    <div class="page-header">
+                        <i class="fa-solid fa-bookmark" id="page-icon"></i> <span id="page-title">Overview</span>
+                    </div>
+
                     <div class="search-bar" title="Tekan Enter untuk mencari di semua navigasi">
                         <i class="fa-solid fa-magnifying-glass" style="color: var(--text-light);"></i>
                         <input type="text" id="globalSearchInput" placeholder="Cari data umum (Tekan Enter)...">
@@ -443,10 +448,6 @@
             </header>
 
             <section class="content">
-                <div class="page-header">
-                    <i class="fa-solid fa-bookmark" id="page-icon"></i> <span id="page-title">Overview</span>
-                </div>
-
                 <div id="section-overview" class="hidden">
                     
                     <div class="kpi-grid">

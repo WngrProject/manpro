@@ -261,6 +261,14 @@
         thead { position: sticky; top: 0; z-index: 1; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         
         th { background-color: var(--th-bg); color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border-color); transition: background-color 0.3s;}
+        
+        /* Tambahan untuk Sort Header Tabel */
+        th.sortable { cursor: pointer; user-select: none; transition: background-color 0.2s, color 0.2s; }
+        th.sortable:hover { background-color: var(--border-light); color: var(--text-main); }
+        .sort-active { margin-left: 6px; font-size: 11px; color: var(--primary-blue); }
+        .sort-inactive { margin-left: 6px; font-size: 11px; color: var(--border-color); transition: color 0.3s; }
+        th.sortable:hover .sort-inactive { color: var(--text-muted); }
+
         td { padding: 6px 12px; border-bottom: 1px solid var(--border-light); vertical-align: middle; color: var(--text-main); height: 24px; transition: border-color 0.3s, color 0.3s;}
         tr:hover td { background-color: var(--row-hover); }
         
@@ -845,6 +853,12 @@
         window.currentEditId = null; 
         window.currentUnsubscribe = null;
         window.overviewUnsubscribe = null;
+        
+        // --- VARIABLE CACHE DAN STATE SORTING ---
+        window.currentTableDataCache = [];
+        window.currentTableColumnsCache = [];
+        window.currentSortCol = null;
+        window.currentSortDir = 'asc';
 
         // --- THEME TOGGLE ---
         const btnThemeToggle = document.getElementById('btnThemeToggle');
@@ -1068,28 +1082,23 @@
             return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(angka));
         }
 
-        // FUNGSI INI TELAH DIPERBARUI UNTUK MEMBACA TANGGAL NATIVE (YYYY-MM-DD) DAN TEKS (DD MMM YYYY)
         function parseDateToInputFormat(dateText) {
             if (!dateText || dateText === '-') return '';
             
-            // 1. Cek apakah format sudah YYYY-MM-DD (contoh: 2023-08-15) - format native input type="date"
             if (/^\d{4}-\d{2}-\d{2}$/.test(dateText)) {
                 return dateText;
             }
 
-            // 2. Jika format dari Firebase sudah ter-render menjadi text "DD MMM YYYY" (contoh: 15 Ags 2023)
             const mapMonths = { 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'Mei': '05', 'Jun': '06', 'Jul': '07', 'Ags': '08', 'Agt': '08', 'Agu': '08', 'Sep': '09', 'Okt': '10', 'Nov': '11', 'Des': '12' };
             const parts = dateText.split(' ');
             if (parts.length === 3) {
                 const day = parts[0].padStart(2, '0');
-                // Mengambil 3 huruf pertama bulan untuk menoleransi ejaan (Ags/Agt/Agu)
                 const monthName = parts[1].substring(0, 3);
                 const month = mapMonths[monthName] || mapMonths[parts[1]] || '01';
                 const year = parts[2];
                 return `${year}-${month}-${day}`;
             }
             
-            // 3. Fallback jika format lainnya yang bisa terbaca oleh Object Date JS
             const fallbackDate = new Date(dateText);
             if (!isNaN(fallbackDate.getTime())) {
                 const y = fallbackDate.getFullYear();
@@ -1126,6 +1135,10 @@
             const btnFilterStatus = document.getElementById('btnFilterStatus');
             
             window.currentCollection = collectionName;
+            
+            // RESET SORT STATE KETIKA PINDAH PAGE
+            window.currentSortCol = null;
+            window.currentSortDir = 'asc';
 
             if (type === 'overview') {
                 secOverview.classList.remove('hidden');
@@ -1166,12 +1179,12 @@
                     toolbarSemuaProyek.style.display = 'none';
                 }
                 
-                // Panggil renderTable dengan sistem Realtime yang baru
                 renderTable(collectionName);
                 applyRolePermissions(); 
             }
         };
 
+        // --- FUNGSI RENDER TABEL & SNAPSHOT LISTENER ---
         function renderTable(colName) {
             const tHead = document.getElementById('table-head');
             const tBody = document.getElementById('table-body');
@@ -1210,225 +1223,12 @@
                         }
                     }
 
-                    const sortColumn = columns.includes("No") ? "No" : columns[0];
-                    allData.sort((a, b) => {
-                        let valA = a[sortColumn];
-                        let valB = b[sortColumn];
-                        if (valA === undefined || valA === null) valA = "";
-                        if (valB === undefined || valB === null) valB = "";
-                        let numA = parseFloat(valA);
-                        let numB = parseFloat(valB);
-                        if (!isNaN(numA) && !isNaN(numB) && String(valA).trim() !== "" && String(valB).trim() !== "") return numA - numB; 
-                        return String(valA).localeCompare(String(valB));
-                    });
+                    // Simpan data dan kolom ke Cache Global untuk fitur Sort Client-side
+                    window.currentTableDataCache = allData;
+                    window.currentTableColumnsCache = columns;
 
-                    const decimalCols = ["hp boq", "nilai boq", "harga satuan", "volume boq", "total nilai boq", "fo 48c", "fo 96c", "boq ext pole", "fo 96c_a", "fo 96c_b", "boq new pole"];
-                    const percentCols = ["bobot"];
-
-                    let countCol = null;
-                    let subtotalCols = [];
-                    let isSumProduct = false;
-                    let sumProductBaseCol = "Harga Satuan";
-                    let sumProductCols = [];
-                    let isSumProductDb9 = false;
-                    let sumProductColsFeeder = ["Feeder"];
-                    let sumProductColsDistribusi = [];
-
-                    if (colName === 'pembayaran') {
-                        countCol = 'Detail Invoice';
-                        subtotalCols = ['Nilai Invoice', 'PPn 11%', 'Total Invoice', 'Nilai Bayar'];
-                    } else if (colName === 'db1') {
-                        countCol = 'Nama Cluster';
-                        subtotalCols = ['HP BoQ', 'Nilai BoQ', 'Bobot'];
-                    } else if (['db2', 'db3', 'db4', 'db5', 'db6'].includes(colName)) {
-                        countCol = 'Item Pekerjaan';
-                        subtotalCols = ['Total Nilai BoQ', 'Bobot'];
-                    } else if (colName === 'db7') {
-                        countCol = 'Segmen';
-                        subtotalCols = ['Total Nilai BoQ', 'BoQ Ext Pole', 'Bobot'];
-                    } else if (colName === 'db8') {
-                        countCol = 'Segmen';
-                        subtotalCols = ['Total Nilai BoQ', 'BoQ New Pole', 'Bobot'];
-                    } else if (colName === 'db9') {
-                        countCol = 'Item Pekerjaan';
-                        isSumProductDb9 = true;
-                        let distIndex = columns.indexOf("Discovery Alton");
-                        if (distIndex !== -1) sumProductColsDistribusi = columns.slice(distIndex);
-                    } else if (['db10', 'db11', 'db12', 'db13', 'db14'].includes(colName)) {
-                        countCol = 'Item Pekerjaan';
-                        subtotalCols = ['Total Nilai BoQ', 'Total Nilai Rekon', 'Bobot'];
-                    } else if (['db15', 'db16'].includes(colName)) {
-                        countCol = 'Item Pekerjaan';
-                        isSumProduct = true;
-                        let baseIndex = columns.indexOf(sumProductBaseCol);
-                        if (baseIndex !== -1) sumProductCols = columns.slice(baseIndex + 1);
-                    } else if (['db25', 'db26', 'db27', 'db28', 'db29', 'db30', 'db31', 'db32'].includes(colName)) {
-                        countCol = 'Nama Material';
-                        subtotalCols = ['Total Harga', 'PPn 11%', 'Grand Total'];
-                    }
-
-                    let counts = 0;
-                    let subtotalsData = {};
-                    let totalNilaiProyek = 0, totalInvoice = 0, totalTerbayar = 0;
-
-                    let displayColumns = [...columns];
-                    const currentRole = sessionStorage.getItem('loggedRole') || 'Guest';
-                    
-                    if (activePages.includes(colName) && (currentRole === 'Admin' || currentRole === 'User')) {
-                        displayColumns.push("Aksi");
-                    }
-
-                    let headerHTML = '<tr>';
-                    displayColumns.forEach(col => {
-                        let lowerCol = col.toLowerCase();
-                        let isNumeric = lowerCol.includes('nilai') || lowerCol.includes('harga') || lowerCol.includes('total') || lowerCol.includes('volume') || lowerCol.includes('ppn') || decimalCols.includes(lowerCol) || percentCols.includes(lowerCol);
-                        if (col === "Aksi") {
-                            headerHTML += `<th style="text-align: center; width: 60px;">${col}</th>`;
-                        } else {
-                            headerHTML += `<th style="${isNumeric ? 'text-align: right;' : ''}">${col}</th>`;
-                        }
-                    });
-                    headerHTML += '</tr>';
-                    tHead.innerHTML = headerHTML;
-
-                    let bodyHTML = '';
-                    allData.forEach(row => {
-                        bodyHTML += '<tr class="data-row">';
-                        displayColumns.forEach(col => {
-                            if (col === "Aksi") {
-                                bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" style="color:var(--primary-blue);" onclick="openEditModal(this)" title="Edit Proyek"><i class="fa-solid fa-pen"></i></button></td>`;
-                                return;
-                            }
-
-                            let value = row[col];
-                            let alignClass = '';
-                            let lowerCol = col.toLowerCase();
-                            
-                            if (value === undefined || value === null || value === "") {
-                                value = '-';
-                            } else if (colName === 'pembayaran' && (lowerCol === 'tanggal invoice' || lowerCol === 'tanggal bayar')) {
-                                if (typeof value === 'object' && value.seconds) {
-                                    value = formatTanggal(value);
-                                } else if (value !== '-') {
-                                    const parsedDate = new Date(value);
-                                    if (!isNaN(parsedDate.getTime())) value = parsedDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-                                }
-                            } else if (colName === 'pembayaran' && ["nilai invoice", "ppn 11%", "total invoice", "nilai bayar"].includes(lowerCol)) {
-                                if (!isNaN(parseFloat(value))) {
-                                    value = formatDecimalUS(value);
-                                    alignClass = 'class="angka"';
-                                }
-                            } else if (typeof value === 'object' && value.seconds) {
-                                value = formatTanggal(value);
-                            } else if (percentCols.includes(lowerCol)) {
-                                if (!isNaN(parseFloat(value))) {
-                                    let num = parseFloat(String(value).replace('%', ''));
-                                    value = formatDecimalUS(num) + '%';
-                                    alignClass = 'class="angka"';
-                                }
-                            } else if (boqAndMaterialDBs.includes(colName) && lowerCol !== "no" && !isNaN(Number(value)) && String(value).trim() !== "" && typeof value !== "boolean") {
-                                value = formatDecimalUS(value);
-                                alignClass = 'class="angka"';
-                            } else if (decimalCols.includes(lowerCol)) {
-                                if (!isNaN(parseFloat(value))) {
-                                    value = formatDecimalUS(value);
-                                    alignClass = 'class="angka"';
-                                }
-                            } else if (lowerCol.includes('nilai') || lowerCol.includes('harga') || lowerCol.includes('total')) {
-                                if(!isNaN(parseFloat(value))) {
-                                    if (colName === 'dball' && (lowerCol === 'nilai proyek' || lowerCol === 'nilai invoice' || lowerCol === 'nilai terbayar')) {
-                                        value = formatDecimalUS(value);
-                                    } else {
-                                        value = formatRupiah(value);
-                                    }
-                                    alignClass = 'class="angka"';
-                                }
-                            } else if (lowerCol.includes('status')) {
-                                let strVal = String(value);
-                                if(strVal.includes('Progress')) value = `<span class="badge badge-progress">${strVal}</span>`;
-                                else if(strVal.includes('Invoice')) value = `<span class="badge badge-invoice">${strVal}</span>`;
-                                else value = `<span class="badge badge-default">${strVal}</span>`;
-                            } else if (col === 'File' && String(value).includes('http')) {
-                                value = `<a href="${value}" target="_blank" class="btn-link"><i class="fa-solid fa-arrow-up-right-from-square" style="margin-right:4px;"></i>Buka</a>`;
-                            }
-                            bodyHTML += `<td ${alignClass}>${value}</td>`;
-                        });
-                        bodyHTML += '</tr>';
-
-                        if (countCol && row[countCol] !== undefined && String(row[countCol]).trim() !== "" && row[countCol] !== "-") counts++;
-
-                        if (isSumProductDb9) {
-                            let baseFeederNum = parseFloat(String(row["Harga Satuan Feeder"] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
-                            sumProductColsFeeder.forEach(spc => {
-                                let multiplier = parseFloat(String(row[spc] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
-                                subtotalsData[spc] = (subtotalsData[spc] || 0) + (baseFeederNum * multiplier);
-                            });
-                            let baseDistNum = parseFloat(String(row["Harga Satuan Distribusi"] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
-                            sumProductColsDistribusi.forEach(spc => {
-                                let multiplier = parseFloat(String(row[spc] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
-                                subtotalsData[spc] = (subtotalsData[spc] || 0) + (baseDistNum * multiplier);
-                            });
-                        } else if (!isSumProduct) {
-                            subtotalCols.forEach(sc => {
-                                let valNum = parseFloat(String(row[sc] || "").replace(/,/g, '').replace(/%/g, ''));
-                                if (!isNaN(valNum)) subtotalsData[sc] = (subtotalsData[sc] || 0) + valNum;
-                            });
-                        } else {
-                            let baseValNum = parseFloat(String(row[sumProductBaseCol] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
-                            sumProductCols.forEach(spc => {
-                                let multiplier = parseFloat(String(row[spc] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
-                                subtotalsData[spc] = (subtotalsData[spc] || 0) + (baseValNum * multiplier);
-                            });
-                        }
-
-                        if (colName === 'dball') {
-                            totalNilaiProyek += parseFloat(row['Nilai Proyek']) || 0;
-                            totalInvoice += parseFloat(row['Nilai Invoice']) || 0;
-                            totalTerbayar += parseFloat(row['Nilai Terbayar']) || 0;
-                        }
-                    });
-                    tBody.innerHTML = bodyHTML;
-
-                    if (colName === 'dball') {
-                        let spanLimit = columns.indexOf('Nilai Proyek');
-                        if (spanLimit === -1) spanLimit = 5; 
-                        tFoot.innerHTML = `
-                            <tr id="table-summary-row">
-                                <th colspan="${spanLimit}" style="text-align:Left;">Total Summary:</th>
-                                <th class="angka" id="sum-nilai">${formatDecimalUS(totalNilaiProyek)}</th>
-                                <th class="angka" id="sum-invoice">${formatDecimalUS(totalInvoice)}</th>
-                                <th class="angka" id="sum-terbayar">${formatDecimalUS(totalTerbayar)}</th>
-                                <th colspan="${displayColumns.length - spanLimit - 3}"></th>
-                            </tr>`;
-                    } else {
-                        let footerHTML = '<tr>';
-                        displayColumns.forEach((col, index) => {
-                            let lowerCol = col.toLowerCase();
-                            let isSubMatch = subtotalCols.some(sc => sc.toLowerCase() === lowerCol);
-                            let isSumProductMatch = isSumProduct && sumProductCols.some(spc => spc.toLowerCase() === lowerCol);
-                            let isSumProductDb9Match = isSumProductDb9 && (sumProductColsFeeder.some(spc => spc.toLowerCase() === lowerCol) || sumProductColsDistribusi.some(spc => spc.toLowerCase() === lowerCol));
-                            
-                            let targetDataKey = isSubMatch ? subtotalCols.find(sc => sc.toLowerCase() === lowerCol) : 
-                                                isSumProductMatch ? sumProductCols.find(spc => spc.toLowerCase() === lowerCol) : 
-                                                isSumProductDb9Match ? (sumProductColsFeeder.find(spc => spc.toLowerCase() === lowerCol) || sumProductColsDistribusi.find(spc => spc.toLowerCase() === lowerCol)) : null;
-
-                            if (colName === 'pembayaran' && col === 'Uraian Proyek') footerHTML += `<th style="text-align:left;">Total Summary:</th>`;
-                            else if (col === countCol) footerHTML += `<th style="text-align:left;">${counts} Data</th>`;
-                            else if (targetDataKey) {
-                                let subValue = subtotalsData[targetDataKey] || 0;
-                                let formattedSubValue = percentCols.includes(lowerCol) ? formatDecimalUS(subValue) + "%" : formatDecimalUS(subValue);
-                                footerHTML += `<th class="angka">${formattedSubValue}</th>`;
-                            } else {
-                                if (index === 0 && colName !== 'pembayaran') footerHTML += `<th style="text-align:left;">Total</th>`;
-                                else footerHTML += `<th></th>`;
-                            }
-                        });
-                        footerHTML += '</tr>';
-                        tFoot.innerHTML = footerHTML;
-                    }
-
-                    // Pastikan memproses ulang filter setiap kali ada data realtime masuk
-                    processFilters();
+                    // Panggil fungsi render DOM secara independen dari update Snapshot Firebase
+                    renderTableDOM();
 
                 }, (error) => {
                     console.error("Error mengambil data realtime:", error);
@@ -1440,6 +1240,278 @@
                 tBody.innerHTML = `<tr><td style="color:red; text-align:center; padding: 30px;">Terjadi kesalahan sistem. Cek console log.</td></tr>`;
             }
         }
+
+        // --- FUNGSI RENDER DOM TABEL & SORTING ---
+        window.renderTableDOM = function() {
+            if (!window.currentTableDataCache || window.currentTableDataCache.length === 0) return;
+
+            const colName = window.currentCollection;
+            const tHead = document.getElementById('table-head');
+            const tBody = document.getElementById('table-body');
+            const tFoot = document.getElementById('table-foot');
+            
+            let allData = [...window.currentTableDataCache];
+            let columns = window.currentTableColumnsCache;
+
+            // Logika Sorting Data
+            const sortColumn = window.currentSortCol || (columns.includes("No") ? "No" : columns[0]);
+            const sortDir = window.currentSortDir || 'asc';
+
+            allData.sort((a, b) => {
+                let valA = a[sortColumn];
+                let valB = b[sortColumn];
+                if (valA === undefined || valA === null) valA = "";
+                if (valB === undefined || valB === null) valB = "";
+                
+                let numA = parseFloat(valA);
+                let numB = parseFloat(valB);
+                let comp = 0;
+                
+                if (!isNaN(numA) && !isNaN(numB) && String(valA).trim() !== "" && String(valB).trim() !== "") {
+                    comp = numA - numB;
+                } else {
+                    comp = String(valA).localeCompare(String(valB), undefined, {numeric: true});
+                }
+                return sortDir === 'asc' ? comp : -comp;
+            });
+
+            const decimalCols = ["hp boq", "nilai boq", "harga satuan", "volume boq", "total nilai boq", "fo 48c", "fo 96c", "boq ext pole", "fo 96c_a", "fo 96c_b", "boq new pole"];
+            const percentCols = ["bobot"];
+
+            let countCol = null;
+            let subtotalCols = [];
+            let isSumProduct = false;
+            let sumProductBaseCol = "Harga Satuan";
+            let sumProductCols = [];
+            let isSumProductDb9 = false;
+            let sumProductColsFeeder = ["Feeder"];
+            let sumProductColsDistribusi = [];
+
+            if (colName === 'pembayaran') {
+                countCol = 'Detail Invoice';
+                subtotalCols = ['Nilai Invoice', 'PPn 11%', 'Total Invoice', 'Nilai Bayar'];
+            } else if (colName === 'db1') {
+                countCol = 'Nama Cluster';
+                subtotalCols = ['HP BoQ', 'Nilai BoQ', 'Bobot'];
+            } else if (['db2', 'db3', 'db4', 'db5', 'db6'].includes(colName)) {
+                countCol = 'Item Pekerjaan';
+                subtotalCols = ['Total Nilai BoQ', 'Bobot'];
+            } else if (colName === 'db7') {
+                countCol = 'Segmen';
+                subtotalCols = ['Total Nilai BoQ', 'BoQ Ext Pole', 'Bobot'];
+            } else if (colName === 'db8') {
+                countCol = 'Segmen';
+                subtotalCols = ['Total Nilai BoQ', 'BoQ New Pole', 'Bobot'];
+            } else if (colName === 'db9') {
+                countCol = 'Item Pekerjaan';
+                isSumProductDb9 = true;
+                let distIndex = columns.indexOf("Discovery Alton");
+                if (distIndex !== -1) sumProductColsDistribusi = columns.slice(distIndex);
+            } else if (['db10', 'db11', 'db12', 'db13', 'db14'].includes(colName)) {
+                countCol = 'Item Pekerjaan';
+                subtotalCols = ['Total Nilai BoQ', 'Total Nilai Rekon', 'Bobot'];
+            } else if (['db15', 'db16'].includes(colName)) {
+                countCol = 'Item Pekerjaan';
+                isSumProduct = true;
+                let baseIndex = columns.indexOf(sumProductBaseCol);
+                if (baseIndex !== -1) sumProductCols = columns.slice(baseIndex + 1);
+            } else if (['db25', 'db26', 'db27', 'db28', 'db29', 'db30', 'db31', 'db32'].includes(colName)) {
+                countCol = 'Nama Material';
+                subtotalCols = ['Total Harga', 'PPn 11%', 'Grand Total'];
+            }
+
+            let counts = 0;
+            let subtotalsData = {};
+            let totalNilaiProyek = 0, totalInvoice = 0, totalTerbayar = 0;
+
+            let displayColumns = [...columns];
+            const currentRole = sessionStorage.getItem('loggedRole') || 'Guest';
+            
+            if (activePages.includes(colName) && (currentRole === 'Admin' || currentRole === 'User')) {
+                displayColumns.push("Aksi");
+            }
+
+            // Pengecualian navigasi yang tidak boleh di-sort
+            const skipSort = ['peta_jobj', 'peta_surge'].includes(colName);
+
+            let headerHTML = '<tr>';
+            displayColumns.forEach(col => {
+                let lowerCol = col.toLowerCase();
+                let isNumeric = lowerCol.includes('nilai') || lowerCol.includes('harga') || lowerCol.includes('total') || lowerCol.includes('volume') || lowerCol.includes('ppn') || decimalCols.includes(lowerCol) || percentCols.includes(lowerCol);
+                
+                let isSortable = !skipSort && col !== 'Aksi';
+                let sortIcon = '';
+                let thClass = isSortable ? ' class="sortable"' : '';
+                let onClickAction = isSortable ? ` onclick="handleSort('${col}')"` : '';
+
+                if (isSortable) {
+                    if (window.currentSortCol === col || (!window.currentSortCol && sortColumn === col)) {
+                        sortIcon = sortDir === 'asc' ? ' <i class="fa-solid fa-sort-up sort-active"></i>' : ' <i class="fa-solid fa-sort-down sort-active"></i>';
+                    } else {
+                        sortIcon = ' <i class="fa-solid fa-sort sort-inactive"></i>';
+                    }
+                }
+
+                if (col === "Aksi") {
+                    headerHTML += `<th style="text-align: center; width: 60px;">${col}</th>`;
+                } else {
+                    headerHTML += `<th${thClass} style="${isNumeric ? 'text-align: right;' : ''}"${onClickAction}>${col}${sortIcon}</th>`;
+                }
+            });
+            headerHTML += '</tr>';
+            tHead.innerHTML = headerHTML;
+
+            let bodyHTML = '';
+            allData.forEach(row => {
+                bodyHTML += '<tr class="data-row">';
+                displayColumns.forEach(col => {
+                    if (col === "Aksi") {
+                        bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" style="color:var(--primary-blue);" onclick="openEditModal(this)" title="Edit Proyek"><i class="fa-solid fa-pen"></i></button></td>`;
+                        return;
+                    }
+
+                    let value = row[col];
+                    let alignClass = '';
+                    let lowerCol = col.toLowerCase();
+                    
+                    if (value === undefined || value === null || value === "") {
+                        value = '-';
+                    } else if (colName === 'pembayaran' && (lowerCol === 'tanggal invoice' || lowerCol === 'tanggal bayar')) {
+                        if (typeof value === 'object' && value.seconds) {
+                            value = formatTanggal(value);
+                        } else if (value !== '-') {
+                            const parsedDate = new Date(value);
+                            if (!isNaN(parsedDate.getTime())) value = parsedDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                        }
+                    } else if (colName === 'pembayaran' && ["nilai invoice", "ppn 11%", "total invoice", "nilai bayar"].includes(lowerCol)) {
+                        if (!isNaN(parseFloat(value))) {
+                            value = formatDecimalUS(value);
+                            alignClass = 'class="angka"';
+                        }
+                    } else if (typeof value === 'object' && value.seconds) {
+                        value = formatTanggal(value);
+                    } else if (percentCols.includes(lowerCol)) {
+                        if (!isNaN(parseFloat(value))) {
+                            let num = parseFloat(String(value).replace('%', ''));
+                            value = formatDecimalUS(num) + '%';
+                            alignClass = 'class="angka"';
+                        }
+                    } else if (boqAndMaterialDBs.includes(colName) && lowerCol !== "no" && !isNaN(Number(value)) && String(value).trim() !== "" && typeof value !== "boolean") {
+                        value = formatDecimalUS(value);
+                        alignClass = 'class="angka"';
+                    } else if (decimalCols.includes(lowerCol)) {
+                        if (!isNaN(parseFloat(value))) {
+                            value = formatDecimalUS(value);
+                            alignClass = 'class="angka"';
+                        }
+                    } else if (lowerCol.includes('nilai') || lowerCol.includes('harga') || lowerCol.includes('total')) {
+                        if(!isNaN(parseFloat(value))) {
+                            if (colName === 'dball' && (lowerCol === 'nilai proyek' || lowerCol === 'nilai invoice' || lowerCol === 'nilai terbayar')) {
+                                value = formatDecimalUS(value);
+                            } else {
+                                value = formatRupiah(value);
+                            }
+                            alignClass = 'class="angka"';
+                        }
+                    } else if (lowerCol.includes('status')) {
+                        let strVal = String(value);
+                        if(strVal.includes('Progress')) value = `<span class="badge badge-progress">${strVal}</span>`;
+                        else if(strVal.includes('Invoice')) value = `<span class="badge badge-invoice">${strVal}</span>`;
+                        else value = `<span class="badge badge-default">${strVal}</span>`;
+                    } else if (col === 'File' && String(value).includes('http')) {
+                        value = `<a href="${value}" target="_blank" class="btn-link"><i class="fa-solid fa-arrow-up-right-from-square" style="margin-right:4px;"></i>Buka</a>`;
+                    }
+                    bodyHTML += `<td ${alignClass}>${value}</td>`;
+                });
+                bodyHTML += '</tr>';
+
+                if (countCol && row[countCol] !== undefined && String(row[countCol]).trim() !== "" && row[countCol] !== "-") counts++;
+
+                if (isSumProductDb9) {
+                    let baseFeederNum = parseFloat(String(row["Harga Satuan Feeder"] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
+                    sumProductColsFeeder.forEach(spc => {
+                        let multiplier = parseFloat(String(row[spc] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
+                        subtotalsData[spc] = (subtotalsData[spc] || 0) + (baseFeederNum * multiplier);
+                    });
+                    let baseDistNum = parseFloat(String(row["Harga Satuan Distribusi"] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
+                    sumProductColsDistribusi.forEach(spc => {
+                        let multiplier = parseFloat(String(row[spc] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
+                        subtotalsData[spc] = (subtotalsData[spc] || 0) + (baseDistNum * multiplier);
+                    });
+                } else if (!isSumProduct) {
+                    subtotalCols.forEach(sc => {
+                        let valNum = parseFloat(String(row[sc] || "").replace(/,/g, '').replace(/%/g, ''));
+                        if (!isNaN(valNum)) subtotalsData[sc] = (subtotalsData[sc] || 0) + valNum;
+                    });
+                } else {
+                    let baseValNum = parseFloat(String(row[sumProductBaseCol] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
+                    sumProductCols.forEach(spc => {
+                        let multiplier = parseFloat(String(row[spc] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
+                        subtotalsData[spc] = (subtotalsData[spc] || 0) + (baseValNum * multiplier);
+                    });
+                }
+
+                if (colName === 'dball') {
+                    totalNilaiProyek += parseFloat(row['Nilai Proyek']) || 0;
+                    totalInvoice += parseFloat(row['Nilai Invoice']) || 0;
+                    totalTerbayar += parseFloat(row['Nilai Terbayar']) || 0;
+                }
+            });
+            tBody.innerHTML = bodyHTML;
+
+            if (colName === 'dball') {
+                let spanLimit = columns.indexOf('Nilai Proyek');
+                if (spanLimit === -1) spanLimit = 5; 
+                tFoot.innerHTML = `
+                    <tr id="table-summary-row">
+                        <th colspan="${spanLimit}" style="text-align:Left;">Total Summary:</th>
+                        <th class="angka" id="sum-nilai">${formatDecimalUS(totalNilaiProyek)}</th>
+                        <th class="angka" id="sum-invoice">${formatDecimalUS(totalInvoice)}</th>
+                        <th class="angka" id="sum-terbayar">${formatDecimalUS(totalTerbayar)}</th>
+                        <th colspan="${displayColumns.length - spanLimit - 3}"></th>
+                    </tr>`;
+            } else {
+                let footerHTML = '<tr>';
+                displayColumns.forEach((col, index) => {
+                    let lowerCol = col.toLowerCase();
+                    let isSubMatch = subtotalCols.some(sc => sc.toLowerCase() === lowerCol);
+                    let isSumProductMatch = isSumProduct && sumProductCols.some(spc => spc.toLowerCase() === lowerCol);
+                    let isSumProductDb9Match = isSumProductDb9 && (sumProductColsFeeder.some(spc => spc.toLowerCase() === lowerCol) || sumProductColsDistribusi.some(spc => spc.toLowerCase() === lowerCol));
+                    
+                    let targetDataKey = isSubMatch ? subtotalCols.find(sc => sc.toLowerCase() === lowerCol) : 
+                                        isSumProductMatch ? sumProductCols.find(spc => spc.toLowerCase() === lowerCol) : 
+                                        isSumProductDb9Match ? (sumProductColsFeeder.find(spc => spc.toLowerCase() === lowerCol) || sumProductColsDistribusi.find(spc => spc.toLowerCase() === lowerCol)) : null;
+
+                    if (colName === 'pembayaran' && col === 'Uraian Proyek') footerHTML += `<th style="text-align:left;">Total Summary:</th>`;
+                    else if (col === countCol) footerHTML += `<th style="text-align:left;">${counts} Data</th>`;
+                    else if (targetDataKey) {
+                        let subValue = subtotalsData[targetDataKey] || 0;
+                        let formattedSubValue = percentCols.includes(lowerCol) ? formatDecimalUS(subValue) + "%" : formatDecimalUS(subValue);
+                        footerHTML += `<th class="angka">${formattedSubValue}</th>`;
+                    } else {
+                        if (index === 0 && colName !== 'pembayaran') footerHTML += `<th style="text-align:left;">Total</th>`;
+                        else footerHTML += `<th></th>`;
+                    }
+                });
+                footerHTML += '</tr>';
+                tFoot.innerHTML = footerHTML;
+            }
+
+            // Pastikan memproses ulang filter setiap kali ada render ulang
+            processFilters();
+        };
+
+        // --- HANDLER KLIK SORT ---
+        window.handleSort = function(col) {
+            if (col === "Aksi") return;
+            if (window.currentSortCol === col) {
+                window.currentSortDir = window.currentSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                window.currentSortCol = col;
+                window.currentSortDir = 'asc';
+            }
+            renderTableDOM();
+        };
 
         // --- UPDATE FUNGSI OVERVIEW CHART UNTUK MENGISI KARTU KPI (REALTIME) ---
         function renderOverviewChart(colName) {
@@ -1816,7 +1888,6 @@
                 }
 
                 closeModal('projectModal');
-                // renderTable(window.currentCollection); --> Tidak diperlukan lagi, onSnapshot otomatis memproses render ulang tabel
 
             } catch (error) {
                 console.error("Error saat menyimpan data: ", error);

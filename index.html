@@ -67,6 +67,49 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
+        /* --- LOGIN SCREEN --- */
+        #loginScreen {
+            display: flex; 
+            width: 100%; 
+            height: 100%;
+            align-items: center; 
+            justify-content: center;
+        }
+        .login-box {
+            background: var(--card-bg); 
+            border-radius: 12px;
+            box-shadow: var(--shadow-md); 
+            border: 1px solid var(--border-color);
+            width: 380px; 
+            padding: 40px 32px;
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px;
+        }
+        .login-header { text-align: center; }
+        .login-header i { font-size: 36px; color: var(--primary-blue); margin-bottom: 12px; }
+        .login-header h2 { font-size: 22px; color: var(--text-main); font-weight: 700; margin-bottom: 4px; font-family: 'Inter', sans-serif;}
+        .login-header p { font-size: 13px; color: var(--text-muted); }
+        .login-error { 
+            color: #ef4444; 
+            font-size: 12px; 
+            text-align: center; 
+            display: none; 
+            background: rgba(239, 68, 68, 0.1); 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            font-weight: 500;
+        }
+
+        /* --- DASHBOARD CONTAINER --- */
+        #appContainer {
+            display: none; /* Sembunyikan secara default */
+            width: 100%;
+            height: 100%;
+            flex-direction: row;
+        }
+
         /* --- SIDEBAR & COLLAPSIBLE MENU --- */
         .sidebar { 
             width: var(--sidebar-width); 
@@ -137,7 +180,7 @@
         
         .topbar-right { display: flex; align-items: center; gap: 16px; }
         .user-profile { display: flex; align-items: center; gap: 12px; font-weight: 600; margin-left: 8px; border-left: 1px solid var(--border-color); padding-left: 16px;}
-        .avatar { width: 32px; height: 32px; background: rgba(37, 99, 235, 0.1); color: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; border: 1px solid rgba(37, 99, 235, 0.2); }
+        .avatar { width: 32px; height: 32px; background: rgba(37, 99, 235, 0.1); color: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; border: 1px solid rgba(37, 99, 235, 0.2); text-transform: uppercase;}
 
         /* CONTENT AREA */
         .content { flex: 1; padding: 24px; overflow-y: auto; }
@@ -243,183 +286,209 @@
 </head>
 <body>
 
-    <aside class="sidebar" id="mainSidebar">
-        <div class="sidebar-header">
-            <i class="fa-solid fa-layer-group"></i> <span class="sidebar-title">Man Pro</span>
-        </div>
-        <ul class="nav-menu">
+    <div id="loginScreen">
+        <div class="login-box">
+            <div class="login-header">
+                <i class="fa-solid fa-layer-group"></i>
+                <h2>Man Pro Login</h2>
+                <p>Silakan masuk untuk mengakses sistem</p>
+            </div>
             
-            <div class="nav-category open" onclick="toggleMenu(this)">
-                <span class="nav-text"><i class="fa-solid fa-gauge" style="color:#6366f1; margin-right:8px;"></i> Dashboard</span>
-                <i class="fa-solid fa-chevron-down chevron"></i>
-            </div>
-            <ul class="submenu open">
-                <li class="nav-item active" onclick="loadPage('Overview', 'dball', 'overview', this)"><i class="fa-solid fa-chart-pie" style="color: #3b82f6;"></i> <span class="nav-text">Overview</span></li>
-                <li class="nav-item" onclick="loadPage('Semua Proyek', 'dball', 'table', this)"><i class="fa-solid fa-folder-tree" style="color: #8b5cf6;"></i> <span class="nav-text">Semua Proyek</span></li>
-            </ul>
-
-            <div class="nav-category" onclick="toggleMenu(this)">
-                <span class="nav-text"><i class="fa-solid fa-file-signature" style="color:#10b981; margin-right:8px;"></i> Daftar PO</span>
-                <i class="fa-solid fa-chevron-down chevron"></i>
-            </div>
-            <ul class="submenu">
-                <li class="nav-item" onclick="loadPage('PO JOBJ', 'db1', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#0ea5e9;"></i> <span class="nav-text">PO JOBJ</span></li>
-                <li class="nav-item" onclick="loadPage('PO CAO Ring 2', 'db2', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#14b8a6;"></i> <span class="nav-text">PO CAO Ring 2</span></li>
-                <li class="nav-item" onclick="loadPage('PO CAO Ring 4', 'db3', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#14b8a6;"></i> <span class="nav-text">PO CAO Ring 4</span></li>
-                <li class="nav-item" onclick="loadPage('PO CAO Ring 3A', 'db4', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#14b8a6;"></i> <span class="nav-text">PO CAO Ring 3A</span></li>
-                <li class="nav-item" onclick="loadPage('PO CAO Ring 3B', 'db5', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#14b8a6;"></i> <span class="nav-text">PO CAO Ring 3B</span></li>
-                <li class="nav-item" onclick="loadPage('PO IJE FM Ring 1', 'db6', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#f59e0b;"></i> <span class="nav-text">PO IJE FM Ring 1</span></li>
-                <li class="nav-item" onclick="loadPage('PO SURGE FM Ex Pole', 'db7', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#ef4444;"></i> <span class="nav-text">PO SURGE FM Ex Pole</span></li>
-                <li class="nav-item" onclick="loadPage('PO SURGE FM New Pole', 'db8', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#ef4444;"></i> <span class="nav-text">PO SURGE FM New Pole</span></li>
-            </ul>
-
-            <div class="nav-category" onclick="toggleMenu(this)">
-                <span class="nav-text"><i class="fa-solid fa-list-check" style="color:#f59e0b; margin-right:8px;"></i> Daftar BoQ</span>
-                <i class="fa-solid fa-chevron-down chevron"></i>
-            </div>
-            <ul class="submenu">
-                <li class="nav-item" onclick="loadPage('BoQ JOBJ', 'db9', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ JOBJ</span></li>
-                <li class="nav-item" onclick="loadPage('BoQ CAO Ring 2', 'db10', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ CAO Ring 2</span></li>
-                <li class="nav-item" onclick="loadPage('BoQ CAO Ring 4', 'db11', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ CAO Ring 4</span></li>
-                <li class="nav-item" onclick="loadPage('BoQ CAO Ring 3A', 'db12', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ CAO Ring 3A</span></li>
-                <li class="nav-item" onclick="loadPage('BoQ CAO Ring 3B', 'db13', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ CAO Ring 3B</span></li>
-                <li class="nav-item" onclick="loadPage('BoQ IJE FM Ring 1', 'db14', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ IJE FM Ring 1</span></li>
-                <li class="nav-item" onclick="loadPage('BoQ SURGE FM Ex Pole', 'db15', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ SURGE FM Ex Pole</span></li>
-                <li class="nav-item" onclick="loadPage('BoQ SURGE FM New Pole', 'db16', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ SURGE FM New Pole</span></li>
-            </ul>
-
-            <div class="nav-category" onclick="toggleMenu(this)">
-                <span class="nav-text"><i class="fa-solid fa-boxes-stacked" style="color:#0ea5e9; margin-right:8px;"></i> Daftar Material</span>
-                <i class="fa-solid fa-chevron-down chevron"></i>
-            </div>
-            <ul class="submenu">
-                <li class="nav-item" onclick="loadPage('Material JOBJ', 'db25', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material JOBJ</span></li>
-                <li class="nav-item" onclick="loadPage('Material CAO Ring 2', 'db26', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material CAO Ring 2</span></li>
-                <li class="nav-item" onclick="loadPage('Material CAO Ring 4', 'db27', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material CAO Ring 4</span></li>
-                <li class="nav-item" onclick="loadPage('Material CAO Ring 3A', 'db28', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material CAO Ring 3A</span></li>
-                <li class="nav-item" onclick="loadPage('Material CAO Ring 3B', 'db29', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material CAO Ring 3B</span></li>
-                <li class="nav-item" onclick="loadPage('Material IJE FM Ring 1', 'db30', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material IJE FM Ring 1</span></li>
-                <li class="nav-item" onclick="loadPage('Material SURGE FM Ex Pole', 'db31', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material SURGE FM Ex Pole</span></li>
-                <li class="nav-item" onclick="loadPage('Material SURGE FM New Pole', 'db32', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material SURGE FM New Pole</span></li>
-            </ul>
-
-            <div class="nav-category" onclick="toggleMenu(this)">
-                <span class="nav-text"><i class="fa-solid fa-money-check-dollar" style="color:#ec4899; margin-right:8px;"></i> Invoice</span>
-                <i class="fa-solid fa-chevron-down chevron"></i>
-            </div>
-            <ul class="submenu">
-                <li class="nav-item" onclick="loadPage('Pembayaran', 'pembayaran', 'table', this)"><i class="fa-solid fa-file-invoice-dollar" style="color:#eab308;"></i> <span class="nav-text">Pembayaran</span></li>
-            </ul>
-
-        </ul>
-    </aside>
-
-    <div class="main-wrapper">
-        <header class="topbar">
-            <div class="topbar-left">
-                <button class="btn-toggle" id="btnToggleSidebar" title="Toggle Sidebar">
-                    <i class="fa-solid fa-bars"></i>
+            <div class="login-error" id="loginError"></div>
+            
+            <form id="loginForm" style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" class="form-control" required placeholder="Masukkan Username Anda">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" class="form-control" required placeholder="Masukkan Password Anda">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 8px; font-size: 13px;" id="loginBtn">
+                    <span id="loginBtnText">Login</span>
                 </button>
-                <div class="search-bar" title="Tekan Enter untuk mencari di semua navigasi">
-                    <i class="fa-solid fa-magnifying-glass" style="color: var(--text-light);"></i>
-                    <input type="text" id="globalSearchInput" placeholder="Cari data umum (Tekan Enter)...">
-                </div>
-            </div>
-            <div class="topbar-right">
-                <button class="btn-toggle" id="btnThemeToggle" title="Beralih Tema (Light/Dark)">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-                <button class="btn-toggle" id="btnCalendarToggle" title="Kalender Libur Nasional">
-                    <i class="fa-solid fa-calendar-alt"></i>
-                </button>
-                <button class="btn-toggle" id="btnLoginLogout" title="Login / Logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </button>
-                <div class="user-profile">
-                    <div style="text-align: right;">
-                        <div style="font-size: 13px;">Dedi</div>
-                        <div style="color: #10b981; font-size: 10px; font-weight: 500;">● Administrator</div>
-                    </div>
-                    <div class="avatar">D</div>
-                </div>
-            </div>
-        </header>
-
-        <section class="content">
-            <div class="page-header">
-                <i class="fa-solid fa-bookmark" id="page-icon"></i> <span id="page-title">Overview</span>
-            </div>
-
-            <div id="section-overview" class="chart-grid hidden">
-                <div class="card chart-wrapper">
-                    <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 13px; font-weight: 600;">Status Semua Proyek</h3>
-                    <canvas id="chartStatus"></canvas>
-                </div>
-                <div class="card chart-wrapper">
-                    <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 13px; font-weight: 600;">Akumulasi Nilai Proyek</h3>
-                    <canvas id="chartNilai"></canvas>
-                </div>
-            </div>
-
-            <div id="section-table" class="card hidden">
-                
-                <div class="table-toolbar" id="main-table-toolbar" style="display: none;">
-                    <div id="toolbar-semua-proyek" style="display: flex; justify-content: space-between; width: 100%; align-items: center; display: none;">
-                        
-                        <div class="toolbar-group">
-                            <div class="search-bar" style="width: 280px; box-shadow: none; border-color: var(--border-color); background: transparent;">
-                                <i class="fa-solid fa-filter" style="color: var(--text-light);"></i>
-                                <input type="text" id="inputSearchProyek" placeholder="Filter tabel ini...">
-                            </div>
-                        </div>
-
-                        <div class="toolbar-group">
-                            <div id="filter-container" style="border-right: 1px solid var(--border-color); padding-right: 12px; margin-right: 4px; display: flex; gap: 8px;">
-                                
-                                <div class="dropdown-wrapper">
-                                    <button class="btn-icon" id="btnFilterBulan" title="Filter Bulan"><i class="fa-regular fa-calendar-days"></i></button>
-                                    <div class="dropdown-menu" id="menuFilterBulan"></div>
-                                </div>
-                                <div class="dropdown-wrapper">
-                                    <button class="btn-icon" id="btnFilterTahun" title="Filter Tahun"><i class="fa-solid fa-calendar-week"></i></button>
-                                    <div class="dropdown-menu" id="menuFilterTahun"></div>
-                                </div>
-                                <div class="dropdown-wrapper">
-                                    <button class="btn-icon" id="btnFilterPemberi" title="Filter"><i class="fa-solid fa-building-user"></i></button>
-                                    <div class="dropdown-menu" id="menuFilterPemberi"></div>
-                                </div>
-                                <div class="dropdown-wrapper">
-                                    <button class="btn-icon" id="btnFilterStatus" title="Filter"><i class="fa-solid fa-bars-progress"></i></button>
-                                    <div class="dropdown-menu" id="menuFilterStatus"></div>
-                                </div>
-
-                            </div>
-                            
-                            <div style="display: flex; gap: 8px;">
-                                <button class="btn-icon" id="btnResetData" title="Reset Filter"><i class="fa-solid fa-rotate-right"></i></button>
-                                <button class="btn-icon action-excel" id="btnExportExcel" title="Export Excel"><i class="fa-solid fa-file-excel"></i></button>
-                                <button class="btn-icon action-add" id="btnTambahProyek" title="Tambah Data"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                
-                <div class="table-responsive">
-                    <table id="main-table">
-                        <thead id="table-head">
-                        </thead>
-                        <tbody id="table-body">
-                        </tbody>
-                        <tfoot id="table-foot">
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </section>
+            </form>
+        </div>
     </div>
 
-    <div class="modal-overlay" id="projectModal">
+    <div id="appContainer">
+        <aside class="sidebar" id="mainSidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-layer-group"></i> <span class="sidebar-title">Man Pro</span>
+            </div>
+            <ul class="nav-menu">
+                
+                <div class="nav-category open" onclick="toggleMenu(this)">
+                    <span class="nav-text"><i class="fa-solid fa-gauge" style="color:#6366f1; margin-right:8px;"></i> Dashboard</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu open">
+                    <li class="nav-item active" onclick="loadPage('Overview', 'dball', 'overview', this)"><i class="fa-solid fa-chart-pie" style="color: #3b82f6;"></i> <span class="nav-text">Overview</span></li>
+                    <li class="nav-item" onclick="loadPage('Semua Proyek', 'dball', 'table', this)"><i class="fa-solid fa-folder-tree" style="color: #8b5cf6;"></i> <span class="nav-text">Semua Proyek</span></li>
+                </ul>
+
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text"><i class="fa-solid fa-file-signature" style="color:#10b981; margin-right:8px;"></i> Daftar PO</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('PO JOBJ', 'db1', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#0ea5e9;"></i> <span class="nav-text">PO JOBJ</span></li>
+                    <li class="nav-item" onclick="loadPage('PO CAO Ring 2', 'db2', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#14b8a6;"></i> <span class="nav-text">PO CAO Ring 2</span></li>
+                    <li class="nav-item" onclick="loadPage('PO CAO Ring 4', 'db3', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#14b8a6;"></i> <span class="nav-text">PO CAO Ring 4</span></li>
+                    <li class="nav-item" onclick="loadPage('PO CAO Ring 3A', 'db4', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#14b8a6;"></i> <span class="nav-text">PO CAO Ring 3A</span></li>
+                    <li class="nav-item" onclick="loadPage('PO CAO Ring 3B', 'db5', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#14b8a6;"></i> <span class="nav-text">PO CAO Ring 3B</span></li>
+                    <li class="nav-item" onclick="loadPage('PO IJE FM Ring 1', 'db6', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#f59e0b;"></i> <span class="nav-text">PO IJE FM Ring 1</span></li>
+                    <li class="nav-item" onclick="loadPage('PO SURGE FM Ex Pole', 'db7', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#ef4444;"></i> <span class="nav-text">PO SURGE FM Ex Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('PO SURGE FM New Pole', 'db8', 'table', this)"><i class="fa-solid fa-file-contract" style="color:#ef4444;"></i> <span class="nav-text">PO SURGE FM New Pole</span></li>
+                </ul>
+
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text"><i class="fa-solid fa-list-check" style="color:#f59e0b; margin-right:8px;"></i> Daftar BoQ</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('BoQ JOBJ', 'db9', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ JOBJ</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ CAO Ring 2', 'db10', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ CAO Ring 2</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ CAO Ring 4', 'db11', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ CAO Ring 4</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ CAO Ring 3A', 'db12', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ CAO Ring 3A</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ CAO Ring 3B', 'db13', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ CAO Ring 3B</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ IJE FM Ring 1', 'db14', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ IJE FM Ring 1</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ SURGE FM Ex Pole', 'db15', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ SURGE FM Ex Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ SURGE FM New Pole', 'db16', 'table', this)"><i class="fa-solid fa-clipboard-list" style="color:#8b5cf6;"></i> <span class="nav-text">BoQ SURGE FM New Pole</span></li>
+                </ul>
+
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text"><i class="fa-solid fa-boxes-stacked" style="color:#0ea5e9; margin-right:8px;"></i> Daftar Material</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('Material JOBJ', 'db25', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material JOBJ</span></li>
+                    <li class="nav-item" onclick="loadPage('Material CAO Ring 2', 'db26', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material CAO Ring 2</span></li>
+                    <li class="nav-item" onclick="loadPage('Material CAO Ring 4', 'db27', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material CAO Ring 4</span></li>
+                    <li class="nav-item" onclick="loadPage('Material CAO Ring 3A', 'db28', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material CAO Ring 3A</span></li>
+                    <li class="nav-item" onclick="loadPage('Material CAO Ring 3B', 'db29', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material CAO Ring 3B</span></li>
+                    <li class="nav-item" onclick="loadPage('Material IJE FM Ring 1', 'db30', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material IJE FM Ring 1</span></li>
+                    <li class="nav-item" onclick="loadPage('Material SURGE FM Ex Pole', 'db31', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material SURGE FM Ex Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('Material SURGE FM New Pole', 'db32', 'table', this)"><i class="fa-solid fa-box" style="color:#3b82f6;"></i> <span class="nav-text">Material SURGE FM New Pole</span></li>
+                </ul>
+
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text"><i class="fa-solid fa-money-check-dollar" style="color:#ec4899; margin-right:8px;"></i> Invoice</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('Pembayaran', 'pembayaran', 'table', this)"><i class="fa-solid fa-file-invoice-dollar" style="color:#eab308;"></i> <span class="nav-text">Pembayaran</span></li>
+                </ul>
+
+            </ul>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-toggle" id="btnToggleSidebar" title="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="search-bar" title="Tekan Enter untuk mencari di semua navigasi">
+                        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-light);"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Cari data umum (Tekan Enter)...">
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn-toggle" id="btnThemeToggle" title="Beralih Tema (Light/Dark)">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn-toggle" id="btnCalendarToggle" title="Kalender Libur Nasional">
+                        <i class="fa-solid fa-calendar-alt"></i>
+                    </button>
+                    <button class="btn-toggle" id="btnLoginLogout" title="Logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                    <div class="user-profile">
+                        <div style="text-align: right;">
+                            <div style="font-size: 13px;" id="displayUsername">User</div>
+                            <div style="color: #10b981; font-size: 10px; font-weight: 500;">● Administrator</div>
+                        </div>
+                        <div class="avatar" id="displayAvatar">U</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="content">
+                <div class="page-header">
+                    <i class="fa-solid fa-bookmark" id="page-icon"></i> <span id="page-title">Overview</span>
+                </div>
+
+                <div id="section-overview" class="chart-grid hidden">
+                    <div class="card chart-wrapper">
+                        <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 13px; font-weight: 600;">Status Semua Proyek</h3>
+                        <canvas id="chartStatus"></canvas>
+                    </div>
+                    <div class="card chart-wrapper">
+                        <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 13px; font-weight: 600;">Akumulasi Nilai Proyek</h3>
+                        <canvas id="chartNilai"></canvas>
+                    </div>
+                </div>
+
+                <div id="section-table" class="card hidden">
+                    
+                    <div class="table-toolbar" id="main-table-toolbar" style="display: none;">
+                        <div id="toolbar-semua-proyek" style="display: flex; justify-content: space-between; width: 100%; align-items: center; display: none;">
+                            
+                            <div class="toolbar-group">
+                                <div class="search-bar" style="width: 280px; box-shadow: none; border-color: var(--border-color); background: transparent;">
+                                    <i class="fa-solid fa-filter" style="color: var(--text-light);"></i>
+                                    <input type="text" id="inputSearchProyek" placeholder="Filter tabel ini...">
+                                </div>
+                            </div>
+
+                            <div class="toolbar-group">
+                                <div id="filter-container" style="border-right: 1px solid var(--border-color); padding-right: 12px; margin-right: 4px; display: flex; gap: 8px;">
+                                    
+                                    <div class="dropdown-wrapper">
+                                        <button class="btn-icon" id="btnFilterBulan" title="Filter Bulan"><i class="fa-regular fa-calendar-days"></i></button>
+                                        <div class="dropdown-menu" id="menuFilterBulan"></div>
+                                    </div>
+                                    <div class="dropdown-wrapper">
+                                        <button class="btn-icon" id="btnFilterTahun" title="Filter Tahun"><i class="fa-solid fa-calendar-week"></i></button>
+                                        <div class="dropdown-menu" id="menuFilterTahun"></div>
+                                    </div>
+                                    <div class="dropdown-wrapper">
+                                        <button class="btn-icon" id="btnFilterPemberi" title="Filter"><i class="fa-solid fa-building-user"></i></button>
+                                        <div class="dropdown-menu" id="menuFilterPemberi"></div>
+                                    </div>
+                                    <div class="dropdown-wrapper">
+                                        <button class="btn-icon" id="btnFilterStatus" title="Filter"><i class="fa-solid fa-bars-progress"></i></button>
+                                        <div class="dropdown-menu" id="menuFilterStatus"></div>
+                                    </div>
+
+                                </div>
+                                
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn-icon" id="btnResetData" title="Reset Filter"><i class="fa-solid fa-rotate-right"></i></button>
+                                    <button class="btn-icon action-excel" id="btnExportExcel" title="Export Excel"><i class="fa-solid fa-file-excel"></i></button>
+                                    <button class="btn-icon action-add" id="btnTambahProyek" title="Tambah Data"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table id="main-table">
+                            <thead id="table-head">
+                            </thead>
+                            <tbody id="table-body">
+                            </tbody>
+                            <tfoot id="table-foot">
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div> <div class="modal-overlay" id="projectModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-title">Form Data</h3>
@@ -527,7 +596,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // IMPORT 'where' DITAMBAHKAN DISINI UNTUK FUNGSI LOGIN
+        import { getFirestore, collection, getDocs, orderBy, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCo-CYydpivABwE3NFJOaM45yT-nO1f4OY",
@@ -542,6 +612,83 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // ==========================================
+        // FITUR LOGIN & LOGOUT
+        // ==========================================
+        const loginScreen = document.getElementById('loginScreen');
+        const appContainer = document.getElementById('appContainer');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const loginBtnText = document.getElementById('loginBtnText');
+        const displayUsername = document.getElementById('displayUsername');
+        const displayAvatar = document.getElementById('displayAvatar');
+
+        // Cek sesi login saat halaman dimuat ulang
+        if (sessionStorage.getItem('isLoggedIn') === 'true') {
+            loginScreen.style.display = 'none';
+            appContainer.style.display = 'flex';
+            const savedUser = sessionStorage.getItem('loggedUsername') || 'User';
+            displayUsername.textContent = savedUser;
+            displayAvatar.textContent = savedUser.charAt(0).toUpperCase();
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const usernameInput = document.getElementById('loginUsername').value;
+            const passwordInput = document.getElementById('loginPassword').value;
+            
+            loginBtnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memeriksa...';
+            loginError.style.display = 'none';
+
+            try {
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, where("Username", "==", usernameInput), where("Password", "==", passwordInput));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    // Berhasil Login
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    sessionStorage.setItem('loggedUsername', usernameInput);
+                    
+                    displayUsername.textContent = usernameInput;
+                    displayAvatar.textContent = usernameInput.charAt(0).toUpperCase();
+                    
+                    loginForm.reset();
+                    loginScreen.style.display = 'none';
+                    appContainer.style.display = 'flex';
+                    
+                    // Render halaman awal (Overview) jika diperlukan
+                    // loadPage('Overview', 'dball', 'overview', document.querySelector('.nav-item.active'));
+                } else {
+                    // Gagal Login
+                    loginError.textContent = "Username atau Password salah!";
+                    loginError.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Login Error:", error);
+                loginError.textContent = "Terjadi kesalahan koneksi saat login.";
+                loginError.style.display = 'block';
+            } finally {
+                loginBtnText.innerHTML = 'Login';
+            }
+        });
+
+        document.getElementById('btnLoginLogout').addEventListener('click', () => {
+            const confirmLogout = confirm("Apakah Anda yakin ingin keluar (Logout)?");
+            if(confirmLogout) {
+                // Hapus sesi dan kembalikan ke layar login
+                sessionStorage.removeItem('isLoggedIn');
+                sessionStorage.removeItem('loggedUsername');
+                
+                loginForm.reset();
+                appContainer.style.display = 'none';
+                loginScreen.style.display = 'flex';
+                loginError.style.display = 'none';
+            }
+        });
+        // ==========================================
+
 
         // --- MAPPING KOLOM SPESIFIK BERDASARKAN DATABASE ---
         const tableHeaders = {
@@ -583,11 +730,10 @@
 
         window.currentCollection = "dball";
 
-        // --- NEW FEATURES: DARK MODE, LOGIN/LOGOUT ---
+        // --- THEME TOGGLE ---
         const btnThemeToggle = document.getElementById('btnThemeToggle');
         const rootElem = document.documentElement;
         
-        // Load theme preference
         if (localStorage.getItem('theme') === 'dark') {
             rootElem.setAttribute('data-theme', 'dark');
             btnThemeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
@@ -605,15 +751,7 @@
             }
         });
 
-        document.getElementById('btnLoginLogout').addEventListener('click', () => {
-            const confirmLogout = confirm("Apakah Anda yakin ingin keluar (Logout)?");
-            if(confirmLogout) {
-                alert("Berhasil Logout. (Ini adalah tampilan dummy, arahkan ke halaman login sesungguhnya).");
-                // window.location.href = "login.html"; // Uncomment for real app
-            }
-        });
-
-        // --- NEW FEATURE: GLOBAL SEARCH ---
+        // --- GLOBAL SEARCH ---
         const globalSearchInput = document.getElementById('globalSearchInput');
         globalSearchInput.addEventListener('keypress', async function(e) {
             if (e.key === 'Enter') {
@@ -634,7 +772,6 @@
             let resultsFound = 0;
 
             try {
-                // Loop semua koleksi aktif untuk mencari
                 for (const colName of activePages) {
                     const snapshot = await getDocs(collection(db, colName));
                     
@@ -643,7 +780,6 @@
                         let isMatch = false;
                         let matchedSnippet = "";
 
-                        // Cek semua field dalam dokumen
                         for (let key in data) {
                             if (data[key] && String(data[key]).toLowerCase().includes(keyword)) {
                                 isMatch = true;
@@ -656,7 +792,6 @@
                             resultsFound++;
                             const li = document.createElement('li');
                             li.className = 'search-result-item';
-                            // Bold keyword in snippet
                             const highlightedSnippet = matchedSnippet.replace(new RegExp(keyword, 'gi'), match => `<span class="search-result-highlight">${match}</span>`);
                             const dbTitle = colNamesMapping[colName] || colName;
                             
@@ -664,7 +799,6 @@
                                 <div class="search-result-db"><i class="fa-solid fa-database" style="margin-right:4px;"></i> ${dbTitle}</div>
                                 <div class="search-result-text">${highlightedSnippet}</div>
                             `;
-                            // Bisa menambahkan logic onClick untuk mengarahkan ke menu spesifik
                             li.onclick = () => {
                                 closeModal('globalSearchModal');
                                 alert(`Data ditemukan di modul: ${dbTitle}`);
@@ -686,8 +820,7 @@
             }
         }
 
-        // --- NEW FEATURE: KALENDER HARI LIBUR NASIONAL 2025-2030 ---
-        // Data Perkiraan Hari Libur Nasional & Cuti Bersama 2025-2030 (Data sampel representatif)
+        // --- KALENDER HARI LIBUR NASIONAL 2025-2030 ---
         const holidaysData = {
             "2025-01-01": "Tahun Baru 2025 Masehi",
             "2025-01-27": "Isra Mikraj Nabi Muhammad SAW",
@@ -717,7 +850,6 @@
         const calYearSelect = document.getElementById('calYearSelect');
         const monthsNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         
-        // Setup options
         monthsNames.forEach((m, i) => calMonthSelect.options.add(new Option(m, i)));
         for(let y=2025; y<=2030; y++) calYearSelect.options.add(new Option(y, y));
         
@@ -735,11 +867,10 @@
             grid.innerHTML = '';
             listContainer.innerHTML = '';
 
-            const firstDay = new Date(year, month, 1).getDay(); // 0 = Minggu
+            const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const today = new Date();
             
-            // Blank spots
             for(let i=0; i<firstDay; i++) {
                 grid.innerHTML += `<div class="calendar-day empty"></div>`;
             }
@@ -755,7 +886,6 @@
                 }
 
                 let holidayName = holidaysData[dateString];
-                // Otomatis hari Minggu adalah hari libur merah
                 let isSunday = new Date(year, month, day).getDay() === 0;
 
                 if (holidayName || isSunday) {
@@ -885,7 +1015,7 @@
                     } else if (collectionName === 'dball') {
                         filterContainer.style.display = 'flex';
                         inputSearch.placeholder = "Filter Pemberi Proyek, Status...";
-                        btnAdd.title = "Tambah Proyek";
+                        btnAdd.title = "Tambah Data";
                         btnFilterPemberi.title = "Filter Pemberi Proyek";
                         btnFilterPemberi.innerHTML = '<i class="fa-solid fa-building-user"></i>';
                         btnFilterStatus.title = "Filter Status";

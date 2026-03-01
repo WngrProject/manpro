@@ -1068,16 +1068,36 @@
             return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(angka));
         }
 
+        // FUNGSI INI TELAH DIPERBARUI UNTUK MEMBACA TANGGAL NATIVE (YYYY-MM-DD) DAN TEKS (DD MMM YYYY)
         function parseDateToInputFormat(dateText) {
             if (!dateText || dateText === '-') return '';
-            const months = { 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'Mei': '05', 'Jun': '06', 'Jul': '07', 'Ags': '08', 'Sep': '09', 'Okt': '10', 'Nov': '11', 'Des': '12' };
+            
+            // 1. Cek apakah format sudah YYYY-MM-DD (contoh: 2023-08-15) - format native input type="date"
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateText)) {
+                return dateText;
+            }
+
+            // 2. Jika format dari Firebase sudah ter-render menjadi text "DD MMM YYYY" (contoh: 15 Ags 2023)
+            const mapMonths = { 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'Mei': '05', 'Jun': '06', 'Jul': '07', 'Ags': '08', 'Agt': '08', 'Agu': '08', 'Sep': '09', 'Okt': '10', 'Nov': '11', 'Des': '12' };
             const parts = dateText.split(' ');
             if (parts.length === 3) {
                 const day = parts[0].padStart(2, '0');
-                const month = months[parts[1]] || '01';
+                // Mengambil 3 huruf pertama bulan untuk menoleransi ejaan (Ags/Agt/Agu)
+                const monthName = parts[1].substring(0, 3);
+                const month = mapMonths[monthName] || mapMonths[parts[1]] || '01';
                 const year = parts[2];
                 return `${year}-${month}-${day}`;
             }
+            
+            // 3. Fallback jika format lainnya yang bisa terbaca oleh Object Date JS
+            const fallbackDate = new Date(dateText);
+            if (!isNaN(fallbackDate.getTime())) {
+                const y = fallbackDate.getFullYear();
+                const m = String(fallbackDate.getMonth() + 1).padStart(2, '0');
+                const d = String(fallbackDate.getDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+            
             return '';
         }
 
@@ -1122,7 +1142,7 @@
 
                     if (materialDBs.includes(collectionName)) {
                         filterContainer.style.display = 'flex';
-                        inputSearch.placeholder = "Filter kolom Material...";
+                        inputSearch.placeholder = "Cari data Nama Supplier, Nama Material ...";
                         btnAdd.title = "Tambah Data";
                         btnFilterPemberi.title = "Filter Nama Supplier";
                         btnFilterPemberi.innerHTML = '<i class="fa-solid fa-truck-field"></i>';
@@ -1130,7 +1150,7 @@
                         btnFilterStatus.innerHTML = '<i class="fa-solid fa-box-open"></i>';
                     } else if (collectionName === 'dball') {
                         filterContainer.style.display = 'flex';
-                        inputSearch.placeholder = "Filter Pemberi Proyek, Status...";
+                        inputSearch.placeholder = "Cari data Pemberi Proyek, Status Proyek ...";
                         btnAdd.title = "Tambah Data";
                         btnFilterPemberi.title = "Filter Pemberi Proyek";
                         btnFilterPemberi.innerHTML = '<i class="fa-solid fa-building-user"></i>';
@@ -1138,7 +1158,7 @@
                         btnFilterStatus.innerHTML = '<i class="fa-solid fa-bars-progress"></i>';
                     } else {
                         filterContainer.style.display = 'none'; 
-                        inputSearch.placeholder = "Cari data pada halaman ini ...";
+                        inputSearch.placeholder = "Cari data pada tabel ini ...";
                         btnAdd.title = "Tambah Data";
                     }
                 } else {

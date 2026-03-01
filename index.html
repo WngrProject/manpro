@@ -829,8 +829,8 @@
             "pembayaran": ["No", "Pemberi Proyek", "Nomor Proyek", "Uraian Proyek", "Detail Invoice", "Nomor Invoice", "Tanggal Invoice", "Nilai Invoice", "PPn 11%", "Total Invoice", "Jenis Transaksi", "Status Proyek", "File", "Tanggal Bayar", "Nilai Bayar", "Keterangan"],
             "peta_jobj": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
             "peta_surge": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
-            "pengawas": ["No", "Nama Pengawas", "Area", "No HP", "Status", "Keterangan"],
-            "mandor": ["No", "Nama Mandor", "Tim", "No HP", "Status", "Keterangan"]
+            "pengawas": ["No", "Nama Pengawas", "Jabatan", "No Telepon", "No KTP", "Alamat Lengkap", "Nama Bank", "No Rekening", "Alamat Email", "No ID Karyawan", "Area Kerja"],
+            "mandor": ["No", "Nama Mandor", "Jabatan", "No Telepon", "No KTP", "Alamat Lengkap", "Nama Bank", "No Rekening", "Email", "Area Kerja"]
         };
 
         const colNamesMapping = {
@@ -1138,7 +1138,7 @@
                         btnFilterStatus.innerHTML = '<i class="fa-solid fa-bars-progress"></i>';
                     } else {
                         filterContainer.style.display = 'none'; 
-                        inputSearch.placeholder = "Pencarian umum pada tabel data ini ...";
+                        inputSearch.placeholder = "Cari data pada halaman ini ...";
                         btnAdd.title = "Tambah Data";
                     }
                 } else {
@@ -1670,7 +1670,7 @@
                 if (col.toLowerCase() === 'no' || col.toLowerCase() === 'aksi') return;
                 const formGroup = document.createElement('div');
                 formGroup.className = 'form-group';
-                if (col.toLowerCase() === 'keterangan') formGroup.style.gridColumn = 'span 2';
+                if (col.toLowerCase() === 'keterangan' || col.toLowerCase() === 'alamat lengkap') formGroup.style.gridColumn = 'span 2';
                 const label = document.createElement('label');
                 label.textContent = col;
                 formGroup.appendChild(label);
@@ -1683,7 +1683,7 @@
                     if(val) val = parseDateToInputFormat(val);
                     input.value = val;
                     formGroup.appendChild(input);
-                } else if (col.toLowerCase() === 'keterangan') {
+                } else if (col.toLowerCase() === 'keterangan' || col.toLowerCase() === 'alamat lengkap') {
                     const textarea = document.createElement('textarea');
                     textarea.className = 'form-control';
                     textarea.rows = 2;

@@ -26,6 +26,7 @@
             --border-light: #f1f5f9; 
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --sidebar-width: 260px;
             --sidebar-collapsed-width: 76px;
             
@@ -51,6 +52,7 @@
             --th-bg: #0f172a;
             --row-hover: #0f172a;
             --dropdown-bg: #1e293b;
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; }
@@ -104,7 +106,7 @@
 
         /* --- DASHBOARD CONTAINER --- */
         #appContainer {
-            display: none; /* Sembunyikan secara default */
+            display: none; 
             width: 100%;
             height: 100%;
             flex-direction: row;
@@ -166,20 +168,19 @@
         /* --- MAIN CONTENT & TOPBAR --- */
         .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; width: 100%; transition: width 0.3s; }
         
-        /* TOP BAR DIRAPATKAN */
         .topbar { background: var(--sidebar-bg); padding: 10px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; transition: background-color 0.3s, border-color 0.3s;}
         
         .topbar-left { display: flex; align-items: center; gap: 16px; }
-        .btn-toggle { background: transparent; border: none; font-size: 16px; color: var(--text-muted); cursor: pointer; padding: 6px; border-radius: 6px; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn-toggle:hover { background: var(--border-light); color: var(--primary-blue); }
+        .btn-toggle { background: transparent; border: none; font-size: 16px; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 8px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: transparent 0 0 0; }
+        .btn-toggle:hover { background: var(--border-light); color: var(--primary-blue); transform: scale(1.08); box-shadow: var(--shadow-sm); }
 
         .search-bar { background: var(--card-bg); border-radius: 6px; padding: 6px 14px; display: flex; align-items: center; gap: 10px; width: 300px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); transition: all 0.2s ease-in-out;}
         .search-bar:focus-within { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
         .search-bar input { border: none; background: transparent; outline: none; width: 100%; color: var(--text-main); }
         .search-bar input::placeholder { color: var(--text-light); }
         
-        .topbar-right { display: flex; align-items: center; gap: 16px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; font-weight: 600; margin-left: 8px; border-left: 1px solid var(--border-color); padding-left: 16px;}
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .user-profile { display: flex; align-items: center; gap: 12px; font-weight: 600; margin-left: 4px; border-left: 1px solid var(--border-color); padding-left: 16px;}
         .avatar { width: 32px; height: 32px; background: rgba(37, 99, 235, 0.1); color: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; border: 1px solid rgba(37, 99, 235, 0.2); text-transform: uppercase;}
 
         /* CONTENT AREA */
@@ -187,17 +188,35 @@
         .page-header { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; color: var(--text-main); }
         .page-header i { color: var(--primary-blue); font-size: 16px; }
         
+        /* --- OVERVIEW KPI CARDS --- */
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 20px; }
+        .kpi-card { background: var(--card-bg); border-radius: 10px; padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .kpi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: transparent;}
+        .kpi-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;}
+        .kpi-info { display: flex; flex-direction: column; gap: 4px; overflow: hidden;}
+        .kpi-info h4 { color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+        .kpi-info h2 { color: var(--text-main); font-size: 20px; font-weight: 700; margin: 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; font-family: 'Inter', sans-serif;}
+
+        @media (max-width: 1024px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 640px) {
+            .kpi-grid { grid-template-columns: 1fr; }
+            .chart-grid { grid-template-columns: 1fr; }
+        }
+
         /* --- CARDS & TABLES --- */
         .card { background: var(--card-bg); border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden; margin-bottom: 20px; transition: background-color 0.3s, border-color 0.3s;}
         
         .table-toolbar { padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); background: var(--card-bg); }
         .toolbar-group { display: flex; gap: 8px; align-items: center; }
         
-        .btn-icon { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-muted); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); font-size: 13px; position: relative;}
-        .btn-icon:hover { background: var(--border-light); color: var(--primary-blue); border-color: var(--primary-hover); }
+        .btn-icon { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-muted); width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-sm); font-size: 13px; position: relative;}
+        .btn-icon:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); background: var(--border-light); color: var(--primary-blue); border-color: var(--primary-hover); }
         
-        .action-add { background: var(--primary-blue); color: #ffffff; border-color: var(--primary-hover); }
-        .action-add:hover { background: var(--primary-hover); color: #ffffff; border-color: var(--primary-hover); }
+        .action-add { background: linear-gradient(135deg, var(--primary-blue), var(--primary-hover)); color: #ffffff; border: none; }
+        .action-add:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(37, 99, 235, 0.4); color: #ffffff; background: linear-gradient(135deg, var(--primary-hover), var(--primary-blue)); }
+        
         .action-excel { color: #10b981; }
         .action-excel:hover { color: #059669; border-color: #10b981; background: rgba(16, 185, 129, 0.1); }
         .action-pdf { color: #ef4444; }
@@ -230,11 +249,11 @@
         .form-control { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; font-size: 12px; color: var(--text-main); transition: border-color 0.2s, box-shadow 0.2s; background: transparent; }
         .form-control:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
         
-        .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary { background: var(--primary-blue); color: #ffffff; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.3); }
+        .btn { padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; border: none; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary-blue), var(--primary-hover)); color: #ffffff; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 12px -2px rgba(37, 99, 235, 0.3); background: linear-gradient(135deg, var(--primary-hover), var(--primary-blue)); }
         .btn-secondary { background: var(--border-color); color: var(--text-main); }
-        .btn-secondary:hover { background: var(--text-light); }
+        .btn-secondary:hover { background: var(--text-light); transform: translateY(-2px); }
 
         .table-responsive { overflow-x: auto; max-height: calc(100vh - 190px); }
         
@@ -256,7 +275,10 @@
         .btn-link:hover { color: var(--primary-hover); text-decoration: underline; }
 
         .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .chart-wrapper { padding: 20px; height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        
+        /* Menyesuaikan Canvas Grafik Full Width */
+        .chart-wrapper { padding: 20px; height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; position: relative; }
+        .chart-wrapper canvas { width: 100% !important; height: 100% !important; }
         
         .hidden { display: none !important; }
 
@@ -390,7 +412,7 @@
             <header class="topbar">
                 <div class="topbar-left">
                     <button class="btn-toggle" id="btnToggleSidebar" title="Toggle Sidebar">
-                        <i class="fa-solid fa-bars"></i>
+                        <i class="fa-solid fa-bars" style="color: var(--text-main);"></i>
                     </button>
                     <div class="search-bar" title="Tekan Enter untuk mencari di semua navigasi">
                         <i class="fa-solid fa-magnifying-glass" style="color: var(--text-light);"></i>
@@ -399,13 +421,13 @@
                 </div>
                 <div class="topbar-right">
                     <button class="btn-toggle" id="btnThemeToggle" title="Beralih Tema (Light/Dark)">
-                        <i class="fa-solid fa-moon"></i>
+                        <i class="fa-solid fa-moon" style="color: #6366f1;"></i>
                     </button>
                     <button class="btn-toggle" id="btnCalendarToggle" title="Kalender Libur Nasional">
-                        <i class="fa-solid fa-calendar-alt"></i>
+                        <i class="fa-solid fa-calendar-alt" style="color: #10b981;"></i>
                     </button>
-                    <button class="btn-toggle" id="btnLoginLogout" title="Logout">
-                        <i class="fa-solid fa-right-from-bracket"></i>
+                    <button class="btn-toggle" id="btnSettingsToggle" title="Pengaturan">
+                        <i class="fa-solid fa-gear" style="color: #8b5cf6;"></i>
                     </button>
                     <div class="user-profile">
                         <div style="text-align: right;">
@@ -414,6 +436,9 @@
                         </div>
                         <div class="avatar" id="displayAvatar">U</div>
                     </div>
+                    <button class="btn-toggle" id="btnLoginLogout" title="Logout" style="margin-left: 8px;">
+                        <i class="fa-solid fa-power-off" style="color: #ef4444; font-size: 16px;"></i>
+                    </button>
                 </div>
             </header>
 
@@ -422,17 +447,50 @@
                     <i class="fa-solid fa-bookmark" id="page-icon"></i> <span id="page-title">Overview</span>
                 </div>
 
-                <div id="section-overview" class="chart-grid hidden">
-                    <div class="card chart-wrapper">
-                        <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 13px; font-weight: 600;">Status Semua Proyek</h3>
-                        <canvas id="chartStatus"></canvas>
+                <div id="section-overview" class="hidden">
+                    
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;"><i class="fa-solid fa-chart-simple"></i></div>
+                            <div class="kpi-info">
+                                <h4>Total Proyek</h4>
+                                <h2 id="kpi-total-proyek">0</h2>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i class="fa-solid fa-sack-dollar"></i></div>
+                            <div class="kpi-info">
+                                <h4>Total Nilai Proyek</h4>
+                                <h2 id="kpi-nilai-proyek">Rp 0</h2>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                            <div class="kpi-info">
+                                <h4>Total Invoice</h4>
+                                <h2 id="kpi-nilai-invoice">Rp 0</h2>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><i class="fa-solid fa-money-bill-wave"></i></div>
+                            <div class="kpi-info">
+                                <h4>Total Terbayar</h4>
+                                <h2 id="kpi-nilai-terbayar">Rp 0</h2>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card chart-wrapper">
-                        <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 13px; font-weight: 600;">Akumulasi Nilai Proyek</h3>
-                        <canvas id="chartNilai"></canvas>
+
+                    <div class="chart-grid">
+                        <div class="card chart-wrapper">
+                            <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 13px; font-weight: 600;">Status Semua Proyek</h3>
+                            <canvas id="chartStatus"></canvas>
+                        </div>
+                        <div class="card chart-wrapper">
+                            <h3 style="margin-bottom: 20px; color: var(--text-main); font-size: 13px; font-weight: 600;">Akumulasi Nilai Proyek</h3>
+                            <canvas id="chartNilai"></canvas>
+                        </div>
                     </div>
                 </div>
-
                 <div id="section-table" class="card hidden">
                     
                     <div class="table-toolbar" id="main-table-toolbar" style="display: none;">
@@ -600,7 +658,6 @@
     </div>
 
     <script type="module">
-        // --- IMPORT DITAMBAHKAN addDoc, updateDoc, doc ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, orderBy, query, where, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -696,7 +753,6 @@
                     appContainer.style.display = 'flex';
                     
                     applyRolePermissions();
-                    // Render halaman awal 
                     loadPage('Overview', 'dball', 'overview', document.querySelector('.nav-item.active'));
                 } else {
                     loginError.textContent = "Username atau Password salah!";
@@ -725,8 +781,6 @@
             }
         });
 
-
-        // --- MAPPING KOLOM SPESIFIK BERDASARKAN DATABASE ---
         const tableHeaders = {
             "dball": ["No", "Tanggal PO", "Nomor Proyek", "Pemberi Proyek", "Uraian Proyek", "Nilai Proyek", "Nilai Invoice", "Nilai Terbayar", "Status Proyek", "File", "Keterangan"],
             "db1": ["No", "Nama Cluster", "Tipe", "HP BoQ", "Zona", "Nilai BoQ", "Bobot", "Keterangan"],
@@ -765,7 +819,7 @@
         const activePages = ['dball', 'db1', 'db2', 'db3', 'db4', 'db5', 'db6', 'db7', 'db8', 'db9', 'db10', 'db11', 'db12', 'db13', 'db14', 'db15', 'db16', 'db25', 'db26', 'db27', 'db28', 'db29', 'db30', 'db31', 'db32', 'pembayaran'];
 
         window.currentCollection = "dball";
-        window.currentEditId = null; // --- VARIABEL UNTUK MELACAK ID DOKUMEN ---
+        window.currentEditId = null; 
 
         // --- THEME TOGGLE ---
         const btnThemeToggle = document.getElementById('btnThemeToggle');
@@ -773,18 +827,18 @@
         
         if (localStorage.getItem('theme') === 'dark') {
             rootElem.setAttribute('data-theme', 'dark');
-            btnThemeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            btnThemeToggle.innerHTML = '<i class="fa-solid fa-sun" style="color: #fbbf24;"></i>';
         }
 
         btnThemeToggle.addEventListener('click', () => {
             if (rootElem.getAttribute('data-theme') === 'dark') {
                 rootElem.removeAttribute('data-theme');
                 localStorage.setItem('theme', 'light');
-                btnThemeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+                btnThemeToggle.innerHTML = '<i class="fa-solid fa-moon" style="color: #6366f1;"></i>';
             } else {
                 rootElem.setAttribute('data-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
-                btnThemeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+                btnThemeToggle.innerHTML = '<i class="fa-solid fa-sun" style="color: #fbbf24;"></i>';
             }
         });
 
@@ -1089,7 +1143,6 @@
                 }
 
                 const allData = [];
-                // --- UPDATE DITAMBAHKAN ID DOKUMEN KE DALAM ARRAY ---
                 snapshot.forEach(doc => {
                     let data = doc.data();
                     data.id = doc.id; 
@@ -1168,7 +1221,6 @@
                 let displayColumns = [...columns];
                 const currentRole = sessionStorage.getItem('loggedRole') || 'Guest';
                 
-                // Cek Role sebelum menambahkan kolom 'Aksi'
                 if (activePages.includes(colName) && (currentRole === 'Admin' || currentRole === 'User')) {
                     displayColumns.push("Aksi");
                 }
@@ -1190,7 +1242,6 @@
                 allData.forEach(row => {
                     bodyHTML += '<tr class="data-row">';
                     displayColumns.forEach(col => {
-                        // --- UPDATE SISIPKAN ID KE BUTTON ---
                         if (col === "Aksi") {
                             bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" style="color:var(--primary-blue);" onclick="openEditModal(this)" title="Edit Proyek"><i class="fa-solid fa-pen"></i></button></td>`;
                             return;
@@ -1329,20 +1380,51 @@
             }
         }
 
+        // --- UPDATE FUNGSI OVERVIEW CHART UNTUK MENGISI KARTU KPI ---
         async function renderOverviewChart(colName) {
             try {
-                const snapshot = await getDocs(collection(db, colName));
+                // Pastikan selalu mereferensikan 'dball' untuk Summary KPI utama
+                const targetCol = colName === 'dball' ? 'dball' : 'dball';
+                const snapshot = await getDocs(collection(db, targetCol));
+                
                 let statCounts = {};
                 let statValues = {};
+
+                let kpiTotalProyek = 0;
+                let kpiNilaiProyek = 0;
+                let kpiNilaiInvoice = 0;
+                let kpiNilaiTerbayar = 0;
 
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     let status = data["Status Proyek"] || "Unknown";
                     let nilai = parseFloat(data["Nilai Proyek"]) || 0;
+                    let invoice = parseFloat(data["Nilai Invoice"]) || 0;
+                    let terbayar = parseFloat(data["Nilai Terbayar"]) || 0;
+
+                    // Mengumpulkan data chart
                     statCounts[status] = (statCounts[status] || 0) + 1;
                     statValues[status] = (statValues[status] || 0) + nilai;
+
+                    // Mengakumulasi data KPI
+                    kpiTotalProyek++;
+                    kpiNilaiProyek += nilai;
+                    kpiNilaiInvoice += invoice;
+                    kpiNilaiTerbayar += terbayar;
                 });
 
+                // Update teks di dalam KPI Cards
+                const elKpiProyek = document.getElementById('kpi-total-proyek');
+                const elKpiNilai = document.getElementById('kpi-nilai-proyek');
+                const elKpiInvoice = document.getElementById('kpi-nilai-invoice');
+                const elKpiTerbayar = document.getElementById('kpi-nilai-terbayar');
+
+                if(elKpiProyek) elKpiProyek.textContent = kpiTotalProyek + " Proyek";
+                if(elKpiNilai) elKpiNilai.textContent = "Rp " + formatDecimalUS(kpiNilaiProyek);
+                if(elKpiInvoice) elKpiInvoice.textContent = "Rp " + formatDecimalUS(kpiNilaiInvoice);
+                if(elKpiTerbayar) elKpiTerbayar.textContent = "Rp " + formatDecimalUS(kpiNilaiTerbayar);
+
+                // Render Data Chart
                 const labels = Object.keys(statCounts);
                 if(chartInstanceStatus) chartInstanceStatus.destroy();
                 if(chartInstanceNilai) chartInstanceNilai.destroy();
@@ -1574,7 +1656,6 @@
             });
         }
 
-        // --- UPDATE TOMBOL TAMBAH DATA UNTUK MERESET ID ---
         document.getElementById('btnTambahProyek').addEventListener('click', () => {
             window.currentEditId = null; 
             if (window.currentCollection !== 'dball') {
@@ -1592,7 +1673,6 @@
             document.getElementById('projectModal').classList.add('show');
         });
 
-        // --- UPDATE TOMBOL EDIT UNTUK MELACAK ID ---
         window.openEditModal = function(btnElement) {
             window.currentEditId = btnElement.getAttribute('data-id'); 
             const row = btnElement.closest('tr');
@@ -1626,7 +1706,6 @@
             document.getElementById('projectModal').classList.add('show');
         }
 
-        // --- UPDATE FUNGSI SIMPAN FIREBASE ---
         window.saveProjectData = async function() {
             const btnSave = document.querySelector('#projectModal .btn-primary');
             const originalText = btnSave.innerHTML;
@@ -1636,7 +1715,6 @@
             try {
                 let dataToSave = {};
 
-                // Mengumpulkan data berdasarkan form yang sedang aktif
                 if (window.currentCollection === 'dball') {
                     dataToSave = {
                         "Tanggal PO": document.getElementById('form-tanggal').value,
@@ -1662,7 +1740,6 @@
                     });
                 }
 
-                // Cek apakah mode Edit (Update) atau Tambah Baru (Add)
                 if (window.currentEditId) {
                     const docRef = doc(db, window.currentCollection, window.currentEditId);
                     await updateDoc(docRef, dataToSave);
@@ -1673,7 +1750,6 @@
 
                 closeModal('projectModal');
                 
-                // Refresh tabel langsung secara otomatis agar real-time
                 renderTable(window.currentCollection);
 
             } catch (error) {

@@ -405,6 +405,24 @@
                     <li class="nav-item" onclick="loadPage('Pembayaran', 'pembayaran', 'table', this)"><i class="fa-solid fa-file-invoice-dollar" style="color:#eab308;"></i> <span class="nav-text">Pembayaran</span></li>
                 </ul>
 
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text"><i class="fa-solid fa-map-location-dot" style="color:#8b5cf6; margin-right:8px;"></i> Peta Asset</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('Peta JOBJ', 'peta_jobj', 'table', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta JOBJ</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta Surge', 'peta_surge', 'table', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta Surge</span></li>
+                </ul>
+
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text"><i class="fa-solid fa-address-book" style="color:#ef4444; margin-right:8px;"></i> Contact Person</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('Pengawas', 'pengawas', 'table', this)"><i class="fa-solid fa-user-tie" style="color:#fb7185;"></i> <span class="nav-text">Pengawas</span></li>
+                    <li class="nav-item" onclick="loadPage('Mandor', 'mandor', 'table', this)"><i class="fa-solid fa-users-gear" style="color:#fb7185;"></i> <span class="nav-text">Mandor</span></li>
+                </ul>
+
             </ul>
         </aside>
 
@@ -808,16 +826,20 @@
             "db30": ["No", "Tanggal PO", "Nomor PO Material", "Nama Supplier", "Nama Material", "Spesifikasi Material", "Satuan", "Volume", "Harga Satuan", "Total Harga", "PPn 11%", "Grand Total", "Status Material", "File", "Keterangan"],
             "db31": ["No", "Tanggal PO", "Nomor PO Material", "Nama Supplier", "Nama Material", "Spesifikasi Material", "Satuan", "Volume", "Harga Satuan", "Total Harga", "PPn 11%", "Grand Total", "Status Material", "File", "Keterangan"],
             "db32": ["No", "Tanggal PO", "Nomor PO Material", "Nama Supplier", "Nama Material", "Spesifikasi Material", "Satuan", "Volume", "Harga Satuan", "Total Harga", "PPn 11%", "Grand Total", "Status Material", "File", "Keterangan"],
-            "pembayaran": ["No", "Pemberi Proyek", "Nomor Proyek", "Uraian Proyek", "Detail Invoice", "Nomor Invoice", "Tanggal Invoice", "Nilai Invoice", "PPn 11%", "Total Invoice", "Jenis Transaksi", "Status Proyek", "File", "Tanggal Bayar", "Nilai Bayar", "Keterangan"]
+            "pembayaran": ["No", "Pemberi Proyek", "Nomor Proyek", "Uraian Proyek", "Detail Invoice", "Nomor Invoice", "Tanggal Invoice", "Nilai Invoice", "PPn 11%", "Total Invoice", "Jenis Transaksi", "Status Proyek", "File", "Tanggal Bayar", "Nilai Bayar", "Keterangan"],
+            "peta_jobj": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
+            "peta_surge": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
+            "pengawas": ["No", "Nama Pengawas", "Area", "No HP", "Status", "Keterangan"],
+            "mandor": ["No", "Nama Mandor", "Tim", "No HP", "Status", "Keterangan"]
         };
 
         const colNamesMapping = {
-            'dball': 'Semua Proyek', 'db1': 'PO JOBJ', 'db2': 'PO CAO Ring 2', 'db3': 'PO CAO Ring 4', 'db4': 'PO CAO Ring 3A', 'db5': 'PO CAO Ring 3B', 'db6': 'PO IJE FM Ring 1', 'db7': 'PO SURGE FM Ex Pole', 'db8': 'PO SURGE FM New Pole', 'db9': 'BoQ JOBJ', 'db10': 'BoQ CAO Ring 2', 'db11': 'BoQ CAO Ring 4', 'db12': 'BoQ CAO Ring 3A', 'db13': 'BoQ CAO Ring 3B', 'db14': 'BoQ IJE FM Ring 1', 'db15': 'BoQ SURGE FM Ex Pole', 'db16': 'BoQ SURGE FM New Pole', 'db25': 'Material JOBJ', 'db26': 'Material CAO Ring 2', 'db27': 'Material CAO Ring 4', 'db28': 'Material CAO Ring 3A', 'db29': 'Material CAO Ring 3B', 'db30': 'Material IJE FM Ring 1', 'db31': 'Material SURGE FM Ex Pole', 'db32': 'Material SURGE FM New Pole', 'pembayaran': 'Pembayaran Invoice'
+            'dball': 'Semua Proyek', 'db1': 'PO JOBJ', 'db2': 'PO CAO Ring 2', 'db3': 'PO CAO Ring 4', 'db4': 'PO CAO Ring 3A', 'db5': 'PO CAO Ring 3B', 'db6': 'PO IJE FM Ring 1', 'db7': 'PO SURGE FM Ex Pole', 'db8': 'PO SURGE FM New Pole', 'db9': 'BoQ JOBJ', 'db10': 'BoQ CAO Ring 2', 'db11': 'BoQ CAO Ring 4', 'db12': 'BoQ CAO Ring 3A', 'db13': 'BoQ CAO Ring 3B', 'db14': 'BoQ IJE FM Ring 1', 'db15': 'BoQ SURGE FM Ex Pole', 'db16': 'BoQ SURGE FM New Pole', 'db25': 'Material JOBJ', 'db26': 'Material CAO Ring 2', 'db27': 'Material CAO Ring 4', 'db28': 'Material CAO Ring 3A', 'db29': 'Material CAO Ring 3B', 'db30': 'Material IJE FM Ring 1', 'db31': 'Material SURGE FM Ex Pole', 'db32': 'Material SURGE FM New Pole', 'pembayaran': 'Pembayaran Invoice', 'peta_jobj': 'Peta JOBJ', 'peta_surge': 'Peta Surge', 'pengawas': 'Data Pengawas', 'mandor': 'Data Mandor'
         };
 
         const boqAndMaterialDBs = ["db9", "db10", "db11", "db12", "db13", "db14", "db15", "db16", "db25", "db26", "db27", "db28", "db29", "db30", "db31", "db32"];
         const materialDBs = ["db25", "db26", "db27", "db28", "db29", "db30", "db31", "db32"];
-        const activePages = ['dball', 'db1', 'db2', 'db3', 'db4', 'db5', 'db6', 'db7', 'db8', 'db9', 'db10', 'db11', 'db12', 'db13', 'db14', 'db15', 'db16', 'db25', 'db26', 'db27', 'db28', 'db29', 'db30', 'db31', 'db32', 'pembayaran'];
+        const activePages = ['dball', 'db1', 'db2', 'db3', 'db4', 'db5', 'db6', 'db7', 'db8', 'db9', 'db10', 'db11', 'db12', 'db13', 'db14', 'db15', 'db16', 'db25', 'db26', 'db27', 'db28', 'db29', 'db30', 'db31', 'db32', 'pembayaran', 'peta_jobj', 'peta_surge', 'pengawas', 'mandor'];
 
         window.currentCollection = "dball";
         window.currentEditId = null; 

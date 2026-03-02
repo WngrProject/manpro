@@ -424,6 +424,11 @@
                 <ul class="submenu">
                     <li class="nav-item" onclick="loadPage('Peta JOBJ', 'peta_jobj', 'map', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta JOBJ</span></li>
                     <li class="nav-item" onclick="loadPage('Peta Surge', 'peta_surge', 'map', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta Surge</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta CAO Ring 2', 'peta_cao_ring_2', 'map', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta CAO Ring 2</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta CAO Ring 4', 'peta_cao_ring_4', 'map', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta CAO Ring 4</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta CAO Ring 3A', 'peta_cao_ring_3a', 'map', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta CAO Ring 3A</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta CAO Ring 3B', 'peta_cao_ring_3b', 'map', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta CAO Ring 3B</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta IJE FM Ring 1', 'peta_ije_fm_ring_1', 'map', this)"><i class="fa-solid fa-map" style="color:#d946ef;"></i> <span class="nav-text">Peta IJE FM Ring 1</span></li>
                 </ul>
 
                 <div class="nav-category" onclick="toggleMenu(this)">
@@ -846,17 +851,22 @@
             "pembayaran": ["No", "Pemberi Proyek", "Nomor Proyek", "Uraian Proyek", "Detail Invoice", "Nomor Invoice", "Tanggal Invoice", "Nilai Invoice", "PPn 11%", "Total Invoice", "Jenis Transaksi", "Status Proyek", "File", "Tanggal Bayar", "Nilai Bayar", "Keterangan"],
             "peta_jobj": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
             "peta_surge": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
+            "peta_cao_ring_2": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
+            "peta_cao_ring_4": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
+            "peta_cao_ring_3a": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
+            "peta_cao_ring_3b": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
+            "peta_ije_fm_ring_1": ["No", "Nama Asset", "Lokasi", "Koordinat", "Status", "Keterangan"],
             "pengawas": ["No", "Nama Pengawas", "Jabatan", "No Telepon", "No KTP", "Alamat Lengkap", "Nama Bank", "No Rekening", "Alamat Email", "No ID Karyawan", "Area Kerja"],
             "mandor": ["No", "Nama Mandor", "Jabatan", "No Telepon", "No KTP", "Alamat Lengkap", "Nama Bank", "No Rekening", "Email", "Area Kerja"]
         };
 
         const colNamesMapping = {
-            'dball': 'Semua Proyek', 'db1': 'PO JOBJ', 'db2': 'PO CAO Ring 2', 'db3': 'PO CAO Ring 4', 'db4': 'PO CAO Ring 3A', 'db5': 'PO CAO Ring 3B', 'db6': 'PO IJE FM Ring 1', 'db7': 'PO SURGE FM Ex Pole', 'db8': 'PO SURGE FM New Pole', 'db9': 'BoQ JOBJ', 'db10': 'BoQ CAO Ring 2', 'db11': 'BoQ CAO Ring 4', 'db12': 'BoQ CAO Ring 3A', 'db13': 'BoQ CAO Ring 3B', 'db14': 'BoQ IJE FM Ring 1', 'db15': 'BoQ SURGE FM Ex Pole', 'db16': 'BoQ SURGE FM New Pole', 'db25': 'Material JOBJ', 'db26': 'Material CAO Ring 2', 'db27': 'Material CAO Ring 4', 'db28': 'Material CAO Ring 3A', 'db29': 'Material CAO Ring 3B', 'db30': 'Material IJE FM Ring 1', 'db31': 'Material SURGE FM Ex Pole', 'db32': 'Material SURGE FM New Pole', 'pembayaran': 'Pembayaran Invoice', 'peta_jobj': 'Peta JOBJ', 'peta_surge': 'Peta Surge', 'pengawas': 'Data Pengawas', 'mandor': 'Data Mandor'
+            'dball': 'Semua Proyek', 'db1': 'PO JOBJ', 'db2': 'PO CAO Ring 2', 'db3': 'PO CAO Ring 4', 'db4': 'PO CAO Ring 3A', 'db5': 'PO CAO Ring 3B', 'db6': 'PO IJE FM Ring 1', 'db7': 'PO SURGE FM Ex Pole', 'db8': 'PO SURGE FM New Pole', 'db9': 'BoQ JOBJ', 'db10': 'BoQ CAO Ring 2', 'db11': 'BoQ CAO Ring 4', 'db12': 'BoQ CAO Ring 3A', 'db13': 'BoQ CAO Ring 3B', 'db14': 'BoQ IJE FM Ring 1', 'db15': 'BoQ SURGE FM Ex Pole', 'db16': 'BoQ SURGE FM New Pole', 'db25': 'Material JOBJ', 'db26': 'Material CAO Ring 2', 'db27': 'Material CAO Ring 4', 'db28': 'Material CAO Ring 3A', 'db29': 'Material CAO Ring 3B', 'db30': 'Material IJE FM Ring 1', 'db31': 'Material SURGE FM Ex Pole', 'db32': 'Material SURGE FM New Pole', 'pembayaran': 'Pembayaran Invoice', 'peta_jobj': 'Peta JOBJ', 'peta_surge': 'Peta Surge', 'peta_cao_ring_2': 'Peta CAO Ring 2', 'peta_cao_ring_4': 'Peta CAO Ring 4', 'peta_cao_ring_3a': 'Peta CAO Ring 3A', 'peta_cao_ring_3b': 'Peta CAO Ring 3B', 'peta_ije_fm_ring_1': 'Peta IJE FM Ring 1', 'pengawas': 'Data Pengawas', 'mandor': 'Data Mandor'
         };
 
         const boqAndMaterialDBs = ["db9", "db10", "db11", "db12", "db13", "db14", "db15", "db16", "db25", "db26", "db27", "db28", "db29", "db30", "db31", "db32"];
         const materialDBs = ["db25", "db26", "db27", "db28", "db29", "db30", "db31", "db32"];
-        const activePages = ['dball', 'db1', 'db2', 'db3', 'db4', 'db5', 'db6', 'db7', 'db8', 'db9', 'db10', 'db11', 'db12', 'db13', 'db14', 'db15', 'db16', 'db25', 'db26', 'db27', 'db28', 'db29', 'db30', 'db31', 'db32', 'pembayaran', 'peta_jobj', 'peta_surge', 'pengawas', 'mandor'];
+        const activePages = ['dball', 'db1', 'db2', 'db3', 'db4', 'db5', 'db6', 'db7', 'db8', 'db9', 'db10', 'db11', 'db12', 'db13', 'db14', 'db15', 'db16', 'db25', 'db26', 'db27', 'db28', 'db29', 'db30', 'db31', 'db32', 'pembayaran', 'peta_jobj', 'peta_surge', 'peta_cao_ring_2', 'peta_cao_ring_4', 'peta_cao_ring_3a', 'peta_cao_ring_3b', 'peta_ije_fm_ring_1', 'pengawas', 'mandor'];
 
         window.currentCollection = "dball";
         window.currentEditId = null; 
@@ -1165,6 +1175,16 @@
                     mapFrame.src = "https://www.google.com/maps/d/embed?mid=1xhJ2oTziYlfWiAK6MDlMOYanNlMJO3Y";
                 } else if (collectionName === 'peta_surge') {
                     mapFrame.src = "https://www.google.com/maps/d/embed?mid=1UiPL0zV_tPWcza-5yMVMtWuyr5DHCTI";
+                } else if (collectionName === 'peta_cao_ring_2') {
+                    mapFrame.src = "https://www.google.com/maps/d/embed?mid=1q4sCKWk7V_5GqbN5cD3P1GLb--XCzdI";
+                } else if (collectionName === 'peta_cao_ring_4') {
+                    mapFrame.src = "https://www.google.com/maps/d/embed?mid=1hWuY7sZNvkZ0oeJHn6-6aADDiU7PmkE";
+                } else if (collectionName === 'peta_cao_ring_3a') {
+                    mapFrame.src = "https://www.google.com/maps/d/embed?mid=1vy_UT5djTabgzOKAku0_8hFtIoscLL8";
+                } else if (collectionName === 'peta_cao_ring_3b') {
+                    mapFrame.src = "https://www.google.com/maps/d/embed?mid=1IjSot9kXIlbY2MSzVe0AUiMohWchpRQ";
+                } else if (collectionName === 'peta_ije_fm_ring_1') {
+                    mapFrame.src = "https://www.google.com/maps/d/embed?mid=1lmi77ORzXG9R9aiRSSgFYQwKgn2svCA";
                 }
             } else {
                 secOverview.classList.add('hidden');
@@ -1355,7 +1375,7 @@
             }
 
             // Pengecualian navigasi yang tidak boleh di-sort
-            const skipSort = ['peta_jobj', 'peta_surge'].includes(colName);
+            const skipSort = ['peta_jobj', 'peta_surge', 'peta_cao_ring_2', 'peta_cao_ring_4', 'peta_cao_ring_3a', 'peta_cao_ring_3b', 'peta_ije_fm_ring_1'].includes(colName);
 
             let headerHTML = '<tr>';
             displayColumns.forEach(col => {

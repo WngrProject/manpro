@@ -31,8 +31,8 @@
             
             /* Komponen Tabel & Modal */
             --card-bg: #ffffff;
-            --th-bg: #e2e8f0; /* Diubah agar tidak sama dengan bg-color/card-bg */
-            --row-hover: var(--bg-color);
+            --th-bg: #e2e8f0; 
+            --row-hover: #f1f5f9;
             --dropdown-bg: #ffffff;
         }
 
@@ -48,8 +48,8 @@
             --border-color: #334155;
             --border-light: #1e293b;
             --card-bg: #1e293b;
-            --th-bg: #334155; /* Diubah agar tidak sama dengan bg-color/card-bg */
-            --row-hover: #0f172a;
+            --th-bg: #334155; 
+            --row-hover: #334155;
             --dropdown-bg: #1e293b;
             --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
         }
@@ -636,8 +636,12 @@
                             <option value="Selesai">Selesai</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>File</label>
+                        <input type="text" class="form-control" id="form-file" placeholder="Link URL File">
+                    </div>
                     <div class="form-group" style="grid-column: span 2;">
-                        <label>Keterangan Tambahan</label>
+                        <label>Keterangan</label>
                         <textarea class="form-control" id="form-keterangan" rows="2" placeholder="Catatan opsional..."></textarea>
                     </div>
                 </div>
@@ -1085,10 +1089,20 @@
             document.getElementById(modalId).classList.remove('show');
         }
 
+        // Mengatur format tanggal untuk tabel (display), menghindari pergeseran waktu dengan timeZone 'Asia/Jakarta'
         function formatTanggal(timestamp) {
-            if (!timestamp || !timestamp.seconds) return '-';
-            const date = new Date(timestamp.seconds * 1000);
-            return date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+            if (!timestamp) return '-';
+            if (typeof timestamp === 'object' && timestamp.seconds) {
+                const date = new Date(timestamp.seconds * 1000);
+                return date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' });
+            }
+            if (typeof timestamp === 'string' && timestamp !== '-') {
+                const parsedDate = new Date(timestamp);
+                if (!isNaN(parsedDate.getTime())) {
+                    return parsedDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' });
+                }
+            }
+            return timestamp || '-';
         }
         
         function formatRupiah(angka) {
@@ -1127,6 +1141,23 @@
             }
             
             return '';
+        }
+
+        // Helper untuk input date di Edit Modal (Menghindari date shift)
+        function convertTimestampToDateInput(timestamp) {
+            if (typeof timestamp === 'object' && timestamp.seconds) {
+                const d = new Date(timestamp.seconds * 1000 + 7 * 3600 * 1000);
+                return d.toISOString().split('T')[0];
+            } else if (timestamp) {
+                return parseDateToInputFormat(String(timestamp));
+            }
+            return '';
+        }
+
+        // Helper untuk Save Data (Bentuk Tanggal UTC+7 ke Firebase agar tersimpan sebagai Timestamp)
+        function getTimestampUTC7(dateStr) {
+            if (!dateStr || dateStr === '-') return "";
+            return new Date(dateStr + "T00:00:00+07:00");
         }
 
         let chartInstanceStatus = null;
@@ -1266,11 +1297,9 @@
                         }
                     }
 
-                    // Simpan data dan kolom ke Cache Global untuk fitur Sort Client-side
                     window.currentTableDataCache = allData;
                     window.currentTableColumnsCache = columns;
 
-                    // Panggil fungsi render DOM secara independen dari update Snapshot Firebase
                     renderTableDOM();
 
                 }, (error) => {
@@ -1296,7 +1325,6 @@
             let allData = [...window.currentTableDataCache];
             let columns = window.currentTableColumnsCache;
 
-            // Logika Sorting Data
             const sortColumn = window.currentSortCol || (columns.includes("No") ? "No" : columns[0]);
             const sortDir = window.currentSortDir || 'asc';
 
@@ -1318,7 +1346,7 @@
                 return sortDir === 'asc' ? comp : -comp;
             });
 
-            const decimalCols = ["hp boq", "nilai boq", "harga satuan", "volume boq", "total nilai boq", "fo 48c", "fo 96c", "boq ext pole", "fo 96c_a", "fo 96c_b", "boq new pole"];
+            const decimalCols = ["hp boq", "nilai boq", "harga satuan", "volume boq", "total nilai boq", "fo 48c", "fo 96c", "total fo", "boq ext pole", "fo 96c_a", "fo 96c_b", "boq new pole"];
             const percentCols = ["bobot"];
 
             let countCol = null;
@@ -1374,7 +1402,6 @@
                 displayColumns.push("Aksi");
             }
 
-            // Pengecualian navigasi yang tidak boleh di-sort
             const skipSort = ['peta_jobj', 'peta_surge', 'peta_cao_ring_2', 'peta_cao_ring_4', 'peta_cao_ring_3a', 'peta_cao_ring_3b', 'peta_ije_fm_ring_1'].includes(colName);
 
             let headerHTML = '<tr>';
@@ -1409,7 +1436,7 @@
                 bodyHTML += '<tr class="data-row">';
                 displayColumns.forEach(col => {
                     if (col === "Aksi") {
-                        bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" style="color:var(--primary-blue);" onclick="openEditModal(this)" title="Edit Proyek"><i class="fa-solid fa-pen"></i></button></td>`;
+                        bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" style="color:var(--primary-blue);" onclick="openEditModal(this)" title="Edit Data"><i class="fa-solid fa-pen"></i></button></td>`;
                         return;
                     }
 
@@ -1424,7 +1451,7 @@
                             value = formatTanggal(value);
                         } else if (value !== '-') {
                             const parsedDate = new Date(value);
-                            if (!isNaN(parsedDate.getTime())) value = parsedDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                            if (!isNaN(parsedDate.getTime())) value = parsedDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' });
                         }
                     } else if (colName === 'pembayaran' && ["nilai invoice", "ppn 11%", "total invoice", "nilai bayar"].includes(lowerCol)) {
                         if (!isNaN(parseFloat(value))) {
@@ -1540,7 +1567,6 @@
                 tFoot.innerHTML = footerHTML;
             }
 
-            // Pastikan memproses ulang filter setiap kali ada render ulang
             processFilters();
         };
 
@@ -1581,18 +1607,15 @@
                         let invoice = parseFloat(data["Nilai Invoice"]) || 0;
                         let terbayar = parseFloat(data["Nilai Terbayar"]) || 0;
 
-                        // Mengumpulkan data chart
                         statCounts[status] = (statCounts[status] || 0) + 1;
                         statValues[status] = (statValues[status] || 0) + nilai;
 
-                        // Mengakumulasi data KPI
                         kpiTotalProyek++;
                         kpiNilaiProyek += nilai;
                         kpiNilaiInvoice += invoice;
                         kpiNilaiTerbayar += terbayar;
                     });
 
-                    // Update teks di dalam KPI Cards
                     const elKpiProyek = document.getElementById('kpi-total-proyek');
                     const elKpiNilai = document.getElementById('kpi-nilai-proyek');
                     const elKpiInvoice = document.getElementById('kpi-nilai-invoice');
@@ -1603,7 +1626,6 @@
                     if(elKpiInvoice) elKpiInvoice.textContent = "Rp " + formatDecimalUS(kpiNilaiInvoice);
                     if(elKpiTerbayar) elKpiTerbayar.textContent = "Rp " + formatDecimalUS(kpiNilaiTerbayar);
 
-                    // Render Data Chart
                     const labels = Object.keys(statCounts);
                     if(chartInstanceStatus) chartInstanceStatus.destroy();
                     if(chartInstanceNilai) chartInstanceNilai.destroy();
@@ -1636,7 +1658,7 @@
             if(rows.length === 0) return;
 
             let viewTotalNilai = 0, viewTotalInv = 0, viewTotalTerbayar = 0;
-            const bulanMap = { "Januari": "Jan", "Februari": "Feb", "Maret": "Mar", "April": "Apr", "Mei": "Mei", "Juni": "Jun", "Juli": "Jul", "Agustus": "Ags", "September": "Sep", "Oktober": "Okt", "November": "Nov", "Desember": "Des" };
+            const bulanMap = { "Januari": "Jan", "Februari": "Feb", "Maret": "Mar", "April": "Apr", "Mei": "Mei", "Juni": "Jun", "Juli": "Jul", "Agustus": "Agt", "September": "Sep", "Oktober": "Okt", "November": "Nov", "Desember": "Des" };
 
             rows.forEach(row => {
                 let matchKeyword = true;
@@ -1668,6 +1690,8 @@
                     let matchBulan = activeFilters.bulan.length === 0;
                     if (activeFilters.bulan.length > 0) {
                         matchBulan = activeFilters.bulan.some(fullBulan => {
+                            // Antisipasi perbedaan parse locale ID browser untuk bulan Agustus ("Agt" atau "Ags")
+                            if (fullBulan === "Agustus") return colTglText.includes("Agt") || colTglText.includes("Ags") || colTglText.includes("Agu");
                             const shortBulan = bulanMap[fullBulan] || fullBulan;
                             return colTglText.includes(shortBulan);
                         });
@@ -1799,24 +1823,27 @@
             const container = document.getElementById('modal-dynamic-form');
             container.innerHTML = '';
             container.style.display = 'contents';
-            let columns = tableHeaders[colName];
+            let columns = window.currentTableColumnsCache || tableHeaders[colName];
             if (!columns) return;
+            
             columns.forEach((col, index) => {
                 if (col.toLowerCase() === 'no' || col.toLowerCase() === 'aksi') return;
                 const formGroup = document.createElement('div');
                 formGroup.className = 'form-group';
                 if (col.toLowerCase() === 'keterangan' || col.toLowerCase() === 'alamat lengkap') formGroup.style.gridColumn = 'span 2';
+                
                 const label = document.createElement('label');
                 label.textContent = col;
                 formGroup.appendChild(label);
+                
                 let val = rowData ? rowData[index] : '';
-                if (val === '-') val = '';
+                if (val === '-' || val === undefined || val === null) val = '';
+                
                 if (col.toLowerCase().includes('tanggal')) {
                     const input = document.createElement('input');
                     input.type = 'date';
                     input.className = 'form-control';
-                    if(val) val = parseDateToInputFormat(val);
-                    input.value = val;
+                    input.value = convertTimestampToDateInput(val);
                     formGroup.appendChild(input);
                 } else if (col.toLowerCase() === 'keterangan' || col.toLowerCase() === 'alamat lengkap') {
                     const textarea = document.createElement('textarea');
@@ -1824,11 +1851,28 @@
                     textarea.rows = 2;
                     textarea.value = val;
                     formGroup.appendChild(textarea);
+                } else if (col.toLowerCase() === 'file') {
+                    // Modifikasi untuk menangani kolom File (memberi placeholder & URL Link yang bisa diklik)
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'form-control';
+                    input.placeholder = 'Link URL File';
+                    input.value = val;
+                    formGroup.appendChild(input);
+                    
+                    if (val && String(val).includes('http')) {
+                        const link = document.createElement('a');
+                        link.href = val;
+                        link.target = '_blank';
+                        link.className = 'btn-link';
+                        link.style.fontSize = '11px';
+                        link.style.marginTop = '6px';
+                        link.style.display = 'inline-block';
+                        link.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square" style="margin-right:4px;"></i>Buka Link URL';
+                        formGroup.appendChild(link);
+                    }
                 } else {
                     const input = document.createElement('input');
-                    if (col.toLowerCase().includes('nilai') || col.toLowerCase().includes('harga') || col.toLowerCase().includes('total') || col.toLowerCase().includes('volume') || col.toLowerCase().includes('bobot')) {
-                        if(val) val = val.replace(/,/g, '').replace(/%/g, '');
-                    }
                     input.type = 'text';
                     input.className = 'form-control';
                     input.value = val;
@@ -1850,6 +1894,7 @@
                 document.getElementById('modal-dynamic-form').style.display = 'none';
                 document.querySelectorAll('#modal-static-form input').forEach(input => input.value = '');
                 document.getElementById('form-status').value = 'Progress';
+                document.getElementById('form-file').value = '';
                 document.getElementById('form-keterangan').value = '';
             }
             document.getElementById('projectModal').classList.add('show');
@@ -1857,33 +1902,41 @@
 
         window.openEditModal = function(btnElement) {
             window.currentEditId = btnElement.getAttribute('data-id'); 
-            const row = btnElement.closest('tr');
+            
+            const rowDataObj = window.currentTableDataCache.find(d => d.id === window.currentEditId);
+            if (!rowDataObj) {
+                alert("Data tidak ditemukan di sistem!");
+                return;
+            }
+
             if (window.currentCollection !== 'dball') {
                 document.getElementById('modal-title').textContent = "Edit Data";
                 document.getElementById('modal-static-form').style.display = 'none';
-                const cells = row.cells;
-                let rowData = [];
-                for(let i=0; i<cells.length; i++) {
-                    let text = cells[i].textContent.trim();
-                    const badge = cells[i].querySelector('.badge');
-                    if (badge) text = badge.textContent.trim();
-                    rowData.push(text);
-                }
+                
+                let columns = window.currentTableColumnsCache || tableHeaders[window.currentCollection];
+                let rowData = columns.map(col => {
+                    if (col === 'No' || col === 'Aksi') return '';
+                    return rowDataObj[col] !== undefined ? rowDataObj[col] : '';
+                });
+                
                 buildDynamicModal(window.currentCollection, rowData);
             } else {
-                document.getElementById('modal-title').textContent = "Edit Proyek";
+                document.getElementById('modal-title').textContent = "Edit Data";
                 document.getElementById('modal-static-form').style.display = 'contents';
                 document.getElementById('modal-dynamic-form').style.display = 'none';
-                const dateText = row.cells[1]?.textContent.trim() || "";
-                document.getElementById('form-tanggal').value = parseDateToInputFormat(dateText);
-                document.getElementById('form-nomor').value = row.cells[2]?.textContent || "";
-                document.getElementById('form-pemberi').value = row.cells[3]?.textContent || "";
-                document.getElementById('form-uraian').value = row.cells[4]?.textContent || "";
-                document.getElementById('form-nilai_proyek').value = row.cells[5]?.textContent.replace(/,/g, '') || "";
-                document.getElementById('form-nilai_invoice').value = row.cells[6]?.textContent.replace(/,/g, '') || "";
-                document.getElementById('form-nilai_terbayar').value = row.cells[7]?.textContent.replace(/,/g, '') || "";
-                const badge = row.cells[8]?.querySelector('.badge');
-                document.getElementById('form-status').value = badge ? badge.textContent.trim() : 'Progress';
+                
+                document.getElementById('form-tanggal').value = convertTimestampToDateInput(rowDataObj["Tanggal PO"]);
+                document.getElementById('form-nomor').value = rowDataObj["Nomor Proyek"] || "";
+                document.getElementById('form-pemberi').value = rowDataObj["Pemberi Proyek"] || "";
+                document.getElementById('form-uraian').value = rowDataObj["Uraian Proyek"] || "";
+                
+                document.getElementById('form-nilai_proyek').value = rowDataObj["Nilai Proyek"] || "";
+                document.getElementById('form-nilai_invoice').value = rowDataObj["Nilai Invoice"] || "";
+                document.getElementById('form-nilai_terbayar').value = rowDataObj["Nilai Terbayar"] || "";
+                
+                document.getElementById('form-status').value = rowDataObj["Status Proyek"] || 'Progress';
+                document.getElementById('form-file').value = rowDataObj["File"] || "";
+                document.getElementById('form-keterangan').value = rowDataObj["Keterangan"] || "";
             }
             document.getElementById('projectModal').classList.add('show');
         }
@@ -1899,7 +1952,7 @@
 
                 if (window.currentCollection === 'dball') {
                     dataToSave = {
-                        "Tanggal PO": document.getElementById('form-tanggal').value,
+                        "Tanggal PO": getTimestampUTC7(document.getElementById('form-tanggal').value),
                         "Nomor Proyek": document.getElementById('form-nomor').value,
                         "Pemberi Proyek": document.getElementById('form-pemberi').value,
                         "Uraian Proyek": document.getElementById('form-uraian').value,
@@ -1907,6 +1960,7 @@
                         "Nilai Invoice": document.getElementById('form-nilai_invoice').value,
                         "Nilai Terbayar": document.getElementById('form-nilai_terbayar').value,
                         "Status Proyek": document.getElementById('form-status').value,
+                        "File": document.getElementById('form-file').value,
                         "Keterangan": document.getElementById('form-keterangan').value
                     };
                 } else {
@@ -1915,9 +1969,17 @@
                     
                     groups.forEach(group => {
                         const label = group.querySelector('label').textContent;
-                        const input = group.querySelector('.form-control');
+                        const input = group.querySelector('.form-control'); 
                         if (input) {
-                            dataToSave[label] = input.value;
+                            let val = input.value;
+                            if (label.toLowerCase().includes('nilai') || label.toLowerCase().includes('harga') || label.toLowerCase().includes('total') || label.toLowerCase().includes('volume') || label.toLowerCase().includes('bobot')) {
+                                val = val.replace(/,/g, ''); 
+                            }
+                            if (label.toLowerCase().includes('tanggal') && val) {
+                                dataToSave[label] = getTimestampUTC7(val);
+                            } else {
+                                dataToSave[label] = val;
+                            }
                         }
                     });
                 }

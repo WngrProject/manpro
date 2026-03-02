@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Man Pro - System Dashboard</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -90,7 +89,7 @@
         }
         .login-header { text-align: center; }
         .login-header i { font-size: 36px; color: var(--primary-blue); margin-bottom: 12px; }
-        .login-header h2 { font-size: 22px; color: var(--text-main); font-weight: 700; margin-bottom: 4px; font-family: 'Inter', sans-serif;}
+        .login-header h2 { font-size: 22px; color: var(--text-main); font-weight: 700; margin-bottom: 4px; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: 0.004em;}
         .login-header p { font-size: 13px; color: var(--text-muted); }
         .login-error { 
             color: #ef4444; 
@@ -195,7 +194,7 @@
         .kpi-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;}
         .kpi-info { display: flex; flex-direction: column; gap: 4px; overflow: hidden;}
         .kpi-info h4 { color: var(--text-muted); font-size: 13px; font-weight: 600; margin: 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
-        .kpi-info h2 { color: var(--text-main); font-size: 20px; font-weight: 700; margin: 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; font-family: 'Inter', sans-serif;}
+        .kpi-info h2 { color: var(--text-main); font-size: 20px; font-weight: 700; margin: 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: 0.004em;}
 
         @media (max-width: 1024px) {
             .kpi-grid { grid-template-columns: repeat(2, 1fr); }
@@ -214,6 +213,9 @@
         .btn-icon { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-muted); width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-sm); font-size: 13px; position: relative;}
         .btn-icon:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); background: var(--border-light); color: var(--primary-blue); border-color: var(--primary-hover); }
         
+        /* Agar tombol aksi dalam baris tabel tidak memperlebar baris */
+        td .btn-icon { width: 24px; height: 24px; font-size: 11px; margin: 0 auto; border-radius: 4px; }
+
         .action-add { background: linear-gradient(135deg, var(--primary-blue), var(--primary-hover)); color: #ffffff; border: none; }
         .action-add:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(37, 99, 235, 0.4); color: #ffffff; background: linear-gradient(135deg, var(--primary-hover), var(--primary-blue)); }
         
@@ -237,7 +239,7 @@
         .modal-content { background: var(--card-bg); border-radius: 12px; width: 600px; max-width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; overflow: hidden; transform: translateY(-20px); transition: transform 0.3s ease; border: 1px solid var(--border-color);}
         .modal-overlay.show .modal-content { transform: translateY(0); }
         .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .modal-title { font-size: 16px; font-weight: 700; color: var(--text-main); font-family: 'Inter', sans-serif;}
+        .modal-title { font-size: 16px; font-weight: 700; color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;}
         .modal-close { color: var(--text-muted); cursor: pointer; font-size: 16px; transition: color 0.2s; }
         .modal-close:hover { color: #ef4444; }
         .modal-body { padding: 20px; overflow-y: auto; max-height: 65vh; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; color: var(--text-main);}
@@ -269,7 +271,9 @@
         .sort-inactive { margin-left: 6px; font-size: 11px; color: var(--border-color); transition: color 0.3s; }
         th.sortable:hover .sort-inactive { color: var(--text-muted); }
 
-        td { padding: 6px 12px; border-bottom: 1px solid var(--border-light); vertical-align: middle; color: var(--text-main); height: 24px; transition: border-color 0.3s, color 0.3s;}
+        /* Pengaturan tinggi baris isi tabel agar lebih rapat sesuai ukuran font */
+        td { padding: 2px 12px; border-bottom: 1px solid var(--border-light); vertical-align: middle; color: var(--text-main); transition: border-color 0.3s, color 0.3s;}
+        
         tr:hover td { background-color: var(--row-hover); }
         
         .angka { text-align: right; font-weight: 600; color: var(--text-main); }

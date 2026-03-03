@@ -1858,7 +1858,6 @@
                     textarea.value = val;
                     formGroup.appendChild(textarea);
                 } else if (col.toLowerCase() === 'file') {
-                    // Modifikasi untuk menangani kolom File (memberi placeholder & URL Link yang bisa diklik)
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.className = 'form-control';
@@ -2014,44 +2013,105 @@
             if (!table) return;
             let tempTable = table.cloneNode(true);
             tempTable.querySelectorAll('tr').forEach(tr => {
-                if(tr.cells.length > 0) tr.removeChild(tr.lastElementChild);
+                if(tr.cells.length > 0) {
+                    const lastCell = tr.lastElementChild;
+                    // Mencegah error hilangnya kolom penting jika diekspor oleh pengguna Viewer (yang tidak punya tombol edit)
+                    if(lastCell.textContent.trim() === 'Aksi' || lastCell.querySelector('.btn-edit')) {
+                        tr.removeChild(lastCell);
+                    }
+                }
             });
             const wb = XLSX.utils.table_to_book(tempTable, { sheet: "Data_Export" });
             XLSX.writeFile(wb, "System_Data_Export.xlsx");
         });
 
-        // --- UPDATE: Ekspor PDF dengan menambahkan Judul Halaman dan Nomor Halaman ---
+        // ===============================================
+        // UPDATE FITUR EXPORT PDF MENGGUNAKAN HTML2PDF
+        // ===============================================
         document.getElementById('btnExportPdf').addEventListener('click', () => {
-            const element = document.getElementById('main-table');
-            if (!element) return;
+            const table = document.getElementById("main-table");
+            if (!table) return;
             
-            // Ambil judul halaman yang sedang aktif untuk nama file dan header
-            const pageTitleText = document.getElementById('page-title').textContent.trim();
+            // Buat pembungkus sementara (virtual/invisible wrapper) untuk dicetak
+            const tempDiv = document.createElement('div');
+            let tempTable = table.cloneNode(true);
             
+            // Hapus kolom 'Aksi' jika terdapat pada tabel
+            tempTable.querySelectorAll('tr').forEach(tr => {
+                if(tr.cells.length > 0) {
+                    const lastCell = tr.lastElementChild;
+                    if(lastCell.textContent.trim() === 'Aksi' || lastCell.querySelector('.btn-edit')) {
+                        tr.removeChild(lastCell);
+                    }
+                }
+            });
+
+            // Setel styling CSS internal di wrapper cetak agar sesuai dengan preferensi 10px font 
+            // tanpa merusak CSS asli di browser
+            tempTable.style.width = '100%';
+            tempTable.style.borderCollapse = 'collapse';
+            tempTable.style.fontFamily = 'sans-serif';
+            
+            tempTable.querySelectorAll('th, td').forEach(cell => {
+                cell.style.fontSize = '10px';
+                cell.style.padding = '5px 6px';
+                cell.style.border = '1px solid #cbd5e1';
+                cell.style.color = '#000000';
+            });
+            
+            tempTable.querySelectorAll('th').forEach(th => {
+                th.style.backgroundColor = '#e2e8f0';
+                th.style.fontWeight = 'bold';
+            });
+
+            // Menggunakan CSS display table-header-group untuk mencoba mengulang thead
+            const thead = tempTable.querySelector('thead');
+            if(thead) thead.style.display = 'table-header-group';
+
+            tempDiv.appendChild(tempTable);
+
+            // Ambil nama halaman saat ini sebagai nama file dan judul dokumen
+            const pageTitleText = document.getElementById('page-title').textContent.trim() || 'Data Export';
+
             const opt = {
-                margin:       [0.5, 0.3, 0.5, 0.3], // Top, Right, Bottom, Left margin
-                filename:     `System_Data_${pageTitleText.replace(/\s+/g, '_')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
+                margin:       [0.6, 0.4, 0.6, 0.4], // [atas, kiri, bawah, kanan] dalam satuan Inci
+                filename:     pageTitleText + '_Export.pdf',
+                image:        { type: 'jpeg', quality: 1.0 }, // High quality
+                html2canvas:  { scale: 3, useCORS: true, logging: false }, // Skala tinggi untuk High Quality
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }, // Landscape 
+                pagebreak:    { mode: 'css', avoid: 'tr' } // Menghindari pemotongan teks pada baris tabel
             };
-            
-            // Menggunakan .toPdf().get('pdf') untuk menambahkan custom text ke setiap halaman
-            html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
+
+            const btnPdf = document.getElementById('btnExportPdf');
+            const originalHtml = btnPdf.innerHTML;
+            btnPdf.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+            // Memanfaatkan metode Promise html2pdf() untuk memodifikasi pdf mentahnya secara dinamis
+            html2pdf().set(opt).from(tempDiv).toPdf().get('pdf').then(function (pdf) {
                 const totalPages = pdf.internal.getNumberOfPages();
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                
+                // Menambahkan Judul dan Nomor Halaman di setiap page
                 for (let i = 1; i <= totalPages; i++) {
                     pdf.setPage(i);
-                    pdf.setFontSize(11);
-                    pdf.setTextColor(80);
+                    pdf.setFontSize(10);
+                    pdf.setTextColor(100);
                     
-                    // Tambahkan Judul di atas (Tengah)
-                    pdf.text(pageTitleText, pdf.internal.pageSize.getWidth() / 2, 0.3, { align: 'center' });
+                    // Kiri Atas - Judul Halaman
+                    pdf.text(pageTitleText + ' - Laporan Man Pro', 0.4, 0.4);
                     
-                    // Tambahkan Nomor Halaman di bawah (Kanan)
-                    pdf.setFontSize(9);
-                    pdf.text('Halaman ' + i + ' dari ' + totalPages, pdf.internal.pageSize.getWidth() - 0.3, pdf.internal.pageSize.getHeight() - 0.3, { align: 'right' });
+                    // Kanan Bawah - Nomor Halaman
+                    const pageString = 'Halaman ' + i + ' dari ' + totalPages;
+                    pdf.text(pageString, pageWidth - 1.5, pageHeight - 0.3);
                 }
-            }).save();
+            }).save().then(() => {
+                btnPdf.innerHTML = originalHtml;
+            }).catch(err => {
+                console.error("Gagal melakukan export PDF: ", err);
+                btnPdf.innerHTML = originalHtml;
+                alert("Terjadi kesalahan saat memproses file PDF.");
+            });
         });
 
     </script>

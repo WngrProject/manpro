@@ -631,9 +631,15 @@
                     <div class="form-group">
                         <label>Status Proyek</label>
                         <select class="form-control" id="form-status">
-                            <option value="Progress">Progress</option>
+                            <option value="Hold">Hold</option>
+                            <option value="Cancel">Cancel</option>
+                            <option value="Survey">Survey</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Test Comm">Test Comm</option>
+                            <option value="Uji Terima">Uji Terima</option>
+                            <option value="Rekon">Rekon</option>
                             <option value="Invoice">Invoice</option>
-                            <option value="Selesai">Selesai</option>
+                            <option value="Lunas">Lunas</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1485,7 +1491,7 @@
                         }
                     } else if (lowerCol.includes('status')) {
                         let strVal = String(value);
-                        if(strVal.includes('Progress')) value = `<span class="badge badge-progress">${strVal}</span>`;
+                        if(strVal.includes('Progress') || strVal.includes('In Progress')) value = `<span class="badge badge-progress">${strVal}</span>`;
                         else if(strVal.includes('Invoice')) value = `<span class="badge badge-invoice">${strVal}</span>`;
                         else value = `<span class="badge badge-default">${strVal}</span>`;
                     } else if (col === 'File' && String(value).includes('http')) {
@@ -1893,7 +1899,7 @@
                 document.getElementById('modal-static-form').style.display = 'contents';
                 document.getElementById('modal-dynamic-form').style.display = 'none';
                 document.querySelectorAll('#modal-static-form input').forEach(input => input.value = '');
-                document.getElementById('form-status').value = 'Progress';
+                document.getElementById('form-status').value = 'In Progress';
                 document.getElementById('form-file').value = '';
                 document.getElementById('form-keterangan').value = '';
             }
@@ -1934,7 +1940,7 @@
                 document.getElementById('form-nilai_invoice').value = rowDataObj["Nilai Invoice"] || "";
                 document.getElementById('form-nilai_terbayar').value = rowDataObj["Nilai Terbayar"] || "";
                 
-                document.getElementById('form-status').value = rowDataObj["Status Proyek"] || 'Progress';
+                document.getElementById('form-status').value = rowDataObj["Status Proyek"] || 'In Progress';
                 document.getElementById('form-file').value = rowDataObj["File"] || "";
                 document.getElementById('form-keterangan').value = rowDataObj["Keterangan"] || "";
             }
@@ -2014,17 +2020,38 @@
             XLSX.writeFile(wb, "System_Data_Export.xlsx");
         });
 
+        // --- UPDATE: Ekspor PDF dengan menambahkan Judul Halaman dan Nomor Halaman ---
         document.getElementById('btnExportPdf').addEventListener('click', () => {
             const element = document.getElementById('main-table');
             if (!element) return;
+            
+            // Ambil judul halaman yang sedang aktif untuk nama file dan header
+            const pageTitleText = document.getElementById('page-title').textContent.trim();
+            
             const opt = {
-                margin:       0.3,
-                filename:     'System_Data_Export.pdf',
+                margin:       [0.5, 0.3, 0.5, 0.3], // Top, Right, Bottom, Left margin
+                filename:     `System_Data_${pageTitleText.replace(/\s+/g, '_')}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2 },
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
             };
-            html2pdf().set(opt).from(element).save();
+            
+            // Menggunakan .toPdf().get('pdf') untuk menambahkan custom text ke setiap halaman
+            html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
+                const totalPages = pdf.internal.getNumberOfPages();
+                for (let i = 1; i <= totalPages; i++) {
+                    pdf.setPage(i);
+                    pdf.setFontSize(11);
+                    pdf.setTextColor(80);
+                    
+                    // Tambahkan Judul di atas (Tengah)
+                    pdf.text(pageTitleText, pdf.internal.pageSize.getWidth() / 2, 0.3, { align: 'center' });
+                    
+                    // Tambahkan Nomor Halaman di bawah (Kanan)
+                    pdf.setFontSize(9);
+                    pdf.text('Halaman ' + i + ' dari ' + totalPages, pdf.internal.pageSize.getWidth() - 0.3, pdf.internal.pageSize.getHeight() - 0.3, { align: 'right' });
+                }
+            }).save();
         });
 
     </script>

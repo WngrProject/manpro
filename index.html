@@ -1454,7 +1454,11 @@
                 if (col === "Aksi") {
                     headerHTML += `<th style="text-align: center; width: 60px;">${col}</th>`;
                 } else {
-                    headerHTML += `<th${thClass} style="${isNumeric ? 'text-align: right;' : ''}"${onClickAction}>${col}${sortIcon}</th>`;
+                    let thStyle = isNumeric ? 'text-align: right;' : '';
+                    if (lowerCol === 'keterangan') {
+                        thStyle += ' width: 600px; min-width: 600px; max-width: 600px; white-space: normal;';
+                    }
+                    headerHTML += `<th${thClass} style="${thStyle}"${onClickAction}>${col}${sortIcon}</th>`;
                 }
             });
             headerHTML += '</tr>';
@@ -1524,7 +1528,7 @@
                     // Menambahkan styling khusus untuk kolom 'keterangan'
                     let tdStyle = "";
                     if (lowerCol === 'keterangan') {
-                        tdStyle = "max-width: 2000px; white-space: normal; overflow-wrap: break-word;";
+                        tdStyle = "width: 600px; min-width: 600px; max-width: 600px; white-space: normal; overflow-wrap: break-word;";
                     }
 
                     bodyHTML += `<td ${alignClass} style="${tdStyle}">${value}</td>`;

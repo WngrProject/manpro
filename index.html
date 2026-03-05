@@ -1241,9 +1241,9 @@
                         btnFilterPemberi.innerHTML = '<i class="fa-solid fa-truck-field"></i>';
                         btnFilterStatus.title = "Filter Nama Material";
                         btnFilterStatus.innerHTML = '<i class="fa-solid fa-box-open"></i>';
-                    } else if (collectionName === 'dball') {
+                    } else if (collectionName === 'dball' || collectionName === 'pembayaran') {
                         filterContainer.style.display = 'flex';
-                        inputSearch.placeholder = "Cari data Pemberi Proyek, Status Proyek ...";
+                        inputSearch.placeholder = collectionName === 'dball' ? "Cari data Pemberi Proyek, Status Proyek ..." : "Cari data Pembayaran ...";
                         btnAdd.title = "Tambah Data";
                         btnFilterPemberi.title = "Filter Pemberi Proyek";
                         btnFilterPemberi.innerHTML = '<i class="fa-solid fa-building-user"></i>';
@@ -1674,23 +1674,36 @@
                         const colUraian = row.cells.length > 4 ? row.cells[4].textContent.toLowerCase() : "";
                         const colStatus = row.cells.length > 8 ? row.cells[8].textContent.toLowerCase() : "";
                         matchKeyword = colPemberi.includes(activeFilters.keyword) || colUraian.includes(activeFilters.keyword) || colStatus.includes(activeFilters.keyword);
+                    } else if (window.currentCollection === 'pembayaran') {
+                        const colPemberi = row.cells.length > 1 ? row.cells[1].textContent.toLowerCase() : "";
+                        const colUraian = row.cells.length > 3 ? row.cells[3].textContent.toLowerCase() : "";
+                        const colStatus = row.cells.length > 11 ? row.cells[11].textContent.toLowerCase() : "";
+                        matchKeyword = colPemberi.includes(activeFilters.keyword) || colUraian.includes(activeFilters.keyword) || colStatus.includes(activeFilters.keyword);
                     } else {
                         matchKeyword = row.textContent.toLowerCase().includes(activeFilters.keyword);
                     }
                 }
 
                 let matchFilters = true;
-                const isDballOrMaterial = (window.currentCollection === 'dball' || materialDBs.includes(window.currentCollection));
+                const isFilteredView = (window.currentCollection === 'dball' || materialDBs.includes(window.currentCollection) || window.currentCollection === 'pembayaran');
                 
-                if (isDballOrMaterial && row.cells.length > 4) {
-                    const colTglText = row.cells[1].textContent; 
-                    const colPemberi = row.cells[3].textContent.toLowerCase(); 
-                    
+                if (isFilteredView && row.cells.length > 1) {
+                    let colTglText = "";
+                    let colPemberi = "";
                     let colStatus = "";
-                    if (materialDBs.includes(window.currentCollection)) {
-                        colStatus = row.cells[4].textContent.toLowerCase(); 
+
+                    if (window.currentCollection === 'pembayaran' && row.cells.length > 11) {
+                        colTglText = row.cells[6].textContent; // Tanggal Invoice
+                        colPemberi = row.cells[1].textContent.toLowerCase(); // Pemberi Proyek
+                        colStatus = row.cells[11].textContent.toLowerCase(); // Status Proyek
+                    } else if (materialDBs.includes(window.currentCollection) && row.cells.length > 4) {
+                        colTglText = row.cells[1].textContent; // Tanggal PO
+                        colPemberi = row.cells[3].textContent.toLowerCase(); // Nama Supplier
+                        colStatus = row.cells[4].textContent.toLowerCase(); // Nama Material
                     } else if (window.currentCollection === 'dball' && row.cells.length > 8) {
-                        colStatus = row.cells[8].textContent.toLowerCase(); 
+                        colTglText = row.cells[1].textContent; // Tanggal PO
+                        colPemberi = row.cells[3].textContent.toLowerCase(); // Pemberi Proyek
+                        colStatus = row.cells[8].textContent.toLowerCase(); // Status Proyek
                     }
 
                     let matchBulan = activeFilters.bulan.length === 0;
@@ -1810,8 +1823,8 @@
         const tahunOpts = ["2023", "2024", "2025", "2026", "2027", "2028"];
         setupDropdown('btnFilterTahun', 'menuFilterTahun', 'tahun', tahunOpts, false, null);
 
-        setupDropdown('btnFilterPemberi', 'menuFilterPemberi', 'pemberi', [], true, () => 3);
-        setupDropdown('btnFilterStatus', 'menuFilterStatus', 'status', [], true, () => materialDBs.includes(window.currentCollection) ? 4 : 8);
+        setupDropdown('btnFilterPemberi', 'menuFilterPemberi', 'pemberi', [], true, () => window.currentCollection === 'pembayaran' ? 1 : 3);
+        setupDropdown('btnFilterStatus', 'menuFilterStatus', 'status', [], true, () => materialDBs.includes(window.currentCollection) ? 4 : (window.currentCollection === 'pembayaran' ? 11 : 8));
 
         function resetDataView() {
             document.getElementById('inputSearchProyek').value = "";

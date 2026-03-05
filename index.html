@@ -15,11 +15,11 @@
         /* --- RESET & PREMIUM TAILWIND VARIABLES --- */
         :root {
             /* Skema Warna Light: Premium & Sharp */
-            --primary-blue: #4f46e5; /* Sharp Indigo */
+            --primary-blue: #4f46e5;
             --primary-hover: #4338ca;
-            --bg-color: #f3f4f6; /* Sleek cool gray */
+            --bg-color: #f3f4f6;
             --sidebar-bg: #ffffff; 
-            --text-main: #111827; /* Near black untuk kontras tajam */
+            --text-main: #111827;
             --text-muted: #4b5563; 
             --text-light: #9ca3af; 
             --border-color: #e5e7eb; 
@@ -41,10 +41,10 @@
 
         /* --- DARK MODE VARIABLES (Premium Navy/Charcoal) --- */
         :root[data-theme="dark"] {
-            --primary-blue: #6366f1; /* Terang dan tajam di mode gelap */
+            --primary-blue: #6366f1;
             --primary-hover: #818cf8;
-            --bg-color: #0b0f19; /* Premium deep navy/black */
-            --sidebar-bg: #111827; /* Lighter surface */
+            --bg-color: #0b0f19;
+            --sidebar-bg: #111827;
             --text-main: #f9fafb;
             --text-muted: #d1d5db;
             --text-light: #6b7280;
@@ -764,47 +764,6 @@
             }
         };
 
-        // --- UPDATE: Memuat status halaman terakhir saat refresh ---
-        if (sessionStorage.getItem('isLoggedIn') === 'true') {
-            loginScreen.style.display = 'none';
-            appContainer.style.display = 'flex';
-            const savedUser = sessionStorage.getItem('loggedUsername') || 'User';
-            const savedRole = sessionStorage.getItem('loggedRole') || 'Guest';
-            displayUsername.textContent = savedUser;
-            displayAvatar.textContent = savedUser.charAt(0).toUpperCase();
-            displayRole.textContent = `● ${savedRole}`;
-            applyRolePermissions();
-
-            // Memuat state navigasi terakhir
-            const lastTitle = sessionStorage.getItem('lastPageTitle') || 'Overview';
-            const lastCol = sessionStorage.getItem('lastPageCollection') || 'dball';
-            const lastType = sessionStorage.getItem('lastPageType') || 'overview';
-            
-            let targetNav = null;
-            document.querySelectorAll('.nav-item').forEach(el => {
-                if (el.querySelector('.nav-text') && el.querySelector('.nav-text').textContent.trim() === lastTitle) {
-                    targetNav = el;
-                }
-            });
-            
-            if (!targetNav) targetNav = document.querySelector('.nav-item.active');
-            
-            // Membuka accordion yang benar
-            if (targetNav) {
-                document.querySelectorAll('.nav-category').forEach(c => c.classList.remove('open'));
-                document.querySelectorAll('.submenu').forEach(s => s.classList.remove('open'));
-                
-                const parentSubmenu = targetNav.closest('.submenu');
-                if (parentSubmenu) {
-                    const parentCat = parentSubmenu.previousElementSibling;
-                    if (parentCat) parentCat.classList.add('open');
-                    parentSubmenu.classList.add('open');
-                }
-            }
-
-            loadPage(lastTitle, lastCol, lastType, targetNav);
-        }
-
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const usernameInput = document.getElementById('loginUsername').value;
@@ -894,7 +853,7 @@
             "db13": ["No", "Item Pekerjaan", "Satuan", "Harga Satuan", "Volume BoQ", "Total Nilai BoQ", "Volume Rekon", "Total Nilai Rekon", "Keterangan"],
             "db14": ["No", "Item Pekerjaan", "Satuan", "Harga Satuan", "Volume BoQ", "Total Nilai BoQ", "Volume Rekon", "Total Nilai Rekon", "Keterangan"],
             "db15": ["No", "Item Pekerjaan", "Satuan", "Harga Satuan", "Manggarai - Citayam - Bogor", "Bogor - Sukabumi", "Manggarai - Jakarta Kota", "Manggarai - Duri - Tangerang", "Tanah Abang - Serpong", "Serpong - Rangkasbitung", "Rangkasbitung - Serang", "Serang - Krenceng - Merak", "Jatinegara - Manggarai - Tanjung Priok", "Jatinegara - Cikarang", "Cikarang - Cikampek", "Cikampek - Haurgeulis", "Haurgeulis - Jatibarang", "Jatibarang - Cirebon", "Cikampek - Plered", "Plered - Padalarang", "Padalarang - Lebakjero", "Lebakjero - Cibatu", "Cibatu - Garut", "Cibatu - Tasikmalaya", "Sukabumi - Cianjur", "Cianjur - Padalarang", "Brumbung - Gundih", "Gundih - Gambringan", "Purwokerto - Kroya", "Kroya - Kebumen", "Kebumen - Jenar", "Jenar - Kedundang", "Kedundang - Tugu Jogja", "Tugu Jogja - Klaten", "Klaten - Purwosari", "Purwosari - Wonogiri", "Purwosari - Gundih", "Solo Balapan - Walikukun", "Walikukun - Madiun", "Kediri - Ngunut", "Ngunut - Wlingi", "Wlingi - Malang"],
-            "db16": ["No", "Item Pekerjaan", "Satuan", "Harga Satuan", "Manggarai - Citayam - Bogor", "Bogor - Sukabumi", "Manggarai - Jakarta Kota", "Manggarai - Duri - Tangerang", "Tanah Abang - Serpong", "Serpong - Rangkasbitung", "Rangkasbitung - Serang", "Serang - Krenceng - Merak", "Jatinegara - Manggarai - Tanjung Priok", "Jatinegara - Cikarang", "Cikarang - Cikampek", "Cikampek - Haurgeulis", "Haurgeulis - Jatibarang", "Jatibarang - Cirebon", "Cikampek - Plered", "Plered - Padalarang", "Padalarang - Lebakjero", "Lebakjero - Cibatu", "Cibatu - Garut", "Cibatu - Tasikmalaya", "Sukabumi - Cianjur", "Cianjur - Padalarang", "Brumbung - Gundih", "Gundih - Gambringan", "Purwokerto - Kroya", "Kroya - Kebumen", "Kebumen - Jenar", "Jenar - Kedundang", "Kedundang - Tugu Jogja", "Tugu Jogja - Klaten", "Klaten - Purwosari", "Purwosari - Wonogiri", "Purwosari - Gundih", "Solo Balapan - Walikukun", "Walikukun - Madiun", "Kediri - Ngunut", "Ngunut - Wlingi", "Wlingi - Malang"],
+            "db16": ["No", "Item Pekerjaan", "Satuan", "Harga Satuan", "Manggarai - Citayam - Bogor", "Bogor - Sukabumi", "Manggarai - Jakarta Kota", "Manggarai - Duri - Tangerang", "Tanah Abang - Serpong", "Serpong - Rangkasbitung", "Rangkasbitung - Serang", "Serang - Krenceng - Merak", "Jatinegara - Manggarai - Tanjung Priok", "Jatinegara - Cikarang", "Cikampek - Haurgeulis", "Haurgeulis - Jatibarang", "Jatibarang - Cirebon", "Cikampek - Plered", "Plered - Padalarang", "Padalarang - Lebakjero", "Lebakjero - Cibatu", "Cibatu - Garut", "Cibatu - Tasikmalaya", "Sukabumi - Cianjur", "Cianjur - Padalarang", "Brumbung - Gundih", "Gundih - Gambringan", "Purwokerto - Kroya", "Kroya - Kebumen", "Kebumen - Jenar", "Jenar - Kedundang", "Kedundang - Tugu Jogja", "Tugu Jogja - Klaten", "Klaten - Purwosari", "Purwosari - Wonogiri", "Purwosari - Gundih", "Solo Balapan - Walikukun", "Walikukun - Madiun", "Kediri - Ngunut", "Ngunut - Wlingi", "Wlingi - Malang"],
             "db25": ["No", "Tanggal PO", "Nomor PO Material", "Nama Supplier", "Nama Material", "Spesifikasi Material", "Satuan", "Volume", "Harga Satuan", "Total Harga", "PPn 11%", "Grand Total", "Status Material", "File", "Keterangan"],
             "db26": ["No", "Tanggal PO", "Nomor PO Material", "Nama Supplier", "Nama Material", "Spesifikasi Material", "Satuan", "Volume", "Harga Satuan", "Total Harga", "PPn 11%", "Grand Total", "Status Material", "File", "Keterangan"],
             "db27": ["No", "Tanggal PO", "Nomor PO Material", "Nama Supplier", "Nama Material", "Spesifikasi Material", "Satuan", "Volume", "Harga Satuan", "Total Harga", "PPn 11%", "Grand Total", "Status Material", "File", "Keterangan"],
@@ -1561,7 +1520,14 @@
                     } else if (col === 'File' && String(value).includes('http')) {
                         value = `<a href="${value}" target="_blank" class="btn-link"><i class="fa-solid fa-arrow-up-right-from-square" style="margin-right:4px;"></i>Buka</a>`;
                     }
-                    bodyHTML += `<td ${alignClass}>${value}</td>`;
+
+                    // Menambahkan styling khusus untuk kolom 'keterangan'
+                    let tdStyle = "";
+                    if (lowerCol === 'keterangan') {
+                        tdStyle = "max-width: 2000px; white-space: normal; overflow-wrap: break-word;";
+                    }
+
+                    bodyHTML += `<td ${alignClass} style="${tdStyle}">${value}</td>`;
                 });
                 bodyHTML += '</tr>';
 
@@ -2190,6 +2156,49 @@
                 alert("Terjadi kesalahan saat memproses file PDF.");
             });
         });
+
+        // --- PASTE DI SINI: MEMUAT STATUS HALAMAN TERAKHIR ---
+        // Pengecekan sesi dipindah ke baris paling bawah agar semua fungsi window.* (seperti loadPage) sudah selesai dideklarasikan.
+        if (sessionStorage.getItem('isLoggedIn') === 'true') {
+            loginScreen.style.display = 'none';
+            appContainer.style.display = 'flex';
+            const savedUser = sessionStorage.getItem('loggedUsername') || 'User';
+            const savedRole = sessionStorage.getItem('loggedRole') || 'Guest';
+            displayUsername.textContent = savedUser;
+            displayAvatar.textContent = savedUser.charAt(0).toUpperCase();
+            displayRole.textContent = `● ${savedRole}`;
+            applyRolePermissions();
+
+            // Memuat state navigasi terakhir
+            const lastTitle = sessionStorage.getItem('lastPageTitle') || 'Overview';
+            const lastCol = sessionStorage.getItem('lastPageCollection') || 'dball';
+            const lastType = sessionStorage.getItem('lastPageType') || 'overview';
+            
+            let targetNav = null;
+            document.querySelectorAll('.nav-item').forEach(el => {
+                if (el.querySelector('.nav-text') && el.querySelector('.nav-text').textContent.trim() === lastTitle) {
+                    targetNav = el;
+                }
+            });
+            
+            if (!targetNav) targetNav = document.querySelector('.nav-item.active');
+            
+            // Membuka accordion yang benar
+            if (targetNav) {
+                document.querySelectorAll('.nav-category').forEach(c => c.classList.remove('open'));
+                document.querySelectorAll('.submenu').forEach(s => s.classList.remove('open'));
+                
+                const parentSubmenu = targetNav.closest('.submenu');
+                if (parentSubmenu) {
+                    const parentCat = parentSubmenu.previousElementSibling;
+                    if (parentCat) parentCat.classList.add('open');
+                    parentSubmenu.classList.add('open');
+                }
+            }
+
+            // Fungsi loadPage sekarang sudah dikenali sistem karena deklarasinya ada di atas
+            loadPage(lastTitle, lastCol, lastType, targetNav);
+        }
 
     </script>
 </body>

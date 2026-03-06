@@ -108,7 +108,7 @@
         .nav-menu::-webkit-scrollbar { width: 4px; }
         .nav-menu::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 
-        .nav-category { padding: 16px 24px 8px 24px; font-weight: 600; font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; border: none; }
+        .nav-category { padding: 16px 24px 8px 24px; font-weight: 600; font-size: 11px; color: var(--text-light); letter-spacing: 0.05em; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; border: none; }
         .nav-category:hover { color: var(--text-muted); }
         .nav-category .chevron { transition: transform 0.3s; font-size: 10px; }
         .nav-category.open .chevron { transform: rotate(180deg); }
@@ -144,7 +144,8 @@
         .search-bar-top input::placeholder { color: var(--text-light); }
         
         .topbar-right { display: flex; align-items: center; gap: 16px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; padding-left: 16px; border-left: none; }
+        .user-profile { display: flex; align-items: center; gap: 12px; padding-left: 16px; border-left: none; transition: background 0.2s; border-radius: 8px; padding-right: 8px;}
+        .user-profile:hover { background-color: var(--row-hover); }
         .user-info { display: flex; flex-direction: column; align-items: flex-end; }
         .user-info .name { font-size: 13px; font-weight: 600; color: var(--text-main); }
         .user-info .role { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em;}
@@ -253,7 +254,8 @@
         td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); vertical-align: middle; color: var(--text-main); transition: background-color 0.2s;}
         tr:hover td { background-color: var(--row-hover) !important; }
         
-        .angka { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }
+        /* Menghilangkan format monospace pada angka */
+        .angka { text-align: right; font-weight: 500; }
         
         .badge { padding: 4px 12px; border-radius: 9999px; font-weight: 600; font-size: 11px; border: none; display: inline-block; text-align: center; letter-spacing: 0.02em;}
         .badge-progress { background: #e0e7ff; color: #4338ca; }
@@ -472,17 +474,26 @@
                         <i class="fa-regular fa-calendar" style="color: #10b981;"></i>
                     </button>
                     
-                    <div class="user-profile">
-                        <div class="user-info">
-                            <span class="name" id="displayUsername">wngr.project@gmail.com</span>
-                            <span class="role"><span class="dot-online"></span> <span id="displayRole">ADMIN</span></span>
+                    <div class="dropdown-wrapper" style="margin-left: 8px;">
+                        <div class="user-profile" id="btnMyAccount" style="cursor: pointer; padding-left: 16px; border-left: 1px solid var(--border-strong);" title="Akun Saya">
+                            <div class="user-info">
+                                <span class="name" id="displayUsername">wngr.project@gmail.com</span>
+                                <span class="role"><span class="dot-online"></span> <span id="displayRole">ADMIN</span></span>
+                            </div>
+                            <div class="avatar" id="displayAvatar">U</div>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 12px; color: var(--text-muted); margin-left: 4px;"></i>
                         </div>
-                        <div class="avatar" id="displayAvatar">U</div>
+                        <div class="dropdown-menu" id="menuMyAccount" style="right: 0; left: auto; min-width: 180px; top: calc(100% + 12px);">
+                            <div class="dropdown-item" id="btnSettingsToggle">
+                                <i class="fa-solid fa-gear" style="color: var(--text-muted); font-size: 14px; width: 16px; text-align: center;"></i> Pengaturan
+                            </div>
+                            <div style="height: 1px; background: var(--border-strong); margin: 4px 0;"></div>
+                            <div class="dropdown-item" id="btnLoginLogout" style="color: #ef4444;">
+                                <i class="fa-solid fa-power-off" style="color: #ef4444; font-size: 14px; width: 16px; text-align: center;"></i> Logout
+                            </div>
+                        </div>
                     </div>
-                    
-                    <button class="btn-toggle" id="btnLoginLogout" title="Logout" style="margin-left: 8px;">
-                        <i class="fa-solid fa-power-off" style="color: var(--text-muted); font-size: 16px;"></i>
-                    </button>
+
                 </div>
             </header>
 
@@ -643,7 +654,7 @@
                                 
                                 <div style="width: 1px; height: 24px; background: var(--border-strong); margin: 0 4px;"></div>
                                 
-                                <button class="btn-icon action-add" id="btnTambahProyek" title="Tambah Data">Generate Summary</button>
+                                <button class="btn-icon action-add" id="btnTambahProyek" title="Tambah Data"><i class="fa-solid fa-plus" style="margin-right: 6px;"></i> Tambah Data</button>
                             </div>
 
                         </div>
@@ -798,6 +809,22 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-content" style="width: 450px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Pengaturan Profil</h3>
+                <i class="fa-solid fa-xmark modal-close" onclick="closeModal('settingsModal')"></i>
+            </div>
+            <div class="modal-body single-col" style="max-height: 400px; overflow-y: auto;">
+                <div id="settingsLoading" style="display: none; text-align: center; padding: 20px;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Memuat Data Profil...
+                </div>
+                <div id="settingsProfileContent" style="display: flex; flex-direction: column; gap: 16px;">
+                    </div>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, orderBy, query, where, addDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -815,6 +842,34 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // ==========================================
+        // FUNGSI UTILITY & UI GLOBALS
+        // ==========================================
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
+        }
+
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-wrapper')) {
+                closeAllDropdowns();
+            }
+        });
+
+        // Trigger Menu "Akun Saya"
+        document.getElementById('btnMyAccount').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const menu = document.getElementById('menuMyAccount');
+            const isShowing = menu.classList.contains('show');
+            closeAllDropdowns();
+            if (!isShowing) {
+                menu.classList.add('show');
+            }
+        });
 
         // ==========================================
         // FITUR LOGIN & RBAC (ROLE-BASED ACCESS CONTROL)
@@ -907,6 +962,7 @@
         });
 
         document.getElementById('btnLoginLogout').addEventListener('click', () => {
+            closeAllDropdowns();
             const confirmLogout = confirm("Apakah Anda yakin ingin keluar (Logout)?");
             if(confirmLogout) {
                 sessionStorage.removeItem('isLoggedIn');
@@ -1166,6 +1222,49 @@
             renderCalendar();
         });
 
+        // --- FETCH PROFILE & PENGATURAN MODAL ---
+        document.getElementById('btnSettingsToggle').addEventListener('click', async () => {
+            closeAllDropdowns();
+            document.getElementById('settingsModal').classList.add('show');
+            const profileContent = document.getElementById('settingsProfileContent');
+            const profileLoading = document.getElementById('settingsLoading');
+            
+            profileContent.innerHTML = '';
+            profileLoading.style.display = 'block';
+            
+            try {
+                const username = sessionStorage.getItem('loggedUsername');
+                if (!username) throw new Error("Tidak ada sesi login yang aktif.");
+                
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, where("Username", "==", username));
+                const querySnapshot = await getDocs(q);
+                
+                if (!querySnapshot.empty) {
+                    const userData = querySnapshot.docs[0].data();
+                    let html = '';
+                    for (const key in userData) {
+                        if (key.toLowerCase() !== 'password') {
+                            html += `
+                                <div class="form-group" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                    <label style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">${key}</label>
+                                    <div style="font-size: 14px; font-weight: 500; color: var(--text-main); margin-top: 4px;">${userData[key]}</div>
+                                </div>
+                            `;
+                        }
+                    }
+                    profileContent.innerHTML = html;
+                } else {
+                    profileContent.innerHTML = '<div style="color: red; text-align: center;">Data profil tidak ditemukan di Firebase.</div>';
+                }
+            } catch (error) {
+                console.error("Load Profile Error:", error);
+                profileContent.innerHTML = '<div style="color: red; text-align: center;">Terjadi kesalahan saat memuat profil.</div>';
+            } finally {
+                profileLoading.style.display = 'none';
+            }
+        });
+
 
         // --- UPDATE UI LOGIC (Accordion Navigasi) ---
         document.getElementById('btnToggleSidebar').addEventListener('click', function() {
@@ -1183,10 +1282,6 @@
                 if (element.nextElementSibling) element.nextElementSibling.classList.add('open');
             }
         };
-
-        window.closeModal = function(modalId) {
-            document.getElementById(modalId).classList.remove('show');
-        }
 
         // Helper Format String
         function formatTanggal(timestamp) {
@@ -1844,16 +1939,6 @@
         document.getElementById('inputSearchProyek').addEventListener('input', (e) => {
             activeFilters.keyword = e.target.value.toLowerCase();
             processFilters();
-        });
-
-        function closeAllDropdowns() {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
-        }
-
-        window.addEventListener('click', function(e) {
-            if (!e.target.closest('.dropdown-wrapper')) {
-                closeAllDropdowns();
-            }
         });
 
         function setupDropdown(buttonId, menuId, filterKey, optionsArray, isDynamic, colIndexResolver) {

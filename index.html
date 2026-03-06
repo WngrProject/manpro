@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Man Pro - System Dashboard</title>
+    <title>Man-Pro</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,9 +18,9 @@
     <style>
         /* --- RESET & PREMIUM CSS VARIABLES (SaaS Style) --- */
         :root {
-            --primary-blue: #4f46e5;
+            --primary-blue: #1E90FF;
             --primary-hover: #4338ca;
-            --primary-light: #eff6ff; 
+            --primary-light: #E0FFFF; 
             
             --bg-color: #f8fafc; /* Latar abu-abu sangat muda/bersih */
             --sidebar-bg: #ffffff; 
@@ -41,7 +41,7 @@
             --sidebar-width: 260px;
             --sidebar-collapsed-width: 76px;
             
-            --th-bg: #f8fafc; 
+            --th-bg: #E0FFFF; 
             --row-hover: #f1f5f9;
             --dropdown-bg: #ffffff;
         }
@@ -51,7 +51,7 @@
             --bg-color: #0b0f19;
             --sidebar-bg: #111827;
             --text-main: #f9fafb;
-            --text-muted: #9ca3af;
+            --text-muted: #F0F8FF;
             --text-light: #6b7280;
             --border-color: #1f2937;
             --border-strong: #374151;
@@ -59,7 +59,7 @@
             --th-bg: #1f2937; 
             --row-hover: #1e293b;
             --dropdown-bg: #111827;
-            --primary-light: rgba(79, 70, 229, 0.15);
+            --primary-light: #1f2937;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; font-size: 13px; }
@@ -889,6 +889,21 @@
             }
         });
 
+        // Helper untuk menerapkan Foto Profil
+        const applyProfilePicture = (photoUrl, username) => {
+            const avatarDiv = document.getElementById('displayAvatar');
+            if (photoUrl && photoUrl.trim().startsWith('http')) {
+                avatarDiv.style.backgroundImage = `url('${photoUrl.trim()}')`;
+                avatarDiv.style.backgroundSize = 'cover';
+                avatarDiv.style.backgroundPosition = 'center';
+                avatarDiv.textContent = '';
+            } else {
+                const fallbackName = username || 'User';
+                avatarDiv.style.backgroundImage = `url('https://ui-avatars.com/api/?name=${fallbackName}&background=random&color=fff')`;
+                avatarDiv.textContent = fallbackName.charAt(0).toUpperCase();
+            }
+        };
+
         // ==========================================
         // FITUR LOGIN & RBAC (ROLE-BASED ACCESS CONTROL)
         // ==========================================
@@ -942,14 +957,16 @@
                 if (!querySnapshot.empty) {
                     const userData = querySnapshot.docs[0].data();
                     const userRole = userData.Role || 'Guest'; 
+                    const userPhoto = userData['Foto Profil'] || '';
                     
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('loggedUsername', usernameInput);
                     sessionStorage.setItem('loggedRole', userRole);
+                    sessionStorage.setItem('loggedPhoto', userPhoto);
                     
                     displayUsername.textContent = usernameInput;
-                    displayAvatar.textContent = usernameInput.charAt(0).toUpperCase();
                     displayRole.textContent = `● ${userRole}`;
+                    applyProfilePicture(userPhoto, usernameInput);
                     
                     loginForm.reset();
                     loginScreen.style.display = 'none';
@@ -988,6 +1005,7 @@
             sessionStorage.removeItem('isLoggedIn');
             sessionStorage.removeItem('loggedUsername');
             sessionStorage.removeItem('loggedRole');
+            sessionStorage.removeItem('loggedPhoto');
             sessionStorage.removeItem('lastPageTitle');
             sessionStorage.removeItem('lastPageCollection');
             sessionStorage.removeItem('lastPageType');
@@ -996,6 +1014,10 @@
             appContainer.style.display = 'none';
             loginScreen.style.display = 'flex';
             loginError.style.display = 'none';
+            
+            displayAvatar.style.backgroundImage = '';
+            displayAvatar.textContent = 'U';
+            
             closeModal('logoutModal');
         });
 
@@ -1269,15 +1291,30 @@
                     
                     let html = '<div id="formEditProfile" style="display: flex; flex-direction: column; gap: 16px;">';
                     for (const key in userData) {
-                        const isPassword = key.toLowerCase() === 'password';
-                        const isUsername = key.toLowerCase() === 'username';
+                        const lowerKey = key.toLowerCase();
+                        const isPassword = lowerKey === 'password';
+                        const isUsername = lowerKey === 'username';
+                        const isHidden = lowerKey === 'no' || lowerKey === 'role';
                         const inputType = isPassword ? 'password' : 'text';
                         const readOnlyAttr = isUsername ? 'readonly title="Username tidak dapat diubah"' : '';
+                        const displayStyle = isHidden ? 'style="display: none;"' : '';
+                        
+                        let inputFieldHTML = `<input type="${inputType}" class="form-control profile-input" data-key="${key}" value="${userData[key]}" ${readOnlyAttr}>`;
+                        
+                        if (isPassword) {
+                            const uniqueId = `profile-pwd-${key.replace(/\s+/g, '')}`;
+                            inputFieldHTML = `
+                                <div style="position: relative; display: flex; align-items: center;">
+                                    <input type="${inputType}" id="${uniqueId}" class="form-control profile-input" data-key="${key}" value="${userData[key]}" ${readOnlyAttr} style="width: 100%; padding-right: 40px;">
+                                    <i class="fa-solid fa-eye" style="position: absolute; right: 12px; cursor: pointer; color: var(--text-muted);" onclick="const inp = document.getElementById('${uniqueId}'); if(inp.type === 'password') { inp.type = 'text'; this.classList.remove('fa-eye'); this.classList.add('fa-eye-slash'); } else { inp.type = 'password'; this.classList.remove('fa-eye-slash'); this.classList.add('fa-eye'); }"></i>
+                                </div>
+                            `;
+                        }
                         
                         html += `
-                            <div class="form-group">
+                            <div class="form-group" ${displayStyle}>
                                 <label style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">${key}</label>
-                                <input type="${inputType}" class="form-control profile-input" data-key="${key}" value="${userData[key]}" ${readOnlyAttr}>
+                                ${inputFieldHTML}
                             </div>
                         `;
                     }
@@ -1314,6 +1351,12 @@
                 await updateDoc(docRef, updatedData);
 
                 if (updatedData['Role']) sessionStorage.setItem('loggedRole', updatedData['Role']);
+                
+                // Update Foto Profil jika ada perubahan
+                if (updatedData['Foto Profil'] !== undefined) {
+                    sessionStorage.setItem('loggedPhoto', updatedData['Foto Profil']);
+                    applyProfilePicture(updatedData['Foto Profil'], sessionStorage.getItem('loggedUsername'));
+                }
                 
                 alert('Data profil berhasil diperbarui!');
                 closeModal('settingsModal');
@@ -2361,15 +2404,18 @@
             });
         });
 
-        // --- CEK SESI (DITETAPKAN DI BAWAH) ---
+        // --- CEK SESI ---
         if (sessionStorage.getItem('isLoggedIn') === 'true') {
             loginScreen.style.display = 'none';
             appContainer.style.display = 'flex';
             const savedUser = sessionStorage.getItem('loggedUsername') || 'User';
             const savedRole = sessionStorage.getItem('loggedRole') || 'Guest';
+            const savedPhoto = sessionStorage.getItem('loggedPhoto') || '';
+            
             displayUsername.textContent = savedUser;
-            displayAvatar.textContent = savedUser.charAt(0).toUpperCase();
             displayRole.textContent = `● ${savedRole}`;
+            
+            applyProfilePicture(savedPhoto, savedUser);
             applyRolePermissions();
 
             const lastTitle = sessionStorage.getItem('lastPageTitle') || 'Overview';

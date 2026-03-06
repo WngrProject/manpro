@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Man-Pro</title>
+    <title>Man Pro</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -889,11 +889,32 @@
             }
         });
 
-        // Helper untuk menerapkan Foto Profil
+        // Helper untuk menerapkan Foto Profil (Dimodifikasi untuk membaca link Google Drive dengan baik)
         const applyProfilePicture = (photoUrl, username) => {
             const avatarDiv = document.getElementById('displayAvatar');
-            if (photoUrl && photoUrl.trim().startsWith('http')) {
-                avatarDiv.style.backgroundImage = `url('${photoUrl.trim()}')`;
+            let finalUrl = photoUrl ? photoUrl.trim() : '';
+
+            // Otomatis format URL Google Drive menjadi direct image link (uc?export=view)
+            if (finalUrl.includes('drive.google.com')) {
+                let fileId = '';
+                // Pattern untuk format sharing default Google Drive (/file/d/ID/view)
+                const matchFileD = finalUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                // Pattern untuk format yang menggunakan parameter id (?id=ID)
+                const matchId = finalUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+
+                if (matchFileD && matchFileD[1]) {
+                    fileId = matchFileD[1];
+                } else if (matchId && matchId[1]) {
+                    fileId = matchId[1];
+                }
+
+                if (fileId) {
+                    finalUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+                }
+            }
+
+            if (finalUrl.startsWith('http')) {
+                avatarDiv.style.backgroundImage = `url('${finalUrl}')`;
                 avatarDiv.style.backgroundSize = 'cover';
                 avatarDiv.style.backgroundPosition = 'center';
                 avatarDiv.textContent = '';

@@ -226,7 +226,7 @@
         .btn-icon { background: var(--card-bg); border: 1px solid var(--border-strong); color: var(--text-muted); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); font-size: 14px; position: relative;}
         .btn-icon:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); color: var(--primary-blue); border-color: var(--primary-blue); }
         
-        .action-add { background: var(--primary-blue); color: #ffffff; border: none; padding: 0 16px; width: auto; font-weight: 500; letter-spacing: 0.02em;}
+        .action-add { background: var(--primary-blue); color: #ffffff; border: none; font-weight: 500; letter-spacing: 0.02em;}
         .action-add:hover { background: var(--primary-hover); color: white; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3); border-color: transparent;}
         
         .action-excel { color: #10b981; } .action-excel:hover { color: #059669; border-color: #10b981; }
@@ -654,7 +654,7 @@
                                 
                                 <div style="width: 1px; height: 24px; background: var(--border-strong); margin: 0 4px;"></div>
                                 
-                                <button class="btn-icon action-add" id="btnTambahProyek" title="Tambah Data"><i class="fa-solid fa-plus" style="margin-right: 6px;"></i> Tambah Data</button>
+                                <button class="btn-icon action-add" id="btnTambahProyek" title="Tambah Data"><i class="fa-solid fa-plus"></i></button>
                             </div>
 
                         </div>
@@ -820,7 +820,25 @@
                     <i class="fa-solid fa-spinner fa-spin"></i> Memuat Data Profil...
                 </div>
                 <div id="settingsProfileContent" style="display: flex; flex-direction: column; gap: 16px;">
-                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('settingsModal')">Batal</button>
+                <button class="btn btn-primary" id="btnSaveSettings"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-content" style="width: 380px; padding: 32px 24px; text-align: center; transform: scale(0.95); transition: transform 0.3s ease;">
+            <div style="width: 64px; height: 64px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+                <i class="fa-solid fa-right-from-bracket" style="font-size: 28px; color: #ef4444;"></i>
+            </div>
+            <h3 style="font-size: 20px; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">Konfirmasi Logout</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Apakah Anda yakin ingin keluar dari sesi ini?</p>
+            <div style="display: flex; justify-content: center; gap: 12px;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal('logoutModal')">Batal</button>
+                <button class="btn btn-primary" style="flex: 1; background: #ef4444; border-color: #ef4444; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);" id="btnConfirmLogout">Ya, Keluar</button>
             </div>
         </div>
     </div>
@@ -963,20 +981,22 @@
 
         document.getElementById('btnLoginLogout').addEventListener('click', () => {
             closeAllDropdowns();
-            const confirmLogout = confirm("Apakah Anda yakin ingin keluar (Logout)?");
-            if(confirmLogout) {
-                sessionStorage.removeItem('isLoggedIn');
-                sessionStorage.removeItem('loggedUsername');
-                sessionStorage.removeItem('loggedRole');
-                sessionStorage.removeItem('lastPageTitle');
-                sessionStorage.removeItem('lastPageCollection');
-                sessionStorage.removeItem('lastPageType');
-                
-                loginForm.reset();
-                appContainer.style.display = 'none';
-                loginScreen.style.display = 'flex';
-                loginError.style.display = 'none';
-            }
+            document.getElementById('logoutModal').classList.add('show');
+        });
+
+        document.getElementById('btnConfirmLogout').addEventListener('click', () => {
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('loggedUsername');
+            sessionStorage.removeItem('loggedRole');
+            sessionStorage.removeItem('lastPageTitle');
+            sessionStorage.removeItem('lastPageCollection');
+            sessionStorage.removeItem('lastPageType');
+            
+            loginForm.reset();
+            appContainer.style.display = 'none';
+            loginScreen.style.display = 'flex';
+            loginError.style.display = 'none';
+            closeModal('logoutModal');
         });
 
         const tableHeaders = {
@@ -1223,6 +1243,8 @@
         });
 
         // --- FETCH PROFILE & PENGATURAN MODAL ---
+        let currentSettingsDocId = null;
+
         document.getElementById('btnSettingsToggle').addEventListener('click', async () => {
             closeAllDropdowns();
             document.getElementById('settingsModal').classList.add('show');
@@ -1241,18 +1263,25 @@
                 const querySnapshot = await getDocs(q);
                 
                 if (!querySnapshot.empty) {
-                    const userData = querySnapshot.docs[0].data();
-                    let html = '';
+                    const docSnap = querySnapshot.docs[0];
+                    currentSettingsDocId = docSnap.id;
+                    const userData = docSnap.data();
+                    
+                    let html = '<div id="formEditProfile" style="display: flex; flex-direction: column; gap: 16px;">';
                     for (const key in userData) {
-                        if (key.toLowerCase() !== 'password') {
-                            html += `
-                                <div class="form-group" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                                    <label style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">${key}</label>
-                                    <div style="font-size: 14px; font-weight: 500; color: var(--text-main); margin-top: 4px;">${userData[key]}</div>
-                                </div>
-                            `;
-                        }
+                        const isPassword = key.toLowerCase() === 'password';
+                        const isUsername = key.toLowerCase() === 'username';
+                        const inputType = isPassword ? 'password' : 'text';
+                        const readOnlyAttr = isUsername ? 'readonly title="Username tidak dapat diubah"' : '';
+                        
+                        html += `
+                            <div class="form-group">
+                                <label style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">${key}</label>
+                                <input type="${inputType}" class="form-control profile-input" data-key="${key}" value="${userData[key]}" ${readOnlyAttr}>
+                            </div>
+                        `;
                     }
+                    html += '</div>';
                     profileContent.innerHTML = html;
                 } else {
                     profileContent.innerHTML = '<div style="color: red; text-align: center;">Data profil tidak ditemukan di Firebase.</div>';
@@ -1265,6 +1294,38 @@
             }
         });
 
+        document.getElementById('btnSaveSettings').addEventListener('click', async () => {
+            if (!currentSettingsDocId) return;
+
+            const btnSave = document.getElementById('btnSaveSettings');
+            const originalText = btnSave.innerHTML;
+            btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+            btnSave.disabled = true;
+
+            try {
+                const inputs = document.querySelectorAll('.profile-input');
+                let updatedData = {};
+                inputs.forEach(input => {
+                    const key = input.getAttribute('data-key');
+                    updatedData[key] = input.value;
+                });
+
+                const docRef = doc(db, 'users', currentSettingsDocId);
+                await updateDoc(docRef, updatedData);
+
+                if (updatedData['Role']) sessionStorage.setItem('loggedRole', updatedData['Role']);
+                
+                alert('Data profil berhasil diperbarui!');
+                closeModal('settingsModal');
+                applyRolePermissions();
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                alert('Gagal menyimpan profil! Silakan coba lagi.');
+            } finally {
+                btnSave.innerHTML = originalText;
+                btnSave.disabled = false;
+            }
+        });
 
         // --- UPDATE UI LOGIC (Accordion Navigasi) ---
         document.getElementById('btnToggleSidebar').addEventListener('click', function() {

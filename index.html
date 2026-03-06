@@ -208,7 +208,7 @@
         .mini-table tr:last-child td { border-bottom: none; }
 
         /* Activity Timeline */
-        .activity-list { display: flex; flex-direction: column; gap: 24px; }
+        .activity-list { display: flex; flex-direction: column; gap: 24px; max-height: 320px; overflow-y: auto; padding-right: 10px; }
         .activity-item { display: flex; flex-direction: column; gap: 4px; position: relative; padding-left: 20px; border-left: 2px solid var(--border-strong); margin-left: 8px;}
         .activity-item::before { content: ''; position: absolute; left: -6px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: inherit; border: 2px solid var(--card-bg); background-color: var(--primary-blue); }
         .activity-item h5 { font-size: 13px; font-weight: 600; color: var(--text-main); }
@@ -475,7 +475,7 @@
                     </button>
                     
                     <div class="dropdown-wrapper" style="margin-left: 8px;">
-                        <div class="user-profile" id="btnMyAccount" style="cursor: pointer; padding-left: 16px; border-left: 1px solid var(--border-strong);" title="Akun Saya">
+                        <div class="user-profile" id="btnMyAccount" style="cursor: pointer; padding-left: 16px; border-left: 0px solid var(--border-strong);" title="Akun Saya">
                             <div class="user-info">
                                 <span class="name" id="displayUsername">wngr.project@gmail.com</span>
                                 <span class="role"><span class="dot-online"></span> <span id="displayRole">ADMIN</span></span>
@@ -1986,9 +1986,18 @@
                             responsive: true, 
                             maintainAspectRatio: false, 
                             cutout: '65%', 
-                            layout: { padding: 30 },
+                            layout: { padding: { top: 10, bottom: 20 } },
                             plugins: { 
-                                legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 20 } },
+                                legend: { 
+                                    position: 'bottom', 
+                                    labels: { 
+                                        usePointStyle: true, 
+                                        boxWidth: 8, 
+                                        padding: 20,
+                                        font: { family: "'Inter', sans-serif", size: 12, weight: '500' },
+                                        color: '#475569'
+                                    } 
+                                },
                                 tooltip: {
                                     callbacks: {
                                         label: function(context) {
@@ -2021,8 +2030,19 @@
                                 } 
                             },
                             scales: {
-                                x: { grid: { display: false } },
-                                y: { border: { dash: [4, 4] }, grid: { color: '#f1f5f9' } }
+                                x: { 
+                                    grid: { display: false },
+                                    ticks: { color: '#3b82f6', font: { weight: '600', family: "'Inter', sans-serif" } }
+                                },
+                                y: { 
+                                    border: { dash: [4, 4] }, 
+                                    grid: { color: '#f1f5f9' },
+                                    ticks: { 
+                                        color: '#10b981', 
+                                        font: { weight: '600', family: "'Inter', sans-serif" },
+                                        callback: function(value) { return 'Rp ' + formatDecimalUS(value); } 
+                                    }
+                                }
                             }
                         }
                     });

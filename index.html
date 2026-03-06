@@ -210,7 +210,7 @@
         /* Activity Timeline */
         .activity-list { display: flex; flex-direction: column; gap: 24px; }
         .activity-item { display: flex; flex-direction: column; gap: 4px; position: relative; padding-left: 20px; border-left: 2px solid var(--border-strong); margin-left: 8px;}
-        .activity-item::before { content: ''; position: absolute; left: -6px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--primary-blue); border: 2px solid var(--card-bg); }
+        .activity-item::before { content: ''; position: absolute; left: -6px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: inherit; border: 2px solid var(--card-bg); background-color: var(--primary-blue); }
         .activity-item h5 { font-size: 13px; font-weight: 600; color: var(--text-main); }
         .activity-item p { font-size: 13px; color: var(--text-muted); margin: 0; }
         .activity-item span { font-size: 10px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px;}
@@ -518,7 +518,7 @@
                             </div>
                             <div class="kpi-bottom">
                                 <p>Total Nilai Proyek</p>
-                                <h2 id="kpi-nilai-proyek">Rp 0</h2>
+                                <h2 id="kpi-nilai-proyek">Rp 0.00</h2>
                             </div>
                         </div>
                         <div class="kpi-card">
@@ -528,7 +528,7 @@
                             </div>
                             <div class="kpi-bottom">
                                 <p>Total Invoice</p>
-                                <h2 id="kpi-nilai-invoice">Rp 0</h2>
+                                <h2 id="kpi-nilai-invoice">Rp 0.00</h2>
                             </div>
                         </div>
                         <div class="kpi-card">
@@ -538,7 +538,7 @@
                             </div>
                             <div class="kpi-bottom">
                                 <p>Total Terbayar</p>
-                                <h2 id="kpi-nilai-terbayar">Rp 0</h2>
+                                <h2 id="kpi-nilai-terbayar">Rp 0.00</h2>
                             </div>
                         </div>
                     </div>
@@ -551,7 +551,7 @@
                                 <p>Dapatkan ringkasan cerdas kondisi proyek saat ini.</p>
                             </div>
                         </div>
-                        <button class="btn-ai"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Summary</button>
+                        <button class="btn-ai" onclick="document.getElementById('btnTambahProyek').click()"><i class="fa-solid fa-plus"></i> Tambah Data</button>
                     </div>
 
                     <div class="chart-grid">
@@ -571,41 +571,28 @@
                                 <h3>Proyek Terbaru</h3>
                                 <a href="#" class="link-all" onclick="loadPage('Semua Proyek', 'dball', 'table', document.querySelectorAll('.nav-item')[1])">Lihat Semua</a>
                             </div>
-                            <table class="mini-table">
-                                <thead>
-                                    <tr>
-                                        <th>NAMA PROYEK</th>
-                                        <th>STATUS</th>
-                                        <th>PEMBERI</th>
-                                        <th style="text-align: right;">NILAI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="font-weight: 500;">Ring 1 Area Jakarta</td>
-                                        <td><span class="badge badge-progress">In Progress</span></td>
-                                        <td>PT Telkom Indonesia</td>
-                                        <td style="text-align: right; font-weight: 600;">Rp 120.000.000</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div style="overflow-x: auto; width: 100%;">
+                                <table class="mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>PEMBERI PROYEK</th>
+                                            <th>URAIAN PROYEK</th>
+                                            <th style="text-align: right;">NILAI PROYEK</th>
+                                            <th style="text-align: right;">NILAI INVOICE</th>
+                                            <th style="text-align: right;">NILAI TERBAYAR</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-proyek-terbaru">
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         
                         <div class="card" style="padding: 24px;">
                             <div class="section-header">
                                 <h3>Aktivitas Terkini</h3>
                             </div>
-                            <div class="activity-list">
-                                <div class="activity-item">
-                                    <h5>Admin</h5>
-                                    <p>Mengedit data Proyek Ring 2</p>
-                                    <span>2 JAM YANG LALU</span>
-                                </div>
-                                <div class="activity-item" style="border-left-color: #fef08a;">
-                                    <h5>System</h5>
-                                    <p>Invoice otomatis diterbitkan</p>
-                                    <span>5 JAM YANG LALU</span>
-                                </div>
+                            <div class="activity-list" id="activity-list-container">
                             </div>
                         </div>
                     </div>
@@ -1505,6 +1492,7 @@
                 secTable.classList.add('hidden');
                 if(secMap) secMap.classList.add('hidden');
                 renderOverviewChart(collectionName);
+                renderActivityTimeline();
             } else if (type === 'map') {
                 secOverview.classList.add('hidden');
                 secTable.classList.add('hidden');
@@ -1547,6 +1535,26 @@
                 applyRolePermissions(); 
             }
         };
+
+        function renderActivityTimeline() {
+            let historyData = JSON.parse(localStorage.getItem('dataHistory') || '[]');
+            let activityContainer = document.getElementById('activity-list-container');
+            if(activityContainer) {
+                let actHTML = '';
+                historyData.slice(0, 5).forEach((h, idx) => {
+                    let borderColor = idx % 2 === 0 ? 'var(--primary-blue)' : '#fef08a';
+                    actHTML += `
+                    <div class="activity-item" style="border-left-color: ${borderColor};">
+                        <h5>${h.user}</h5>
+                        <span style="font-size: 10px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em;">${h.time}</span>
+                        <p style="margin-top: 4px;">${h.action} <span style="font-weight: 600;">${h.collectionName}</span></p>
+                    </div>
+                    `;
+                });
+                if(historyData.length === 0) actHTML = '<p style="color:var(--text-muted); font-size:13px;">Belum ada aktivitas.</p>';
+                activityContainer.innerHTML = actHTML;
+            }
+        }
 
         // --- FUNGSI RENDER TABEL & SNAPSHOT LISTENER ---
         function renderTable(colName) {
@@ -1899,6 +1907,8 @@
                     let kpiNilaiProyek = 0;
                     let kpiNilaiInvoice = 0;
                     let kpiNilaiTerbayar = 0;
+                    
+                    let allProjectsOverview = [];
 
                     snapshot.forEach(doc => {
                         const data = doc.data();
@@ -1914,18 +1924,44 @@
                         kpiNilaiProyek += nilai;
                         kpiNilaiInvoice += invoice;
                         kpiNilaiTerbayar += terbayar;
+                        
+                        allProjectsOverview.push(data);
                     });
 
-                    // Update UI Teks
+                    // Update UI Teks KPI
                     const elKpiProyek = document.getElementById('kpi-total-proyek');
                     const elKpiNilai = document.getElementById('kpi-nilai-proyek');
                     const elKpiInvoice = document.getElementById('kpi-nilai-invoice');
                     const elKpiTerbayar = document.getElementById('kpi-nilai-terbayar');
 
                     if(elKpiProyek) elKpiProyek.textContent = kpiTotalProyek;
-                    if(elKpiNilai) elKpiNilai.textContent = "Rp " + formatRupiahBulat(kpiNilaiProyek);
-                    if(elKpiInvoice) elKpiInvoice.textContent = "Rp " + formatRupiahBulat(kpiNilaiInvoice);
-                    if(elKpiTerbayar) elKpiTerbayar.textContent = "Rp " + formatRupiahBulat(kpiNilaiTerbayar);
+                    if(elKpiNilai) elKpiNilai.textContent = "Rp " + formatDecimalUS(kpiNilaiProyek);
+                    if(elKpiInvoice) elKpiInvoice.textContent = "Rp " + formatDecimalUS(kpiNilaiInvoice);
+                    if(elKpiTerbayar) elKpiTerbayar.textContent = "Rp " + formatDecimalUS(kpiNilaiTerbayar);
+                    
+                    // Render Proyek Terbaru Data
+                    allProjectsOverview.sort((a, b) => {
+                        let da = a["Tanggal PO"]?.seconds || 0;
+                        let db = b["Tanggal PO"]?.seconds || 0;
+                        return db - da; // Descending order
+                    });
+                    
+                    let tbodyTerbaru = document.getElementById('tbody-proyek-terbaru');
+                    if (tbodyTerbaru) {
+                        let htmlTerbaru = '';
+                        allProjectsOverview.slice(0, 5).forEach(p => {
+                            htmlTerbaru += `
+                            <tr>
+                                <td style="font-weight: 500;">${p['Pemberi Proyek'] || '-'}</td>
+                                <td>${p['Uraian Proyek'] || '-'}</td>
+                                <td class="angka">Rp ${formatDecimalUS(p['Nilai Proyek'])}</td>
+                                <td class="angka">Rp ${formatDecimalUS(p['Nilai Invoice'])}</td>
+                                <td class="angka">Rp ${formatDecimalUS(p['Nilai Terbayar'])}</td>
+                            </tr>`;
+                        });
+                        if(allProjectsOverview.length === 0) htmlTerbaru = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: var(--text-muted);">Tidak ada data proyek</td></tr>';
+                        tbodyTerbaru.innerHTML = htmlTerbaru;
+                    }
 
                     const labels = Object.keys(statCounts);
                     if(chartInstanceStatus) chartInstanceStatus.destroy();
@@ -1946,17 +1982,44 @@
                     chartInstanceStatus = new Chart(ctxStatus, {
                         type: 'doughnut',
                         data: { labels: labels, datasets: [{ data: Object.values(statCounts), backgroundColor: statusColorsArray, borderWidth: 4 }] },
-                        options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 20 } } } }
+                        options: { 
+                            responsive: true, 
+                            maintainAspectRatio: false, 
+                            cutout: '65%', 
+                            layout: { padding: 30 },
+                            plugins: { 
+                                legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 20 } },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.label || '';
+                                            let count = context.parsed || 0;
+                                            let nilai = statValues[label] || 0;
+                                            return ` ${label}: ${count} Proyek (Rp ${formatDecimalUS(nilai)})`;
+                                        }
+                                    }
+                                }
+                            } 
+                        }
                     });
 
                     const ctxNilai = document.getElementById('chartNilai').getContext('2d');
                     chartInstanceNilai = new Chart(ctxNilai, {
                         type: 'bar',
-                        data: { labels: labels, datasets: [{ label: 'Total Nilai (Rp)', data: Object.values(statValues), backgroundColor: '#4f46e5', borderRadius: 4, barThickness: 40 }] },
+                        data: { labels: labels, datasets: [{ label: 'Total Nilai (Rp)', data: Object.values(statValues), backgroundColor: statusColorsArray, borderRadius: 4, barThickness: 40 }] },
                         options: { 
                             responsive: true, 
                             maintainAspectRatio: false, 
-                            plugins: { legend: { display: false } },
+                            plugins: { 
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return ` Rp ${formatDecimalUS(context.raw)}`;
+                                        }
+                                    }
+                                } 
+                            },
                             scales: {
                                 x: { grid: { display: false } },
                                 y: { border: { dash: [4, 4] }, grid: { color: '#f1f5f9' } }

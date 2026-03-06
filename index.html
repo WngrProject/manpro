@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Man Pro - System Dashboard</title>
+    <title>Man Pro</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -1456,7 +1456,7 @@
                 } else {
                     let thStyle = isNumeric ? 'text-align: right;' : '';
                     if (lowerCol === 'keterangan') {
-                        thStyle += ' width: 350px; min-width: 350px; max-width: 350px; white-space: normal;';
+                        thStyle += ' width: 600px; min-width: 600px; max-width: 600px; white-space: normal;';
                     }
                     headerHTML += `<th${thClass} style="${thStyle}"${onClickAction}>${col}${sortIcon}</th>`;
                 }
@@ -1528,7 +1528,7 @@
                     // Menambahkan styling khusus untuk kolom 'keterangan'
                     let tdStyle = "";
                     if (lowerCol === 'keterangan') {
-                        tdStyle = "width: 350px; min-width: 350px; max-width: 350px; white-space: normal; overflow-wrap: break-word;";
+                        tdStyle = "width: 600px; min-width: 600px; max-width: 600px; white-space: normal; overflow-wrap: break-word;";
                     }
 
                     bodyHTML += `<td ${alignClass} style="${tdStyle}">${value}</td>`;

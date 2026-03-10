@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -16,50 +16,50 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        /* --- RESET & PREMIUM CSS VARIABLES (SaaS Style) --- */
+        /* --- RESET & CSS VARIABLES --- */
         :root {
-            --primary-blue: #1E90FF;
-            --primary-hover: #4338ca;
-            --primary-light: #E0FFFF; 
+            --primary-blue: #5C55FA; 
+            --primary-hover: #4841E0;
+            --primary-light: #EAE6FF; 
             
-            --bg-color: #f8fafc; /* Latar abu-abu sangat muda/bersih */
-            --sidebar-bg: #ffffff; 
-            --card-bg: #ffffff;
+            --bg-color: #F4F5F7; 
+            --sidebar-bg: #FFFFFF; 
+            --card-bg: #FFFFFF;
             
-            --text-main: #0f172a;
-            --text-muted: #64748b; 
-            --text-light: #94a3b8; 
+            --text-main: #172B4D; 
+            --text-muted: #6B778C; 
+            --text-light: #A5ADBA; 
             
-            --border-color: #f1f5f9; 
-            --border-strong: #e2e8f0;
+            --border-color: #EBECF0; 
+            --border-strong: #DFE1E6;
             
             /* Premium Soft Shadows */
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.025);
+            --shadow-sm: 0 1px 1px rgba(9, 30, 66, 0.05), 0 0 1px rgba(9, 30, 66, 0.13);
+            --shadow-md: 0 4px 8px -2px rgba(9, 30, 66, 0.08), 0 0 1px rgba(9, 30, 66, 0.13);
+            --shadow-lg: 0 8px 16px -4px rgba(9, 30, 66, 0.08), 0 0 1px rgba(9, 30, 66, 0.13);
             
             --sidebar-width: 260px;
             --sidebar-collapsed-width: 76px;
             
-            --th-bg: #E0FFFF; 
-            --row-hover: #f1f5f9;
-            --dropdown-bg: #ffffff;
+            --th-bg: transparent; 
+            --row-hover: #FAFBFC;
+            --dropdown-bg: #FFFFFF;
         }
 
-        /* --- DARK MODE (Tetap Dipertahankan) --- */
+        /* --- PENYEMPURNAAN DARK MODE (SLATE/BIRU-ABU GELAP) --- */
         :root[data-theme="dark"] {
-            --bg-color: #0b0f19;
-            --sidebar-bg: #111827;
-            --text-main: #f9fafb;
-            --text-muted: #F0F8FF;
-            --text-light: #6b7280;
-            --border-color: #1f2937;
-            --border-strong: #374151;
-            --card-bg: #111827;
-            --th-bg: #1f2937; 
-            --row-hover: #1e293b;
-            --dropdown-bg: #111827;
-            --primary-light: #1f2937;
+            --bg-color: #0f172a; /* Slate 900 */
+            --sidebar-bg: #1e293b; /* Slate 800 */
+            --text-main: #f8fafc; /* Slate 50 */
+            --text-muted: #cbd5e1; /* Slate 300 */
+            --text-light: #94a3b8; /* Slate 400 */
+            --border-color: #334155; /* Slate 700 */
+            --border-strong: #475569; /* Slate 600 */
+            --card-bg: #1e293b;
+            --th-bg: transparent; 
+            --row-hover: #334155;
+            --dropdown-bg: #1e293b;
+            --primary-light: #334155;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; font-size: 13px; }
@@ -72,15 +72,33 @@
             overflow: hidden; 
             -webkit-font-smoothing: antialiased; 
             -moz-osx-font-smoothing: grayscale; 
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- GLOBAL SMOOTH ANIMATIONS --- */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* --- NEW ANIMATION: FADE SLIDE DOWN --- */
+        @keyframes fadeSlideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-down {
+            animation: fadeSlideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         /* --- LOGIN SCREEN --- */
-        #loginScreen { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; }
-        .login-box { background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); width: 380px; padding: 40px 32px; display: flex; flex-direction: column; gap: 20px; }
+        #loginScreen { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; background-color: var(--bg-color); }
+        .login-box { background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); width: 380px; padding: 40px 32px; display: flex; flex-direction: column; gap: 20px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .login-header { text-align: center; }
         .login-header i { font-size: 36px; color: var(--primary-blue); margin-bottom: 12px; }
-        .login-header h2 { font-size: 22px; color: var(--text-main); font-weight: 600; margin-bottom: 4px; letter-spacing: -0.02em;}
+        .login-header h2 { font-size: 22px; color: var(--text-main); font-weight: 700; margin-bottom: 4px; letter-spacing: -0.02em;}
         .login-header p { font-size: 13px; color: var(--text-muted); }
         .login-error { color: #ef4444; font-size: 12px; text-align: center; display: none; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2); }
 
@@ -89,237 +107,273 @@
         /* --- SIDEBAR --- */
         .sidebar { 
             width: var(--sidebar-width); min-width: var(--sidebar-width); 
-            background: var(--sidebar-bg); border-right: 1px solid var(--border-strong); 
+            background: var(--sidebar-bg); 
+            box-shadow: 1px 0 0 0 rgba(9, 30, 66, 0.06);
             display: flex; flex-direction: column; z-index: 50; 
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Pergerakan sidebar yang jauh lebih smooth */
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-x: hidden; white-space: nowrap; position: relative;
         }
-        .sidebar.collapsed { width: var(--sidebar-collapsed-width); min-width: var(--sidebar-collapsed-width); }
-        .sidebar.collapsed:not(:hover) .nav-text, .sidebar.collapsed:not(:hover) .chevron, .sidebar.collapsed:not(:hover) .sidebar-title { opacity: 0; visibility: hidden; width: 0; }
-        .sidebar.collapsed:not(:hover) .sidebar-header { justify-content: center; padding: 20px 0; }
-        .sidebar.collapsed:hover { width: var(--sidebar-width); min-width: var(--sidebar-width); box-shadow: var(--shadow-lg); position: absolute; height: 100%; }
-
-        .sidebar-header { padding: 20px 24px; font-size: 18px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 12px; letter-spacing: -0.02em; border-bottom: none;}
         
-        /* Logo Kotak Biru dengan Ikon Putih */
+        .sidebar.collapsed { width: var(--sidebar-collapsed-width); min-width: var(--sidebar-collapsed-width); }
+        .sidebar.collapsed:not(:hover) .nav-text, .sidebar.collapsed:not(:hover) .chevron, .sidebar.collapsed:not(:hover) .sidebar-title { opacity: 0; visibility: hidden; width: 0; transition: opacity 0.2s; }
+        .sidebar.collapsed:not(:hover) .sidebar-header { justify-content: center; padding: 20px 0; }
+        
+        /* Responsive sidebar menu with hover effect */
+        .sidebar.collapsed:hover { 
+            width: var(--sidebar-width); 
+            min-width: var(--sidebar-width); 
+            box-shadow: var(--shadow-lg); 
+            position: absolute; 
+            height: 100%; 
+        }
+        .sidebar.collapsed:hover .nav-text, .sidebar.collapsed:hover .chevron, .sidebar.collapsed:hover .sidebar-title { 
+            opacity: 1; 
+            visibility: visible; 
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+        }
+
+        .sidebar-header { padding: 20px 24px; font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 12px; letter-spacing: -0.02em; }
         .sidebar-logo { width: 32px; height: 32px; background: var(--primary-blue); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
         
         .nav-menu { list-style: none; padding: 10px 0; overflow-y: auto; flex: 1; }
         .nav-menu::-webkit-scrollbar { width: 4px; }
         .nav-menu::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 
-        .nav-category { padding: 16px 24px 8px 24px; font-weight: 600; font-size: 11px; color: var(--text-light); letter-spacing: 0.05em; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; border: none; }
-        .nav-category:hover { color: var(--text-muted); }
-        .nav-category .chevron { transition: transform 0.3s; font-size: 10px; }
+        .nav-category { padding: 16px 24px 8px 24px; font-weight: 600; font-size: 11px; color: var(--text-main); letter-spacing: 0.05em; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: none; text-transform: uppercase; }
+        .nav-category:hover { color: var(--primary-blue); }
+        .nav-category .chevron { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); font-size: 10px; }
         .nav-category.open .chevron { transform: rotate(180deg); }
         
-        .submenu { list-style: none; display: none; padding-bottom: 8px; }
+        .submenu { list-style: none; display: none; padding-bottom: 8px; animation: fadeSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .submenu.open { display: block; }
         
-        /* Active Menu Rounded Style (Sesuai Gambar) */
-        .nav-item { padding: 10px 16px; margin: 2px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; color: var(--text-muted); font-weight: 500; transition: all 0.2s ease; border-left: none; }
-        .nav-item i { margin-right: 12px; width: 20px; text-align: center; font-size: 15px; color: var(--text-light); transition: all 0.2s; }
-        .nav-item:hover { background-color: var(--row-hover); color: var(--text-main); }
-        .nav-item:hover i { color: var(--text-muted); }
+        .nav-item { padding: 10px 16px; margin: 4px 16px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; color: var(--text-main); font-weight: 500; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-item i { margin-right: 12px; width: 20px; text-align: center; font-size: 15px; color: var(--text-main); transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-item:hover { background-color: var(--row-hover); transform: translateX(4px); }
         
-        .nav-item.active { background-color: var(--primary-light); color: var(--primary-blue); font-weight: 600; }
-        .nav-item.active i { color: var(--primary-blue) !important; filter: none; transform: none;}
+        .nav-item.active { background: linear-gradient(90deg, var(--primary-blue) 0%, #8A84FF 100%); color: #ffffff; font-weight: 600; }
+        .nav-item.active i { color: #ffffff !important; }
 
         /* --- TOPBAR --- */
         .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; width: 100%; }
         
-        .topbar { background: var(--sidebar-bg); padding: 14px 28px; border-bottom: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: space-between; }
+        .topbar { background: var(--bg-color); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         
         .topbar-left { display: flex; align-items: center; gap: 20px; flex: 1;}
-        .btn-toggle { background: transparent; border: none; font-size: 18px; color: var(--text-muted); cursor: pointer; padding: 6px; border-radius: 8px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn-toggle:hover { background: var(--row-hover); color: var(--text-main); }
+        .btn-toggle { background: transparent; border: none; font-size: 16px; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 6px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; }
+        .btn-toggle:hover { background: var(--border-strong); color: var(--text-main); transform: scale(1.05); }
 
-        .page-header { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 600; color: var(--text-main); letter-spacing: -0.02em; margin-right: 10px;}
-        .page-header i { display: none; } /* Hide icon in header text to match image */
+        .page-header { margin: 0; display: flex; align-items: center; font-size: 22px; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em; margin-right: 10px;}
 
-        /* Pill Search Bar */
-        .search-bar-top { background: var(--bg-color); border-radius: 9999px; padding: 8px 16px; display: flex; align-items: center; gap: 10px; width: 350px; border: 1px solid var(--border-strong); transition: all 0.2s; }
-        .search-bar-top:focus-within { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); background: var(--sidebar-bg); }
-        .search-bar-top input { border: none; background: transparent; outline: none; width: 100%; color: var(--text-main); font-size: 13px; font-family: 'Inter', sans-serif;}
+        .search-bar-top { background: var(--card-bg); border-radius: 6px; padding: 8px 16px; display: flex; align-items: center; gap: 10px; width: 350px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .search-bar-top:focus-within { border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(92, 85, 250, 0.1); width: 380px; }
+        .search-bar-top input { border: none; background: transparent; outline: none; width: 100%; color: var(--text-main); font-size: 13px; }
         .search-bar-top input::placeholder { color: var(--text-light); }
         
-        .topbar-right { display: flex; align-items: center; gap: 16px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; padding-left: 16px; border-left: none; transition: background 0.2s; border-radius: 8px; padding-right: 8px;}
-        .user-profile:hover { background-color: var(--row-hover); }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .user-profile { display: flex; align-items: center; gap: 12px; padding-left: 16px; transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 8px; padding-right: 8px;}
+        .user-profile:hover { background-color: var(--border-color); }
         .user-info { display: flex; flex-direction: column; align-items: flex-end; }
         .user-info .name { font-size: 13px; font-weight: 600; color: var(--text-main); }
-        .user-info .role { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em;}
-        .dot-online { width: 6px; height: 6px; background-color: #10b981; border-radius: 50%; display: inline-block; }
+        .user-info .role { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em;}
+        .dot-online { width: 6px; height: 6px; background-color: #36B37E; border-radius: 50%; display: inline-block; }
         
-        .avatar { width: 36px; height: 36px; background: url('https://ui-avatars.com/api/?name=Admin&background=random&color=fff') center/cover; border-radius: 50%; box-shadow: var(--shadow-sm); font-size: 0; border: none;}
+        .avatar { width: 36px; height: 36px; background: url('https://ui-avatars.com/api/?name=Admin&background=random&color=fff') center/cover; border-radius: 50%; border: none;}
 
         /* CONTENT AREA */
-        .content { flex: 1; padding: 28px; overflow-y: auto; }
+        .content { flex: 1; padding: 0 32px 32px 32px; overflow-y: auto; }
         
-        /* --- MODERN KPI CARDS (Sesuai Layout Gambar) --- */
+        /* --- CARDS & WIDGETS --- */
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 24px; }
-        .kpi-card { background: var(--card-bg); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 16px; transition: transform 0.2s; }
-        .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .card, .kpi-card { background: var(--card-bg); border-radius: 8px; box-shadow: var(--shadow-sm); border: none; padding: 24px; display: flex; flex-direction: column; gap: 16px; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .kpi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
         
         .kpi-top { display: flex; justify-content: space-between; align-items: flex-start; }
-        .kpi-icon-box { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .kpi-icon-box { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         
-        /* Icon Box Colors matching image */
-        .icon-box-blue { background: #eff6ff; color: #3b82f6; }
-        .icon-box-purple { background: #f5f3ff; color: #8b5cf6; }
-        .icon-box-orange { background: #fffbeb; color: #f59e0b; }
-        .icon-box-green { background: #ecfdf5; color: #10b981; }
+        .icon-box-blue { background: rgba(92, 85, 250, 0.15); color: #5C55FA; }
+        .icon-box-purple { background: rgba(0, 102, 68, 0.15); color: #006644; }
+        .icon-box-orange { background: rgba(255, 139, 0, 0.15); color: #FF8B00; }
+        .icon-box-green { background: rgba(7, 71, 166, 0.15); color: #0747A6; }
 
         .kpi-trend { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
-        .trend-up { color: #10b981; }
-        .trend-down { color: #ef4444; }
+        .trend-up { color: #36B37E; }
+        .trend-down { color: #FF5630; }
         
         .kpi-bottom { display: flex; flex-direction: column; gap: 4px; }
-        .kpi-bottom p { color: var(--text-muted); font-size: 13px; font-weight: 500; margin: 0; }
-        .kpi-bottom h2 { color: var(--text-main); font-size: 26px; font-weight: 700; margin: 0; letter-spacing: -0.03em; }
+        .kpi-bottom p { color: var(--text-muted); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin: 0; }
+        .kpi-bottom h2 { color: var(--text-main); font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -0.02em; }
 
-        /* --- AI BANNER --- */
-        .ai-banner { background: linear-gradient(90deg, #f5f3ff 0%, #e0e7ff 100%); border-radius: 12px; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border: 1px solid #ddd6fe; }
+        .ai-banner { background: linear-gradient(90deg, var(--primary-light) 0%, var(--card-bg) 100%); border-radius: 8px; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .ai-banner:hover { transform: scale(1.01); }
         .ai-left { display: flex; align-items: flex-start; gap: 16px; }
         .ai-icon { font-size: 20px; color: var(--primary-blue); margin-top: 2px;}
-        .ai-text h4 { font-size: 15px; font-weight: 600; color: #1e1b4b; margin-bottom: 4px; letter-spacing: -0.01em;}
-        .ai-text p { font-size: 13px; color: #4338ca; margin: 0;}
-        .btn-ai { background: var(--primary-blue); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.2s; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2); }
-        .btn-ai:hover { background: var(--primary-hover); }
+        .ai-text h4 { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+        .ai-text p { font-size: 13px; color: var(--text-muted); margin: 0;}
+        .btn-ai { background: var(--primary-blue); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-ai:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(92, 85, 250, 0.3); }
 
-        /* --- CHARTS & CARDS --- */
         .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;}
-        .card { background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden; }
         .chart-wrapper { padding: 24px; height: 380px; display: flex; flex-direction: column; }
-        .chart-title { font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 24px; letter-spacing: -0.01em; }
+        .chart-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 24px; }
         .chart-container { flex: 1; position: relative; width: 100%; height: 100%; display: flex; justify-content: center;}
 
-        /* --- BOTTOM LAYOUT (Proyek Terbaru & Aktivitas) --- */
         .bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .section-header h3 { font-size: 16px; font-weight: 600; color: var(--text-main); letter-spacing: -0.01em;}
-        .link-all { color: var(--primary-blue); font-size: 13px; font-weight: 500; text-decoration: none; }
-        .link-all:hover { text-decoration: underline; }
+        .section-header h3 { font-size: 16px; font-weight: 700; color: var(--text-main); }
+        .link-all { color: var(--primary-blue); font-size: 13px; font-weight: 600; text-decoration: none; transition: color 0.3s; }
+        .link-all:hover { color: var(--primary-hover); text-decoration: underline; }
 
-        /* Mini Table */
         .mini-table { width: 100%; border-collapse: collapse; }
-        .mini-table th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-strong); background: transparent;}
-        .mini-table td { padding: 16px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid var(--border-color); vertical-align: middle;}
+        .mini-table th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid var(--border-strong); }
+        .mini-table td { padding: 16px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid var(--border-color); vertical-align: middle; font-weight: 500; transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .mini-table tr:hover td { background-color: var(--row-hover); }
         .mini-table tr:last-child td { border-bottom: none; }
 
-        /* Activity Timeline */
         .activity-list { display: flex; flex-direction: column; gap: 24px; max-height: 320px; overflow-y: auto; padding-right: 10px; }
-        .activity-item { display: flex; flex-direction: column; gap: 4px; position: relative; padding-left: 20px; border-left: 2px solid var(--border-strong); margin-left: 8px;}
-        .activity-item::before { content: ''; position: absolute; left: -6px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: inherit; border: 2px solid var(--card-bg); background-color: var(--primary-blue); }
+        .activity-item { display: flex; flex-direction: column; gap: 4px; position: relative; padding-left: 20px; border-left: 2px solid var(--border-strong); margin-left: 8px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
+        .activity-item:hover { transform: translateX(4px); }
+        .activity-item::before { content: ''; position: absolute; left: -6px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: inherit; border: 2px solid var(--card-bg); background-color: var(--primary-blue); transition: background-color 0.3s; }
         .activity-item h5 { font-size: 13px; font-weight: 600; color: var(--text-main); }
         .activity-item p { font-size: 13px; color: var(--text-muted); margin: 0; }
         .activity-item span { font-size: 10px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px;}
 
-        /* --- DATA TABLES --- */
-        .table-toolbar { padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-strong); background: var(--card-bg); }
-        .toolbar-group { display: flex; gap: 8px; align-items: center; }
+        /* --- BORDIO STYLE DATA TABLES --- */
+        .table-toolbar { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); background: var(--card-bg); transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .toolbar-group { display: flex; gap: 12px; align-items: center; }
         
-        .search-bar { background: var(--bg-color); border-radius: 8px; padding: 8px 14px; display: flex; align-items: center; gap: 10px; width: 280px; border: 1px solid var(--border-strong); transition: all 0.2s; }
-        .search-bar:focus-within { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        .search-bar { background: var(--bg-color); border-radius: 6px; padding: 8px 14px; display: flex; align-items: center; gap: 10px; width: 280px; border: 1px solid var(--border-strong); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .search-bar:focus-within { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(92, 85, 250, 0.15); width: 300px; }
         .search-bar input { border: none; background: transparent; outline: none; width: 100%; color: var(--text-main); }
         
-        .btn-icon { background: var(--card-bg); border: 1px solid var(--border-strong); color: var(--text-muted); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); font-size: 14px; position: relative;}
-        .btn-icon:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); color: var(--primary-blue); border-color: var(--primary-blue); }
+        .btn-icon { background: var(--card-bg); border: 1px solid var(--border-strong); color: var(--text-muted); width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: var(--shadow-sm); font-size: 14px; position: relative;}
+        .btn-icon:hover { background: var(--row-hover); color: var(--text-main); transform: translateY(-2px); box-shadow: var(--shadow-md); }
         
-        .action-add { background: var(--primary-blue); color: #ffffff; border: none; font-weight: 500; letter-spacing: 0.02em;}
-        .action-add:hover { background: var(--primary-hover); color: white; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3); border-color: transparent;}
+        .action-add { background: var(--primary-blue); color: #ffffff; border: none; font-weight: 600; box-shadow: none;}
+        .action-add:hover { background: var(--primary-hover); color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(92, 85, 250, 0.3); }
         
-        .action-excel { color: #10b981; } .action-excel:hover { color: #059669; border-color: #10b981; }
-        .action-pdf { color: #ef4444; } .action-pdf:hover { color: #dc2626; border-color: #ef4444; }
-        .filter-active::after { content: ''; position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; background: #ef4444; border-radius: 50%; }
+        .filter-active::after { content: ''; position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; background: #FF5630; border-radius: 50%; }
 
         .dropdown-wrapper { position: relative; display: inline-flex; }
-        .dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 0; background: var(--dropdown-bg); border: 1px solid var(--border-strong); box-shadow: var(--shadow-lg); border-radius: 12px; z-index: 1000; min-width: 200px; max-height: 250px; overflow-y: auto; padding: 8px 0; }
-        .dropdown-menu.show { display: block; }
-        .dropdown-item { padding: 10px 16px; cursor: pointer; color: var(--text-main); transition: background 0.2s; display: flex; align-items: center; gap: 12px; }
+        .dropdown-menu { display: none; position: absolute; top: calc(100% + 12px); left: 0; background: var(--dropdown-bg); border: 1px solid var(--border-color); box-shadow: var(--shadow-lg); border-radius: 8px; z-index: 1000; min-width: 200px; max-height: 250px; overflow-y: auto; padding: 8px 0; opacity: 0; transform: translateY(-10px); transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .dropdown-menu.show { display: block; opacity: 1; transform: translateY(0); animation: fadeSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .dropdown-item { padding: 10px 16px; cursor: pointer; color: var(--text-main); transition: background 0.2s; display: flex; align-items: center; gap: 12px; font-weight: 500;}
         .dropdown-item:hover { background: var(--row-hover); }
         .dropdown-item input[type="checkbox"] { cursor: pointer; width: 16px; height: 16px; accent-color: var(--primary-blue); border-radius: 4px;}
 
-        .table-responsive { overflow-x: auto; max-height: calc(100vh - 200px); }
+        .table-responsive { overflow-x: auto; max-height: calc(100vh - 220px); padding: 0 16px; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; white-space: nowrap; }
-        thead { position: sticky; top: 0; z-index: 1; }
+        thead { position: sticky; top: 0; z-index: 10; background: var(--card-bg); transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        th { background-color: var(--th-bg); color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--border-strong); transition: background-color 0.2s;}
+        th { 
+            background-color: transparent; color: var(--text-light); 
+            font-weight: 600; font-size: 11px; text-transform: uppercase; 
+            letter-spacing: 0.04em; text-align: left; padding: 16px 20px; 
+            border-bottom: 2px solid var(--border-strong); transition: color 0.3s;
+        }
         th.sortable { cursor: pointer; user-select: none; }
-        th.sortable:hover { background-color: var(--border-color); color: var(--text-main); }
-        .sort-active { margin-left: 6px; font-size: 12px; color: var(--primary-blue); }
-        .sort-inactive { margin-left: 6px; font-size: 12px; color: var(--text-light); transition: color 0.3s; }
+        th.sortable:hover { color: var(--text-main); }
+        .sort-active { margin-left: 6px; font-size: 12px; color: var(--primary-blue); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sort-inactive { margin-left: 6px; font-size: 12px; color: var(--border-strong); transition: color 0.3s; }
         th.sortable:hover .sort-inactive { color: var(--text-muted); }
 
-        td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); vertical-align: middle; color: var(--text-main); transition: background-color 0.2s;}
-        tr:hover td { background-color: var(--row-hover) !important; }
+        td { 
+            padding: 16px 20px; border-bottom: 1px solid var(--border-color); 
+            vertical-align: middle; color: var(--text-main); font-size: 13px;
+            font-weight: 500; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Diubah jadi all untuk mendukung transisi padding/warna smooth */
+        }
         
-        /* Menghilangkan format monospace pada angka */
-        .angka { text-align: right; font-weight: 500; }
+        /* --- EFEK HOVER BARIS DAN TEKS SMOOTH --- */
+        tbody tr:hover td { 
+            background-color: var(--row-hover) !important; 
+            color: var(--primary-hover); /* Teks berubah warna saat disorot */
+        }
+        tbody tr:hover td:first-child { 
+            border-top-left-radius: 8px; 
+            border-bottom-left-radius: 8px; 
+            border-left: 4px solid var(--primary-blue); /* Border kiri lebih tegas */
+            padding-left: 26px; /* Memberikan efek teks bergeser sedikit ke kanan */
+        }
+        tbody tr:hover td:last-child { 
+            border-top-right-radius: 8px; 
+            border-bottom-right-radius: 8px; 
+        }
+        /* Memastikan badge tidak terpengaruh perubahan warna teks baris */
+        tbody tr:hover td .badge {
+            color: inherit; 
+        }
         
-        .badge { padding: 4px 12px; border-radius: 9999px; font-weight: 600; font-size: 11px; border: none; display: inline-block; text-align: center; letter-spacing: 0.02em;}
-        .badge-progress { background: #e0e7ff; color: #4338ca; }
-        .badge-invoice { background: #dcfce7; color: #15803d; }
-        .badge-survey { background: #e0f2fe; color: #0369a1; }
-        .badge-lunas { background: #fef3c7; color: #b45309; }
-        .badge-hold { background: #fee2e2; color: #b91c1c; }
+        .angka { text-align: right; font-variant-numeric: tabular-nums; }
+        
+        /* Badges */
+        .badge { padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 11px; border: none; display: inline-block; text-align: center; letter-spacing: 0.02em; transition: transform 0.2s;}
+        tr:hover .badge { transform: scale(1.05); }
+        .badge-progress { background: rgba(92, 85, 250, 0.15); color: #5C55FA; } 
+        .badge-invoice { background: rgba(0, 102, 68, 0.15); color: #006644; } 
+        .badge-survey { background: rgba(7, 71, 166, 0.15); color: #0747A6; } 
+        .badge-lunas { background: rgba(255, 139, 0, 0.15); color: #FF8B00; } 
+        .badge-hold { background: rgba(191, 38, 0, 0.15); color: #BF2600; } 
         .badge-default { background: var(--border-strong); color: var(--text-muted); }
         
-        td .btn-icon { width: 28px; height: 28px; font-size: 12px; margin: 0 auto; border-radius: 6px; box-shadow: none; border: 1px solid transparent;}
-        td .btn-icon:hover { border-color: var(--primary-blue); background: var(--primary-light); }
-        .btn-link { color: var(--primary-blue); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        /* Hidden Action Buttons */
+        td .btn-icon { width: 32px; height: 32px; font-size: 13px; margin: 0 auto; border-radius: 6px; box-shadow: none; border: none; background: transparent; opacity: 0; transform: scale(0.9); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
+        tr:hover td .btn-icon { opacity: 1; transform: scale(1); background: var(--card-bg); border: 1px solid var(--border-strong); }
+        td .btn-icon:hover { border-color: var(--primary-blue); background: var(--primary-light); color: var(--primary-blue); transform: scale(1.1); }
+        
+        .btn-link { color: var(--primary-blue); text-decoration: none; font-weight: 600; transition: color 0.3s; }
         .btn-link:hover { color: var(--primary-hover); text-decoration: underline; }
 
-        /* Modals Modern UI */
-        .modal-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.5); align-items: center; justify-content: center; backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; }
+        /* --- MODALS --- */
+        .modal-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(9, 30, 66, 0.6); align-items: center; justify-content: center; backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.show { display: flex; opacity: 1; }
-        .modal-content { background: var(--card-bg); border-radius: 16px; width: 600px; max-width: 90%; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; overflow: hidden; transform: translateY(-20px); transition: transform 0.3s ease; border: 1px solid var(--border-color);}
-        .modal-overlay.show .modal-content { transform: translateY(0); }
-        .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .modal-title { font-size: 18px; font-weight: 600; color: var(--text-main); letter-spacing: -0.01em;}
-        .modal-close { color: var(--text-muted); cursor: pointer; font-size: 18px; transition: color 0.2s; }
-        .modal-close:hover { color: #ef4444; }
+        .modal-content { background: var(--card-bg); border-radius: 12px; width: 600px; max-width: 90%; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; overflow: hidden; transform: translateY(-20px) scale(0.95); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s; border: none;}
+        .modal-overlay.show .modal-content { transform: translateY(0) scale(1); }
+        .modal-header { padding: 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { font-size: 20px; font-weight: 700; color: var(--text-main); letter-spacing: -0.01em;}
+        .modal-close { color: var(--text-light); cursor: pointer; font-size: 20px; transition: color 0.3s, transform 0.3s; }
+        .modal-close:hover { color: #BF2600; transform: rotate(90deg); }
         .modal-body { padding: 24px; overflow-y: auto; max-height: 65vh; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; color: var(--text-main);}
         .modal-body.single-col { grid-template-columns: 1fr; }
         .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); background: var(--bg-color); display: flex; justify-content: flex-end; gap: 12px; }
         
         .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { font-size: 13px; font-weight: 500; color: var(--text-main); }
-        .form-control { padding: 10px 14px; border: 1px solid var(--border-strong); border-radius: 8px; outline: none; font-size: 13px; color: var(--text-main); transition: border-color 0.2s, box-shadow 0.2s; background: transparent; }
-        .form-control:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em;}
+        .form-control { padding: 10px 14px; border: 1px solid var(--border-strong); border-radius: 6px; outline: none; font-size: 14px; color: var(--text-main); transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s; background: var(--bg-color); }
+        .form-control:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(92, 85, 250, 0.15); background: var(--card-bg);}
         
-        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 13px; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary { background: var(--primary-blue); color: #ffffff; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .btn-primary:hover { transform: translateY(-1px); background: var(--primary-hover); box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3); }
-        .btn-secondary { background: #778899; color: var(--text-main); border: 1px solid var(--border-strong); }
-        .btn-secondary:hover { background: var(--row-hover); }
+        .btn { padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; border: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: var(--primary-blue); color: #ffffff; box-shadow: none; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(92, 85, 250, 0.3); }
+        .btn-secondary { background: rgba(9, 30, 66, 0.04); color: var(--text-main); font-weight: 600;}
+        .btn-secondary:hover { background: rgba(9, 30, 66, 0.08); transform: translateY(-2px); }
 
         .hidden { display: none !important; }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
+        ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; transition: background 0.3s; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+        
         /* Calendar Styles */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 10px;}
         .calendar-day-header { text-align: center; font-weight: 600; font-size: 11px; color: var(--text-muted); padding: 5px 0;}
-        .calendar-day { text-align: center; padding: 10px 5px; border-radius: 8px; border: 1px solid var(--border-color); cursor: default; transition: background 0.2s;}
-        .calendar-day:hover { background: var(--row-hover); }
+        .calendar-day { text-align: center; padding: 10px 5px; border-radius: 6px; border: 1px solid transparent; cursor: default; transition: background 0.3s, transform 0.2s; font-weight: 500;}
+        .calendar-day:hover:not(.empty) { background: var(--row-hover); border-color: var(--border-color); transform: scale(1.1); }
         .calendar-day.empty { background: transparent; border-color: transparent; }
-        .calendar-day.holiday { background: #fee2e2; color: #dc2626; font-weight: 600; border-color: #fecaca; cursor: pointer; }
-        .calendar-day.today { background: var(--primary-blue); color: #fff; font-weight: 600; border-color: var(--primary-blue); box-shadow: 0 2px 4px rgba(79,70,229,0.3); }
+        .calendar-day.holiday { background: rgba(191, 38, 0, 0.1); color: #BF2600; font-weight: 600; cursor: pointer; }
+        .calendar-day.today { background: var(--primary-blue); color: #fff; font-weight: 600; box-shadow: var(--shadow-sm); }
         .holiday-list { margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px; max-height: 150px; overflow-y: auto;}
-        .holiday-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border-strong); font-size: 12px;}
-        .holiday-date { color: #dc2626; font-weight: 500;}
+        .holiday-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 13px; font-weight: 500;}
+        .holiday-date { color: #BF2600; font-weight: 600;}
 
         /* Global Search Results */
         .search-results-list { list-style: none; padding: 0; margin: 0; max-height: 400px; overflow-y: auto;}
-        .search-result-item { padding: 16px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s;}
-        .search-result-item:hover { background: var(--row-hover); }
-        .search-result-db { font-size: 11px; font-weight: 600; color: var(--primary-blue); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em;}
-        .search-result-text { font-size: 13px; color: var(--text-main); }
-        .search-result-highlight { background: #fef08a; color: #854d0e; padding: 0 4px; border-radius: 4px; font-weight: 500;}
+        .search-result-item { padding: 16px 24px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.3s, padding-left 0.3s;}
+        .search-result-item:hover { background: var(--row-hover); padding-left: 32px; }
+        .search-result-db { font-size: 11px; font-weight: 700; color: var(--primary-blue); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em;}
+        .search-result-text { font-size: 14px; color: var(--text-main); font-weight: 500;}
+        .search-result-highlight { background: rgba(255, 139, 0, 0.2); color: #FF8B00; padding: 0 4px; border-radius: 4px; font-weight: 700;}
     </style>
 </head>
 <body>
@@ -343,7 +397,7 @@
                     <label>Password</label>
                     <input type="password" id="loginPassword" class="form-control" required placeholder="Masukkan Password Anda">
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 8px; font-size: 14px;" id="loginBtn">
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 8px;" id="loginBtn">
                     <span id="loginBtnText">Login</span>
                 </button>
             </form>
@@ -450,7 +504,7 @@
             <header class="topbar">
                 <div class="topbar-left">
                     <button class="btn-toggle" id="btnToggleSidebar" title="Toggle Sidebar">
-                        <i class="fa-solid fa-list-ul" style="font-size: 16px;"></i>
+                        <i class="fa-solid fa-bars"></i>
                     </button>
                     
                     <div class="page-header">
@@ -471,25 +525,24 @@
                         <i class="fa-regular fa-moon" style="color: var(--primary-blue);"></i>
                     </button>
                     <button class="btn-toggle" id="btnCalendarToggle" title="Kalender Libur Nasional">
-                        <i class="fa-regular fa-calendar" style="color: #10b981;"></i>
+                        <i class="fa-regular fa-calendar" style="color: #36B37E;"></i>
                     </button>
                     
                     <div class="dropdown-wrapper" style="margin-left: 8px;">
-                        <div class="user-profile" id="btnMyAccount" style="cursor: pointer; padding-left: 16px; border-left: 0px solid var(--border-strong);" title="Akun Saya">
+                        <div class="user-profile" id="btnMyAccount" style="cursor: pointer;" title="Akun Saya">
                             <div class="user-info">
                                 <span class="name" id="displayUsername">wngr.project@gmail.com</span>
                                 <span class="role"><span class="dot-online"></span> <span id="displayRole">ADMIN</span></span>
                             </div>
                             <div class="avatar" id="displayAvatar">U</div>
-                            <i class="fa-solid fa-chevron-down" style="font-size: 12px; color: var(--text-muted); margin-left: 4px;"></i>
                         </div>
                         <div class="dropdown-menu" id="menuMyAccount" style="right: 0; left: auto; min-width: 180px; top: calc(100% + 12px);">
                             <div class="dropdown-item" id="btnSettingsToggle">
                                 <i class="fa-solid fa-gear" style="color: var(--text-muted); font-size: 14px; width: 16px; text-align: center;"></i> Pengaturan
                             </div>
-                            <div style="height: 1px; background: var(--border-strong); margin: 4px 0;"></div>
-                            <div class="dropdown-item" id="btnLoginLogout" style="color: #ef4444;">
-                                <i class="fa-solid fa-power-off" style="color: #ef4444; font-size: 14px; width: 16px; text-align: center;"></i> Logout
+                            <div style="height: 1px; background: var(--border-color); margin: 4px 0;"></div>
+                            <div class="dropdown-item" id="btnLoginLogout" style="color: #BF2600;">
+                                <i class="fa-solid fa-power-off" style="color: #BF2600; font-size: 14px; width: 16px; text-align: center;"></i> Logout
                             </div>
                         </div>
                     </div>
@@ -498,7 +551,7 @@
             </header>
 
             <section class="content">
-                <div id="section-overview" class="hidden">
+                <div id="section-overview" class="hidden" style="padding-top: 32px;">
                     
                     <div class="kpi-grid">
                         <div class="kpi-card">
@@ -566,7 +619,7 @@
                     </div>
 
                     <div class="bottom-grid">
-                        <div class="card" style="padding: 24px;">
+                        <div class="card">
                             <div class="section-header">
                                 <h3>Proyek Terbaru</h3>
                                 <a href="#" class="link-all" onclick="loadPage('Semua Proyek', 'dball', 'table', document.querySelectorAll('.nav-item')[1])">Lihat Semua</a>
@@ -588,7 +641,7 @@
                             </div>
                         </div>
                         
-                        <div class="card" style="padding: 24px;">
+                        <div class="card">
                             <div class="section-header">
                                 <h3>Aktivitas Terkini</h3>
                             </div>
@@ -599,7 +652,7 @@
 
                 </div>
                 
-                <div id="section-table" class="card hidden" style="margin-bottom: 0;">
+                <div id="section-table" class="card hidden" style="margin-top: 32px; padding: 0;">
                     
                     <div class="table-toolbar" id="main-table-toolbar" style="display: none;">
                         <div id="toolbar-semua-proyek" style="display: flex; justify-content: space-between; width: 100%; align-items: center; display: none;">
@@ -635,9 +688,9 @@
                                 
                                 <div style="width: 1px; height: 24px; background: var(--border-strong); margin: 0 4px;"></div>
                                 
-                                <button class="btn-icon" id="btnResetData" title="Refresh"><i class="fa-solid fa-rotate-right" style="color:#3b82f6;"></i></button>
-                                <button class="btn-icon action-excel" id="btnExportExcel" title="Export Excel"><i class="fa-solid fa-file-excel"></i></button>
-                                <button class="btn-icon action-pdf" id="btnExportPdf" title="Export PDF"><i class="fa-solid fa-file-pdf"></i></button>
+                                <button class="btn-icon" id="btnResetData" title="Refresh"><i class="fa-solid fa-rotate-right"></i></button>
+                                <button class="btn-icon action-excel" id="btnExportExcel" title="Export Excel" style="color: #36B37E;"><i class="fa-solid fa-file-excel"></i></button>
+                                <button class="btn-icon action-pdf" id="btnExportPdf" title="Export PDF" style="color: #BF2600;"><i class="fa-solid fa-file-pdf"></i></button>
                                 
                                 <div style="width: 1px; height: 24px; background: var(--border-strong); margin: 0 4px;"></div>
                                 
@@ -659,8 +712,8 @@
                     </div>
                 </div>
 
-                <div id="section-map" class="card hidden" style="height: calc(100vh - 140px); margin-bottom: 0;">
-                    <iframe id="map-iframe" src="" style="width: 100%; height: 100%; border: none; border-radius: 16px;"></iframe>
+                <div id="section-map" class="card hidden" style="height: calc(100vh - 140px); margin-top: 32px; padding: 0;">
+                    <iframe id="map-iframe" src="" style="width: 100%; height: 100%; border: none; border-radius: 8px;"></iframe>
                 </div>
 
             </section>
@@ -778,7 +831,7 @@
                 </div>
                 
                 <div class="calendar-grid" id="calendarDaysHeader">
-                    <div class="calendar-day-header" style="color: #ef4444;">Min</div>
+                    <div class="calendar-day-header" style="color: #BF2600;">Min</div>
                     <div class="calendar-day-header">Sen</div>
                     <div class="calendar-day-header">Sel</div>
                     <div class="calendar-day-header">Rab</div>
@@ -817,15 +870,15 @@
     </div>
 
     <div class="modal-overlay" id="logoutModal">
-        <div class="modal-content" style="width: 380px; padding: 32px 24px; text-align: center; transform: scale(0.95); transition: transform 0.3s ease;">
-            <div style="width: 64px; height: 64px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
-                <i class="fa-solid fa-right-from-bracket" style="font-size: 28px; color: #ef4444;"></i>
+        <div class="modal-content" style="width: 380px; padding: 32px 24px; text-align: center;">
+            <div style="width: 64px; height: 64px; background: rgba(191, 38, 0, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+                <i class="fa-solid fa-right-from-bracket" style="font-size: 28px; color: #BF2600;"></i>
             </div>
-            <h3 style="font-size: 20px; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">Konfirmasi Logout</h3>
+            <h3 style="font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">Konfirmasi Logout</h3>
             <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Apakah Anda yakin ingin keluar dari sesi ini?</p>
             <div style="display: flex; justify-content: center; gap: 12px;">
                 <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal('logoutModal')">Batal</button>
-                <button class="btn btn-primary" style="flex: 1; background: #ef4444; border-color: #ef4444; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);" id="btnConfirmLogout">Ya, Keluar</button>
+                <button class="btn btn-primary" style="flex: 1; background: #BF2600; border-color: #BF2600;" id="btnConfirmLogout">Ya, Keluar</button>
             </div>
         </div>
     </div>
@@ -865,7 +918,6 @@
             }
         });
 
-        // Trigger Menu "Akun Saya"
         document.getElementById('btnMyAccount').addEventListener('click', (e) => {
             e.stopPropagation();
             const menu = document.getElementById('menuMyAccount');
@@ -876,17 +928,13 @@
             }
         });
 
-        // Helper untuk menerapkan Foto Profil (Dimodifikasi untuk membaca link Google Drive dengan baik)
         const applyProfilePicture = (photoUrl, username) => {
             const avatarDiv = document.getElementById('displayAvatar');
             let finalUrl = photoUrl ? photoUrl.trim() : '';
 
-            // Otomatis format URL Google Drive menjadi direct image link (uc?export=view)
             if (finalUrl.includes('drive.google.com')) {
                 let fileId = '';
-                // Pattern untuk format sharing default Google Drive (/file/d/ID/view)
                 const matchFileD = finalUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-                // Pattern untuk format yang menggunakan parameter id (?id=ID)
                 const matchId = finalUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
 
                 if (matchFileD && matchFileD[1]) {
@@ -904,7 +952,7 @@
                 avatarDiv.style.backgroundImage = `url('${finalUrl}')`;
                 avatarDiv.style.backgroundSize = 'cover';
                 avatarDiv.style.backgroundPosition = 'center';
-                avatarDiv.textContent = '';
+                avatarDiv.style.textContent = '';
             } else {
                 const fallbackName = username || 'User';
                 avatarDiv.style.backgroundImage = `url('https://ui-avatars.com/api/?name=${fallbackName}&background=random&color=fff')`;
@@ -912,8 +960,33 @@
             }
         };
 
+        // --- NEW FUNCTION: ANIMASI COUNTER ---
+        window.animateCounter = function(obj, start, end, duration, isCurrency) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                // Ease out quartic function for smoother deceleration
+                const easeOut = 1 - Math.pow(1 - progress, 4); 
+                const currentVal = easeOut * (end - start) + start;
+                
+                if (isCurrency) {
+                    obj.textContent = "Rp " + formatDecimalUS(currentVal);
+                } else {
+                    obj.textContent = Math.floor(currentVal);
+                }
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    obj.textContent = isCurrency ? "Rp " + formatDecimalUS(end) : end;
+                }
+            };
+            window.requestAnimationFrame(step);
+        };
+
         // ==========================================
-        // FITUR LOGIN & RBAC (ROLE-BASED ACCESS CONTROL)
+        // FITUR LOGIN & RBAC
         // ==========================================
         const loginScreen = document.getElementById('loginScreen');
         const appContainer = document.getElementById('appContainer');
@@ -1080,7 +1153,6 @@
         window.currentUnsubscribe = null;
         window.overviewUnsubscribe = null;
         
-        // --- VARIABLE CACHE DAN STATE SORTING ---
         window.currentTableDataCache = [];
         window.currentTableColumnsCache = [];
         window.currentSortCol = null;
@@ -1107,7 +1179,7 @@
             }
         });
 
-        // --- NOTIFICATION / HISTORY TOGGLE ---
+        // --- NOTIFICATION ---
         document.getElementById('btnNotificationToggle').addEventListener('click', () => {
             document.getElementById('historyModal').classList.add('show');
             const list = document.getElementById('historyList');
@@ -1116,9 +1188,9 @@
                 list.innerHTML = '<li style="padding: 20px; text-align: center; color: var(--text-muted);">Belum ada riwayat perubahan data.</li>';
             } else {
                 list.innerHTML = history.map(h => `
-                    <li style="padding: 12px; border-bottom: 1px solid var(--border-color); font-size: 13px;">
-                        <div style="color: var(--primary-blue); margin-bottom: 4px; font-weight: 500;">${h.time} - ${h.user}</div>
-                        <div style="color: var(--text-main);">${h.action} <span style="font-weight: 600;">${h.collectionName}</span></div>
+                    <li style="padding: 16px 0; border-bottom: 1px solid var(--border-color); font-size: 13px;">
+                        <div style="color: var(--primary-blue); margin-bottom: 4px; font-weight: 600;">${h.time} - ${h.user}</div>
+                        <div style="color: var(--text-main); font-weight: 500;">${h.action} <span style="font-weight: 700;">${h.collectionName}</span></div>
                     </li>
                 `).join('');
             }
@@ -1321,7 +1393,7 @@
                         
                         html += `
                             <div class="form-group" ${displayStyle}>
-                                <label style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">${key}</label>
+                                <label>${key}</label>
                                 ${inputFieldHTML}
                             </div>
                         `;
@@ -1360,7 +1432,6 @@
 
                 if (updatedData['Role']) sessionStorage.setItem('loggedRole', updatedData['Role']);
                 
-                // Update Foto Profil jika ada perubahan
                 if (updatedData['Foto Profil'] !== undefined) {
                     sessionStorage.setItem('loggedPhoto', updatedData['Foto Profil']);
                     applyProfilePicture(updatedData['Foto Profil'], sessionStorage.getItem('loggedUsername'));
@@ -1378,7 +1449,7 @@
             }
         });
 
-        // --- UPDATE UI LOGIC (Accordion Navigasi) ---
+        // --- UPDATE UI LOGIC ---
         document.getElementById('btnToggleSidebar').addEventListener('click', function() {
             document.getElementById('mainSidebar').classList.toggle('collapsed');
         });
@@ -1395,7 +1466,6 @@
             }
         };
 
-        // Helper Format String
         function formatTanggal(timestamp) {
             if (!timestamp) return '-';
             if (typeof timestamp === 'object' && timestamp.seconds) {
@@ -1487,8 +1557,18 @@
             window.currentSortCol = null;
             window.currentSortDir = 'asc';
 
+            // Reset Animation Classes for Smooth Page Transitions
+            secOverview.classList.remove('animate-fade-in');
+            secTable.classList.remove('animate-fade-down'); 
+            if(secMap) secMap.classList.remove('animate-fade-in');
+            
+            // Trigger reflow to restart animation
+            void secOverview.offsetWidth; 
+            void secTable.offsetWidth;
+
             if (type === 'overview') {
                 secOverview.classList.remove('hidden');
+                secOverview.classList.add('animate-fade-in');
                 secTable.classList.add('hidden');
                 if(secMap) secMap.classList.add('hidden');
                 renderOverviewChart(collectionName);
@@ -1496,7 +1576,10 @@
             } else if (type === 'map') {
                 secOverview.classList.add('hidden');
                 secTable.classList.add('hidden');
-                if(secMap) secMap.classList.remove('hidden');
+                if(secMap) {
+                    secMap.classList.remove('hidden');
+                    secMap.classList.add('animate-fade-in');
+                }
 
                 const mapFrame = document.getElementById('map-iframe');
                 if (collectionName === 'peta_jobj') mapFrame.src = "https://www.google.com/maps/d/embed?mid=1xhJ2oTziYlfWiAK6MDlMOYanNlMJO3Y";
@@ -1509,6 +1592,7 @@
             } else {
                 secOverview.classList.add('hidden');
                 secTable.classList.remove('hidden');
+                secTable.classList.add('animate-fade-down'); 
                 if(secMap) secMap.classList.add('hidden');
                 resetDataView();
 
@@ -1542,11 +1626,11 @@
             if(activityContainer) {
                 let actHTML = '';
                 historyData.slice(0, 5).forEach((h, idx) => {
-                    let borderColor = idx % 2 === 0 ? 'var(--primary-blue)' : '#fef08a';
+                    let borderColor = idx % 2 === 0 ? 'var(--primary-blue)' : '#FF8B00';
                     actHTML += `
                     <div class="activity-item" style="border-left-color: ${borderColor};">
                         <h5>${h.user}</h5>
-                        <span style="font-size: 10px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em;">${h.time}</span>
+                        <span style="font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em;">${h.time}</span>
                         <p style="margin-top: 4px;">${h.action} <span style="font-weight: 600;">${h.collectionName}</span></p>
                     </div>
                     `;
@@ -1556,7 +1640,7 @@
             }
         }
 
-        // --- FUNGSI RENDER TABEL & SNAPSHOT LISTENER ---
+        // --- RENDER TABEL & SNAPSHOT ---
         function renderTable(colName) {
             const tHead = document.getElementById('table-head');
             const tBody = document.getElementById('table-body');
@@ -1576,7 +1660,7 @@
                 window.currentUnsubscribe = onSnapshot(q, (snapshot) => {
                     if (snapshot.empty) {
                         tHead.innerHTML = ''; tFoot.innerHTML = '';
-                        tBody.innerHTML = `<tr><td style="text-align: center; padding: 30px; color: var(--text-muted);">Data kosong di database (${colName}).</td></tr>`;
+                        tBody.innerHTML = `<tr><td style="text-align: center; padding: 40px; color: var(--text-muted);">Data kosong di database (${colName}).</td></tr>`;
                         return;
                     }
 
@@ -1609,7 +1693,6 @@
             }
         }
 
-        // --- FUNGSI RENDER DOM TABEL & SORTING ---
         window.renderTableDOM = function() {
             if (!window.currentTableDataCache || window.currentTableDataCache.length === 0) return;
 
@@ -1736,7 +1819,7 @@
                 bodyHTML += '<tr class="data-row">';
                 displayColumns.forEach(col => {
                     if (col === "Aksi") {
-                        bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" style="color:var(--primary-blue);" onclick="openEditModal(this)" title="Edit Data"><i class="fa-solid fa-pen"></i></button></td>`;
+                        bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" onclick="openEditModal(this)" title="Edit Data"><i class="fa-solid fa-pen"></i></button></td>`;
                         return;
                     }
 
@@ -1836,6 +1919,11 @@
                     totalTerbayar += parseFloat(row['Nilai Terbayar']) || 0;
                 }
             });
+
+            // Eksekusi trigger animasi fade in down saat data dirender
+            tBody.style.animation = 'none';
+            void tBody.offsetWidth; // Memicu reflow agar browser memuat ulang animasi
+            tBody.style.animation = 'fadeSlideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards';
             tBody.innerHTML = bodyHTML;
 
             if (colName === 'dball') {
@@ -1890,14 +1978,11 @@
             renderTableDOM();
         };
 
-        // --- UPDATE FUNGSI OVERVIEW CHART (SESUAI UI) ---
+        // --- OVERVIEW CHART ---
         function renderOverviewChart(colName) {
             try {
                 const targetCol = 'dball';
-                
-                if (window.overviewUnsubscribe) {
-                    window.overviewUnsubscribe();
-                }
+                if (window.overviewUnsubscribe) window.overviewUnsubscribe();
 
                 window.overviewUnsubscribe = onSnapshot(collection(db, targetCol), (snapshot) => {
                     let statCounts = {};
@@ -1928,22 +2013,21 @@
                         allProjectsOverview.push(data);
                     });
 
-                    // Update UI Teks KPI
                     const elKpiProyek = document.getElementById('kpi-total-proyek');
                     const elKpiNilai = document.getElementById('kpi-nilai-proyek');
                     const elKpiInvoice = document.getElementById('kpi-nilai-invoice');
                     const elKpiTerbayar = document.getElementById('kpi-nilai-terbayar');
 
-                    if(elKpiProyek) elKpiProyek.textContent = kpiTotalProyek;
-                    if(elKpiNilai) elKpiNilai.textContent = "Rp " + formatDecimalUS(kpiNilaiProyek);
-                    if(elKpiInvoice) elKpiInvoice.textContent = "Rp " + formatDecimalUS(kpiNilaiInvoice);
-                    if(elKpiTerbayar) elKpiTerbayar.textContent = "Rp " + formatDecimalUS(kpiNilaiTerbayar);
+                    // Menggunakan fungsi animasi Counter
+                    if(elKpiProyek) animateCounter(elKpiProyek, 0, kpiTotalProyek, 1500, false);
+                    if(elKpiNilai) animateCounter(elKpiNilai, 0, kpiNilaiProyek, 1500, true);
+                    if(elKpiInvoice) animateCounter(elKpiInvoice, 0, kpiNilaiInvoice, 1500, true);
+                    if(elKpiTerbayar) animateCounter(elKpiTerbayar, 0, kpiNilaiTerbayar, 1500, true);
                     
-                    // Render Proyek Terbaru Data
                     allProjectsOverview.sort((a, b) => {
                         let da = a["Tanggal PO"]?.seconds || 0;
                         let db = b["Tanggal PO"]?.seconds || 0;
-                        return db - da; // Descending order
+                        return db - da;
                     });
                     
                     let tbodyTerbaru = document.getElementById('tbody-proyek-terbaru');
@@ -1952,7 +2036,7 @@
                         allProjectsOverview.slice(0, 5).forEach(p => {
                             htmlTerbaru += `
                             <tr>
-                                <td style="font-weight: 500;">${p['Pemberi Proyek'] || '-'}</td>
+                                <td style="font-weight: 600;">${p['Pemberi Proyek'] || '-'}</td>
                                 <td>${p['Uraian Proyek'] || '-'}</td>
                                 <td class="angka">Rp ${formatDecimalUS(p['Nilai Proyek'])}</td>
                                 <td class="angka">Rp ${formatDecimalUS(p['Nilai Invoice'])}</td>
@@ -1969,34 +2053,25 @@
 
                     const ctxStatus = document.getElementById('chartStatus').getContext('2d');
                     
-                    // Match colors roughly to the original image based on status
                     const statusColorsArray = labels.map(label => {
-                        if(label.includes('Progress')) return '#4f46e5';
-                        if(label.includes('Survey')) return '#0ea5e9';
-                        if(label.includes('Invoice')) return '#10b981';
-                        if(label.includes('Lunas')) return '#f59e0b';
-                        if(label.includes('Hold') || label.includes('Cancel')) return '#ef4444';
-                        return '#94a3b8';
+                        if(label.includes('Progress')) return '#403294';
+                        if(label.includes('Survey')) return '#0747A6';
+                        if(label.includes('Invoice')) return '#006644';
+                        if(label.includes('Lunas')) return '#FF8B00';
+                        if(label.includes('Hold') || label.includes('Cancel')) return '#BF2600';
+                        return '#A5ADBA';
                     });
 
                     chartInstanceStatus = new Chart(ctxStatus, {
                         type: 'doughnut',
-                        data: { labels: labels, datasets: [{ data: Object.values(statCounts), backgroundColor: statusColorsArray, borderWidth: 4 }] },
+                        data: { labels: labels, datasets: [{ data: Object.values(statCounts), backgroundColor: statusColorsArray, borderWidth: 3 }] },
                         options: { 
-                            responsive: true, 
-                            maintainAspectRatio: false, 
-                            cutout: '65%', 
+                            responsive: true, maintainAspectRatio: false, cutout: '70%', 
                             layout: { padding: { top: 10, bottom: 20 } },
                             plugins: { 
                                 legend: { 
                                     position: 'bottom', 
-                                    labels: { 
-                                        usePointStyle: true, 
-                                        boxWidth: 8, 
-                                        padding: 20,
-                                        font: { family: "'Inter', sans-serif", size: 12, weight: '500' },
-                                        color: '#475569'
-                                    } 
+                                    labels: { usePointStyle: true, boxWidth: 8, padding: 20, font: { family: "'Inter', sans-serif", size: 12, weight: '500' }, color: '#6B778C' } 
                                 },
                                 tooltip: {
                                     callbacks: {
@@ -2015,33 +2090,22 @@
                     const ctxNilai = document.getElementById('chartNilai').getContext('2d');
                     chartInstanceNilai = new Chart(ctxNilai, {
                         type: 'bar',
-                        data: { labels: labels, datasets: [{ label: 'Total Nilai (Rp)', data: Object.values(statValues), backgroundColor: statusColorsArray, borderRadius: 4, barThickness: 40 }] },
+                        data: { labels: labels, datasets: [{ label: 'Total Nilai (Rp)', data: Object.values(statValues), backgroundColor: statusColorsArray, borderRadius: 6, barThickness: 32 }] },
                         options: { 
-                            responsive: true, 
-                            maintainAspectRatio: false, 
+                            responsive: true, maintainAspectRatio: false, 
                             plugins: { 
                                 legend: { display: false },
                                 tooltip: {
                                     callbacks: {
-                                        label: function(context) {
-                                            return ` Rp ${formatDecimalUS(context.raw)}`;
-                                        }
+                                        label: function(context) { return ` Rp ${formatDecimalUS(context.raw)}`; }
                                     }
                                 } 
                             },
                             scales: {
-                                x: { 
-                                    grid: { display: false },
-                                    ticks: { color: '#3b82f6', font: { weight: '600', family: "'Inter', sans-serif" } }
-                                },
+                                x: { grid: { display: false }, ticks: { color: '#6B778C', font: { weight: '600', family: "'Inter', sans-serif" } } },
                                 y: { 
-                                    border: { dash: [4, 4] }, 
-                                    grid: { color: '#f1f5f9' },
-                                    ticks: { 
-                                        color: '#10b981', 
-                                        font: { weight: '600', family: "'Inter', sans-serif" },
-                                        callback: function(value) { return 'Rp ' + formatDecimalUS(value); } 
-                                    }
+                                    border: { dash: [4, 4] }, grid: { color: '#EBECF0' },
+                                    ticks: { color: '#6B778C', font: { weight: '600', family: "'Inter', sans-serif" }, callback: function(value) { return 'Rp ' + formatDecimalUS(value); } }
                                 }
                             }
                         }
@@ -2052,9 +2116,7 @@
             } catch (error) { console.error("Error memuat chart:", error); }
         }
 
-        // ==========================================
-        // FITUR LOGIKA TOOLBAR DAN FILTER
-        // ==========================================
+        // --- FILTER ---
         function processFilters() {
             const rows = document.querySelectorAll('#table-body .data-row');
             if(rows.length === 0) return;
@@ -2221,8 +2283,15 @@
             processFilters();
         }
 
-        document.getElementById('btnResetData').addEventListener('click', resetDataView);
+        // --- NEW REFRESH FUNCTIONALITY ---
+        document.getElementById('btnResetData').addEventListener('click', () => {
+            resetDataView(); 
+            window.currentSortCol = null; 
+            window.currentSortDir = 'asc'; 
+            renderTable(window.currentCollection);
+        });
 
+        // --- CRUD LOGIC ---
         function buildDynamicModal(colName, rowData = null) {
             const container = document.getElementById('modal-dynamic-form');
             container.innerHTML = '';
@@ -2432,9 +2501,6 @@
             XLSX.writeFile(wb, "System_Data_Export.xlsx");
         });
 
-        // ===============================================
-        // FITUR EXPORT PDF MENGGUNAKAN HTML2PDF
-        // ===============================================
         document.getElementById('btnExportPdf').addEventListener('click', () => {
             const table = document.getElementById("main-table");
             if (!table) return;

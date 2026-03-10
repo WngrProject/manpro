@@ -44,6 +44,7 @@
             --th-bg: transparent; 
             --row-hover: #FAFBFC;
             --dropdown-bg: #FFFFFF;
+            --table-hover-text: var(--primary-hover); /* Default hover color mode terang */
         }
 
         /* --- PENYEMPURNAAN DARK MODE (SLATE/BIRU-ABU GELAP) --- */
@@ -60,6 +61,7 @@
             --row-hover: #334155;
             --dropdown-bg: #1e293b;
             --primary-light: #334155;
+            --table-hover-text: #ffffff; /* Hover text color mode gelap */
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; font-size: 13px; }
@@ -172,6 +174,12 @@
         .search-bar-top input::placeholder { color: var(--text-light); }
         
         .topbar-right { display: flex; align-items: center; gap: 12px; }
+        
+        /* --- ACTIVE USERS STACK --- */
+        .active-users-stack { display: flex; flex-direction: row-reverse; align-items: center; margin-left: 12px; margin-right: 8px; }
+        .active-user-bubble { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg-color); margin-left: -8px; transition: transform 0.2s, z-index 0.2s; position: relative; cursor: pointer; box-shadow: var(--shadow-sm); }
+        .active-user-bubble:hover { transform: translateY(-3px); z-index: 10 !important; }
+
         .user-profile { display: flex; align-items: center; gap: 12px; padding-left: 16px; transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 8px; padding-right: 8px;}
         .user-profile:hover { background-color: var(--border-color); }
         .user-info { display: flex; flex-direction: column; align-items: flex-end; }
@@ -266,11 +274,18 @@
         table { width: 100%; border-collapse: separate; border-spacing: 0; white-space: nowrap; }
         thead { position: sticky; top: 0; z-index: 10; background: var(--card-bg); transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         
+        /* --- UKURAN DAN WARNA FONT TH SAMA DENGAN TD --- */
         th { 
-            background-color: transparent; color: var(--text-light); 
-            font-weight: 600; font-size: 11px; text-transform: uppercase; 
-            letter-spacing: 0.04em; text-align: left; padding: 16px 20px; 
-            border-bottom: 2px solid var(--border-strong); transition: color 0.3s;
+            background-color: transparent; 
+            color: var(--text-main); /* Sama dengan td */
+            font-weight: 600; 
+            font-size: 13px; /* Sama dengan td */
+            text-transform: none; /* Hilangkan kapitalisasi bawaan */
+            letter-spacing: normal; /* Hilangkan letter-spacing lebar */
+            text-align: left; 
+            padding: 16px 20px; 
+            border-bottom: 2px solid var(--border-strong); 
+            transition: color 0.3s;
         }
         th.sortable { cursor: pointer; user-select: none; }
         th.sortable:hover { color: var(--text-main); }
@@ -281,19 +296,19 @@
         td { 
             padding: 16px 20px; border-bottom: 1px solid var(--border-color); 
             vertical-align: middle; color: var(--text-main); font-size: 13px;
-            font-weight: 500; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Diubah jadi all untuk mendukung transisi padding/warna smooth */
+            font-weight: 500; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         /* --- EFEK HOVER BARIS DAN TEKS SMOOTH --- */
         tbody tr:hover td { 
             background-color: var(--row-hover) !important; 
-            color: var(--primary-hover); /* Teks berubah warna saat disorot */
+            color: var(--table-hover-text); 
         }
         tbody tr:hover td:first-child { 
             border-top-left-radius: 8px; 
             border-bottom-left-radius: 8px; 
-            border-left: 4px solid var(--primary-blue); /* Border kiri lebih tegas */
-            padding-left: 26px; /* Memberikan efek teks bergeser sedikit ke kanan */
+            border-left: 4px solid var(--primary-blue); 
+            padding-left: 26px; 
         }
         tbody tr:hover td:last-child { 
             border-top-right-radius: 8px; 
@@ -528,10 +543,12 @@
                         <i class="fa-regular fa-calendar" style="color: #36B37E;"></i>
                     </button>
                     
+                    <div class="active-users-stack" id="activeUsersStack" title="Pengguna Aktif"></div>
+
                     <div class="dropdown-wrapper" style="margin-left: 8px;">
                         <div class="user-profile" id="btnMyAccount" style="cursor: pointer;" title="Akun Saya">
                             <div class="user-info">
-                                <span class="name" id="displayUsername">wngr.project@gmail.com</span>
+                                <span class="name" id="displayUsername" title="wngr.project@gmail.com">WN</span>
                                 <span class="role"><span class="dot-online"></span> <span id="displayRole">ADMIN</span></span>
                             </div>
                             <div class="avatar" id="displayAvatar">U</div>
@@ -885,7 +902,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, orderBy, query, where, addDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, orderBy, query, where, addDoc, updateDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCo-CYydpivABwE3NFJOaM45yT-nO1f4OY",
@@ -952,7 +969,7 @@
                 avatarDiv.style.backgroundImage = `url('${finalUrl}')`;
                 avatarDiv.style.backgroundSize = 'cover';
                 avatarDiv.style.backgroundPosition = 'center';
-                avatarDiv.style.textContent = '';
+                avatarDiv.textContent = '';
             } else {
                 const fallbackName = username || 'User';
                 avatarDiv.style.backgroundImage = `url('https://ui-avatars.com/api/?name=${fallbackName}&background=random&color=fff')`;
@@ -960,7 +977,59 @@
             }
         };
 
-        // --- NEW FUNCTION: ANIMASI COUNTER ---
+        // Fungsi singkatan nama
+        function getDisplayInitials(name) {
+            if (!name) return 'UN';
+            return name.substring(0, 2).toUpperCase();
+        }
+
+        // --- FUNGSI MENDENGARKAN STATUS ONLINE USER ---
+        let activeUsersUnsubscribe = null;
+
+        function listenToActiveUsers() {
+            if (activeUsersUnsubscribe) return;
+            const usersRef = collection(db, 'users');
+            const q = query(usersRef, where("isOnline", "==", true));
+
+            activeUsersUnsubscribe = onSnapshot(q, (snapshot) => {
+                const stackContainer = document.getElementById('activeUsersStack');
+                stackContainer.innerHTML = '';
+                let zIndex = snapshot.size;
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const photoUrl = data['Foto Profil'] || '';
+                    const username = data['Username'] || 'User';
+
+                    const bubble = document.createElement('div');
+                    bubble.className = 'active-user-bubble';
+                    bubble.title = username + " (Sedang Aktif)";
+                    bubble.style.zIndex = zIndex--;
+
+                    let finalUrl = photoUrl ? photoUrl.trim() : '';
+                    if (finalUrl.includes('drive.google.com')) {
+                        let fileId = '';
+                        const matchFileD = finalUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                        const matchId = finalUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                        if (matchFileD && matchFileD[1]) fileId = matchFileD[1];
+                        else if (matchId && matchId[1]) fileId = matchId[1];
+                        if (fileId) finalUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+                    }
+
+                    if (finalUrl.startsWith('http')) {
+                        bubble.style.backgroundImage = `url('${finalUrl}')`;
+                        bubble.style.backgroundSize = 'cover';
+                        bubble.style.backgroundPosition = 'center';
+                    } else {
+                        bubble.style.backgroundImage = `url('https://ui-avatars.com/api/?name=${username}&background=random&color=fff')`;
+                    }
+
+                    stackContainer.appendChild(bubble);
+                });
+            });
+        }
+
+        // --- FUNCTION: ANIMASI COUNTER ---
         window.animateCounter = function(obj, start, end, duration, isCurrency) {
             let startTimestamp = null;
             const step = (timestamp) => {
@@ -1036,7 +1105,9 @@
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
-                    const userData = querySnapshot.docs[0].data();
+                    const docSnap = querySnapshot.docs[0];
+                    const userData = docSnap.data();
+                    const userDocId = docSnap.id;
                     const userRole = userData.Role || 'Guest'; 
                     const userPhoto = userData['Foto Profil'] || '';
                     
@@ -1044,8 +1115,14 @@
                     sessionStorage.setItem('loggedUsername', usernameInput);
                     sessionStorage.setItem('loggedRole', userRole);
                     sessionStorage.setItem('loggedPhoto', userPhoto);
+                    sessionStorage.setItem('loggedUserId', userDocId);
                     
-                    displayUsername.textContent = usernameInput;
+                    // Menandakan status online di database
+                    await updateDoc(doc(db, 'users', userDocId), { isOnline: true, lastActive: serverTimestamp() });
+
+                    // Menggunakan format inisial singkatan
+                    displayUsername.textContent = getDisplayInitials(usernameInput);
+                    displayUsername.title = usernameInput;
                     displayRole.textContent = `● ${userRole}`;
                     applyProfilePicture(userPhoto, usernameInput);
                     
@@ -1054,6 +1131,7 @@
                     appContainer.style.display = 'flex';
                     
                     applyRolePermissions();
+                    listenToActiveUsers();
                     
                     document.querySelectorAll('.nav-category').forEach(c => c.classList.remove('open'));
                     document.querySelectorAll('.submenu').forEach(s => s.classList.remove('open'));
@@ -1077,16 +1155,38 @@
             }
         });
 
+        // Event sebelum window / tab ditutup untuk mengubah status menjadi offline
+        window.addEventListener('beforeunload', () => {
+            const userId = sessionStorage.getItem('loggedUserId');
+            if (userId) {
+                try {
+                    updateDoc(doc(db, 'users', userId), { isOnline: false });
+                } catch(e) {}
+            }
+        });
+
         document.getElementById('btnLoginLogout').addEventListener('click', () => {
             closeAllDropdowns();
             document.getElementById('logoutModal').classList.add('show');
         });
 
         document.getElementById('btnConfirmLogout').addEventListener('click', () => {
+            const userId = sessionStorage.getItem('loggedUserId');
+            if (userId) {
+                updateDoc(doc(db, 'users', userId), { isOnline: false });
+            }
+
+            if (activeUsersUnsubscribe) {
+                activeUsersUnsubscribe();
+                activeUsersUnsubscribe = null;
+            }
+            document.getElementById('activeUsersStack').innerHTML = '';
+
             sessionStorage.removeItem('isLoggedIn');
             sessionStorage.removeItem('loggedUsername');
             sessionStorage.removeItem('loggedRole');
             sessionStorage.removeItem('loggedPhoto');
+            sessionStorage.removeItem('loggedUserId');
             sessionStorage.removeItem('lastPageTitle');
             sessionStorage.removeItem('lastPageCollection');
             sessionStorage.removeItem('lastPageType');
@@ -1374,7 +1474,7 @@
                         const lowerKey = key.toLowerCase();
                         const isPassword = lowerKey === 'password';
                         const isUsername = lowerKey === 'username';
-                        const isHidden = lowerKey === 'no' || lowerKey === 'role';
+                        const isHidden = lowerKey === 'no' || lowerKey === 'role' || lowerKey === 'isonline' || lowerKey === 'lastactive';
                         const inputType = isPassword ? 'password' : 'text';
                         const readOnlyAttr = isUsername ? 'readonly title="Username tidak dapat diubah"' : '';
                         const displayStyle = isHidden ? 'style="display: none;"' : '';
@@ -2581,12 +2681,22 @@
             const savedUser = sessionStorage.getItem('loggedUsername') || 'User';
             const savedRole = sessionStorage.getItem('loggedRole') || 'Guest';
             const savedPhoto = sessionStorage.getItem('loggedPhoto') || '';
+            const userId = sessionStorage.getItem('loggedUserId');
             
-            displayUsername.textContent = savedUser;
+            if (userId) {
+                try {
+                    updateDoc(doc(db, 'users', userId), { isOnline: true, lastActive: serverTimestamp() });
+                } catch(e) {}
+            }
+
+            // Menggunakan format inisial singkatan untuk tampilan session yang disimpan
+            displayUsername.textContent = getDisplayInitials(savedUser);
+            displayUsername.title = savedUser;
             displayRole.textContent = `● ${savedRole}`;
             
             applyProfilePicture(savedPhoto, savedUser);
             applyRolePermissions();
+            listenToActiveUsers(); // Mulai memantau user aktif
 
             const lastTitle = sessionStorage.getItem('lastPageTitle') || 'Overview';
             const lastCol = sessionStorage.getItem('lastPageCollection') || 'dball';

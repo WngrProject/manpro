@@ -427,6 +427,7 @@
             </div>
             <ul class="nav-menu">
                 
+                <div class="sidebar-title" style="padding: 16px 24px 8px 24px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none;">Menu Dashboard</div>
                 <div class="nav-category open" onclick="toggleMenu(this)">
                     <span class="nav-text">Dashboard</span>
                     <i class="fa-solid fa-chevron-down chevron"></i>
@@ -436,73 +437,106 @@
                     <li class="nav-item" onclick="loadPage('Semua Proyek', 'dball', 'table', this)"><i class="fa-solid fa-folder-tree"></i> <span class="nav-text">Semua Proyek</span></li>
                 </ul>
 
+                <div class="sidebar-title" style="padding: 16px 24px 8px 24px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none;">Menu Daftar Proyek</div>
+                
                 <div class="nav-category" onclick="toggleMenu(this)">
-                    <span class="nav-text">Daftar PO</span>
+                    <span class="nav-text">Proyek JRP JOBJ</span>
                     <i class="fa-solid fa-chevron-down chevron"></i>
                 </div>
                 <ul class="submenu">
                     <li class="nav-item" onclick="loadPage('PO JRP JOBJ', 'db1', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO JRP JOBJ</span></li>
-                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 2', 'db2', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 2</span></li>
-                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 4', 'db3', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 4</span></li>
-                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 3A', 'db4', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 3A</span></li>
-                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 3B', 'db5', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 3B</span></li>
-                    <li class="nav-item" onclick="loadPage('PO IJE FM Ring 1', 'db6', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE FM Ring 1</span></li>
-                    <li class="nav-item" onclick="loadPage('PO SURGE FM Ex Pole', 'db7', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO SURGE FM Ex Pole</span></li>
-                    <li class="nav-item" onclick="loadPage('PO SURGE FM New Pole', 'db8', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO SURGE FM New Pole</span></li>
-                </ul>
-
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <span class="nav-text">Daftar BoQ</span>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
-                </div>
-                <ul class="submenu">
                     <li class="nav-item" onclick="loadPage('BoQ JRP JOBJ', 'db9', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ JRP JOBJ</span></li>
-                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 2', 'db10', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 2</span></li>
-                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 4', 'db11', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 4</span></li>
-                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 3A', 'db12', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 3A</span></li>
-                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 3B', 'db13', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 3B</span></li>
-                    <li class="nav-item" onclick="loadPage('BoQ IJE FM Ring 1', 'db14', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE FM Ring 1</span></li>
-                    <li class="nav-item" onclick="loadPage('BoQ SURGE FM Ex Pole', 'db15', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ SURGE FM Ex Pole</span></li>
-                    <li class="nav-item" onclick="loadPage('BoQ SURGE FM New Pole', 'db16', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ SURGE FM New Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('Material JRP JOBJ', 'db25', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material JRP JOBJ</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta JRP JOBJ', 'peta_jobj', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta JRP JOBJ</span></li>
                 </ul>
 
                 <div class="nav-category" onclick="toggleMenu(this)">
-                    <span class="nav-text">Daftar Material</span>
+                    <span class="nav-text">Proyek IJE CAO Ring 2</span>
                     <i class="fa-solid fa-chevron-down chevron"></i>
                 </div>
                 <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('Material JRP JOBJ', 'db25', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material JRP JOBJ</span></li>
+                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 2', 'db2', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 2</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 2', 'db10', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 2</span></li>
                     <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 2', 'db26', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 2</span></li>
-                    <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 4', 'db27', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 4</span></li>
-                    <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 3A', 'db28', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 3A</span></li>
-                    <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 3B', 'db29', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 3B</span></li>
-                    <li class="nav-item" onclick="loadPage('Material IJE FM Ring 1', 'db30', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE FM Ring 1</span></li>
-                    <li class="nav-item" onclick="loadPage('Material SURGE FM Ex Pole', 'db31', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material SURGE FM Ex Pole</span></li>
-                    <li class="nav-item" onclick="loadPage('Material SURGE FM New Pole', 'db32', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material SURGE FM New Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 2', 'peta_cao_ring_2', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 2</span></li>
                 </ul>
 
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text">Proyek IJE CAO Ring 4</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 4', 'db3', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 4</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 4', 'db11', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 4</span></li>
+                    <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 4', 'db27', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 4</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 4', 'peta_cao_ring_4', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 4</span></li>
+                </ul>
+
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text">Proyek IJE CAO Ring 3A</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 3A', 'db4', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 3A</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 3A', 'db12', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 3A</span></li>
+                    <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 3A', 'db28', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 3A</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 3A', 'peta_cao_ring_3a', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 3A</span></li>
+                </ul>
+
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text">Proyek IJE CAO Ring 3B</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 3B', 'db5', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 3B</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 3B', 'db13', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 3B</span></li>
+                    <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 3B', 'db29', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 3B</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 3B', 'peta_cao_ring_3b', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 3B</span></li>
+                </ul>
+
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text">Proyek IJE FM Ring 1</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('PO IJE FM Ring 1', 'db6', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE FM Ring 1</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ IJE FM Ring 1', 'db14', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE FM Ring 1</span></li>
+                    <li class="nav-item" onclick="loadPage('Material FM Ring 1', 'db30', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material FM Ring 1</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta IJE FM Ring 1', 'peta_ije_fm_ring_1', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE FM Ring 1</span></li>
+                </ul>
+
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text">Proyek SURGE FM Ex Pole</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('PO SURGE FM Ex Pole', 'db7', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO SURGE FM Ex Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ SURGE FM Ex Pole', 'db15', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ SURGE FM Ex Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('Material SURGE FM Ex Pole', 'db31', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material SURGE FM Ex Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta SURGE FM Ex Pole', 'peta_surge', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta SURGE FM Ex Pole</span></li>
+                </ul>
+
+                <div class="nav-category" onclick="toggleMenu(this)">
+                    <span class="nav-text">Proyek SURGE FM New Pole</span>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="submenu">
+                    <li class="nav-item" onclick="loadPage('PO SURGE FM New Pole', 'db8', 'table', this)"><i class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO SURGE FM New Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('BoQ SURGE FM New Pole', 'db16', 'table', this)"><i class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ SURGE FM New Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('Material SURGE FM New Pole', 'db32', 'table', this)"><i class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material SURGE FM New Pole</span></li>
+                    <li class="nav-item" onclick="loadPage('Peta SURGE FM New Pole', 'peta_surge', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta SURGE FM New Pole</span></li>
+                </ul>
+
+                <div class="sidebar-title" style="padding: 16px 24px 8px 24px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none;">Menu Invoice</div>
                 <div class="nav-category" onclick="toggleMenu(this)">
                     <span class="nav-text">Invoice</span>
                     <i class="fa-solid fa-chevron-down chevron"></i>
                 </div>
                 <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('Pembayaran', 'pembayaran', 'table', this)"><i class="fa-solid fa-dollar-sign"></i> <span class="nav-text">Daftar Pembayaran</span></li>
+                    <li class="nav-item" onclick="loadPage('Pembayaran', 'pembayaran', 'table', this)"><i class="fa-solid fa-dollar-sign"></i> <span class="nav-text">Pembayaran</span></li>
                 </ul>
 
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <span class="nav-text">Peta Asset</span>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
-                </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('Peta JOBJ', 'peta_jobj', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta JRP JOBJ</span></li>
-                    <li class="nav-item" onclick="loadPage('Peta Surge', 'peta_surge', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta SURGE FM 3456KM</span></li>
-                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 2', 'peta_cao_ring_2', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 2</span></li>
-                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 4', 'peta_cao_ring_4', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 4</span></li>
-                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 3A', 'peta_cao_ring_3a', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 3A</span></li>
-                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 3B', 'peta_cao_ring_3b', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 3B</span></li>
-                    <li class="nav-item" onclick="loadPage('Peta IJE FM Ring 1', 'peta_ije_fm_ring_1', 'map', this)"><i class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE FM Ring 1</span></li>
-                </ul>
-
+                <div class="sidebar-title" style="padding: 16px 24px 8px 24px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none;">Menu Contact Person</div>
                 <div class="nav-category" onclick="toggleMenu(this)">
                     <span class="nav-text">Contact Person</span>
                     <i class="fa-solid fa-chevron-down chevron"></i>

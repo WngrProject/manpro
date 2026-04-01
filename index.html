@@ -995,11 +995,11 @@
                 }
 
                 if (fileId) {
-                    finalUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+                    finalUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w512`;
                 }
             }
 
-            if (finalUrl.startsWith('http')) {
+            if (finalUrl !== '') {
                 avatarDiv.style.backgroundImage = `url('${finalUrl}')`;
                 avatarDiv.style.backgroundSize = 'cover';
                 avatarDiv.style.backgroundPosition = 'center';
@@ -1047,10 +1047,10 @@
                         const matchId = finalUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
                         if (matchFileD && matchFileD[1]) fileId = matchFileD[1];
                         else if (matchId && matchId[1]) fileId = matchId[1];
-                        if (fileId) finalUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+                        if (fileId) finalUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w512`;
                     }
 
-                    if (finalUrl.startsWith('http')) {
+                    if (finalUrl !== '') {
                         bubble.style.backgroundImage = `url('${finalUrl}')`;
                         bubble.style.backgroundSize = 'cover';
                         bubble.style.backgroundPosition = 'center';

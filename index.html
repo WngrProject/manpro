@@ -2619,93 +2619,257 @@
             }
         }
 
+        function createCleanExportTable(originalTable) {
+            let tempTable = originalTable.cloneNode(true);
+            
+            let removeIndices = [];
+            tempTable.querySelectorAll('thead tr th').forEach((th, index) => {
+                let text = th.textContent.trim().toLowerCase();
+                if (text === 'aksi' || text === 'file') {
+                    removeIndices.push(index);
+                }
+            });
+
+            // Sort descending to avoid index shift during removal
+            removeIndices.sort((a, b) => b - a);
+
+            tempTable.querySelectorAll('thead tr, tbody tr').forEach(tr => {
+                removeIndices.forEach(idx => {
+                    if (tr.cells.length > idx) {
+                        tr.removeChild(tr.cells[idx]);
+                    }
+                });
+            });
+
+            tempTable.querySelectorAll('tfoot tr').forEach(tr => {
+                let currentLogicalCol = 0;
+                let cellsToModify = Array.from(tr.cells);
+                
+                cellsToModify.forEach(cell => {
+                    let colspan = parseInt(cell.getAttribute('colspan') || 1);
+                    let cellRangeStart = currentLogicalCol;
+                    let cellRangeEnd = currentLogicalCol + colspan;
+                    
+                    let removalsInThisCell = removeIndices.filter(idx => idx >= cellRangeStart && idx < cellRangeEnd).length;
+                    
+                    if (removalsInThisCell > 0) {
+                        let newColspan = colspan - removalsInThisCell;
+                        if (newColspan <= 0) {
+                            tr.removeChild(cell);
+                        } else {
+                            cell.setAttribute('colspan', newColspan);
+                        }
+                    }
+                    currentLogicalCol = cellRangeEnd;
+                });
+            });
+
+            return tempTable;
+        }
+
         document.getElementById('btnExportExcel').addEventListener('click', () => {
             const table = document.getElementById("main-table");
             if (!table) return;
-            let tempTable = table.cloneNode(true);
-            tempTable.querySelectorAll('tr').forEach(tr => {
-                if(tr.cells.length > 0) {
-                    const lastCell = tr.lastElementChild;
-                    if(lastCell.textContent.trim() === 'Aksi' || lastCell.querySelector('.btn-edit')) {
-                        tr.removeChild(lastCell);
-                    }
-                }
-            });
+            let tempTable = createCleanExportTable(table);
             const wb = XLSX.utils.table_to_book(tempTable, { sheet: "Data_Export" });
             XLSX.writeFile(wb, "System_Data_Export.xlsx");
         });
-
         document.getElementById('btnExportPdf').addEventListener('click', () => {
             const table = document.getElementById("main-table");
             if (!table) return;
             
-            const tempDiv = document.createElement('div');
-            let tempTable = table.cloneNode(true);
-            
-            tempTable.querySelectorAll('tr').forEach(tr => {
-                if(tr.cells.length > 0) {
-                    const lastCell = tr.lastElementChild;
-                    if(lastCell.textContent.trim() === 'Aksi' || lastCell.querySelector('.btn-edit')) {
-                        tr.removeChild(lastCell);
+            const pageTitleText = document.getElementById('page-title').textContent.trim() || 'Semua Proyek';
+            let tempTable = createCleanExportTable(table);
+            const now = new Date();
+            const yyyymmdd = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+            const pdfFilename = `${yyyymmdd}_${pageTitleText}_export`;
+            const currentDate = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+
+            // Helper to ensure Indonesian format: #.###,## regardless of input format
+            const formatIndonesian = (val) => {
+                if (!val || val === '-') return val;
+                let clean = val.trim();
+                // Format detection:
+                if (clean.includes('.') && clean.includes(',')) {
+                    // Hybrid or mixed format: the last one is the decimal
+                    if (clean.lastIndexOf(',') > clean.lastIndexOf('.')) {
+                        // ID Format: 1.234,56
+                        clean = clean.replace(/\./g, '').replace(',', '.');
+                    } else {
+                        // US Format: 1,234.56
+                        clean = clean.replace(/,/g, '');
                     }
+                } else if (clean.includes(',')) {
+                    // Only comma: 1,234 (US thousands) or 1234,56 (ID decimal)
+                    let parts = clean.split(',');
+                    if (parts[parts.length - 1].length === 2) clean = clean.replace(/[^\d-]/g, '') + '.' + parts[parts.length - 1]; // ID decimal
+                    else clean = clean.replace(/,/g, ''); // US thousands
+                } else if (clean.includes('.')) {
+                    // Only dot: 1.234 (ID thousands) or 1234.56 (US decimal)
+                    let parts = clean.split('.');
+                    if (parts[parts.length - 1].length === 2) clean = clean.replace(/[^\d-]/g, '') + '.' + parts[parts.length - 1]; // US decimal
+                    else clean = clean.replace(/\./g, ''); // ID thousands
                 }
-            });
-
-            tempTable.style.width = '100%';
-            tempTable.style.borderCollapse = 'collapse';
-            tempTable.style.fontFamily = 'sans-serif';
-            
-            tempTable.querySelectorAll('th, td').forEach(cell => {
-                cell.style.fontSize = '10px';
-                cell.style.padding = '5px 6px';
-                cell.style.border = '1px solid #cbd5e1';
-                cell.style.color = '#000000';
-            });
-            
-            tempTable.querySelectorAll('th').forEach(th => {
-                th.style.backgroundColor = '#e2e8f0';
-                th.style.fontWeight = 'normal';
-            });
-
-            const thead = tempTable.querySelector('thead');
-            if(thead) thead.style.display = 'table-header-group';
-
-            tempDiv.appendChild(tempTable);
-            const pageTitleText = document.getElementById('page-title').textContent.trim() || 'Data Export';
-
-            const opt = {
-                margin:       [0.6, 0.4, 0.6, 0.4], 
-                filename:     pageTitleText + '_Export.pdf',
-                image:        { type: 'jpeg', quality: 1.0 }, 
-                html2canvas:  { scale: 3, useCORS: true, logging: false }, 
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }, 
-                pagebreak:    { mode: 'css', avoid: 'tr' } 
+                
+                let num = parseFloat(clean.replace(/[^\d.-]/g, ''));
+                if (isNaN(num)) return val;
+                return num.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             };
 
-            const btnPdf = document.getElementById('btnExportPdf');
-            const originalHtml = btnPdf.innerHTML;
-            btnPdf.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            let colWidths = ['2.5%', '7%', '8.5%', '11%', '18%', '9%', '9%', '9%', '7%', '19%'];
+            
+            // Override colWidths for "Pembayaran" page to handle 15 columns properly
+            if (window.currentCollection === 'pembayaran') {
+                // Optimized to give 9.5% to ALL money columns (Nilai, PPn, Total, Nilai Bayar)
+                colWidths = ['2%', '4%', '6%', '8%', '8%', '6%', '6%', '9.5%', '9.5%', '9.5%', '4%', '3.5%', '5.5%', '9.5%', '9%'];
+            }
 
-            html2pdf().set(opt).from(tempDiv).toPdf().get('pdf').then(function (pdf) {
-                const totalPages = pdf.internal.getNumberOfPages();
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-                
-                for (let i = 1; i <= totalPages; i++) {
-                    pdf.setPage(i);
-                    pdf.setFontSize(10);
-                    pdf.setTextColor(100);
-                    pdf.text(pageTitleText + ' - Laporan Man Pro', 0.4, 0.4);
-                    const pageString = 'Halaman ' + i + ' dari ' + totalPages;
-                    pdf.text(pageString, pageWidth - 1.5, pageHeight - 0.3);
+            // Prepare the cleaned entries for the Ledger (Indonesian Formatting)
+            tempTable.querySelectorAll('tr').forEach((tr, rowIndex) => {
+                const isHeader = rowIndex === 0 && tr.closest('thead');
+                const isFooter = tr.closest('tfoot');
+
+                if (isHeader) {
+                    tr.className = 'bg-[#eeeeee]';
+                    Array.from(tr.cells).forEach((cell, cellIndex) => {
+                        // REMOVED 'tracking-wider' and ensured no cropping in header
+                        cell.className = 'px-0.5 py-1.5 text-[7px] font-bold uppercase border-b border-[#c6c6c6]/20 text-black';
+                        cell.style.width = colWidths[cellIndex] || 'auto';
+                        cell.querySelectorAll('i').forEach(i => i.remove());
+                    });
+                } else if (isFooter) {
+                    tr.className = 'bg-[#000000] text-white';
+                    Array.from(tr.cells).forEach(cell => {
+                        // RE-FORMAT: Apply Indonesian localization to totals
+                        if (cell.textContent.match(/[0-9]/)) {
+                            cell.textContent = formatIndonesian(cell.textContent);
+                        }
+                        
+                        // FIX: Overlapping text by reducing size to 6.5px and minimizing padding
+                        cell.className = 'px-0.5 py-3 font-bold uppercase text-[6.5px] border-none tabular-nums';
+                        if (cell.colSpan > 1 && cell.textContent.trim().toLowerCase().includes('total')) {
+                            cell.className += ' text-left pl-2'; // Standard
+                        } else {
+                            cell.className += ' text-right pr-1 whitespace-nowrap'; // No tracking for digits
+                        }
+                    });
+                } else {
+                    tr.className = 'hover:bg-zinc-50 transition-colors border-b border-zinc-100';
+                    Array.from(tr.cells).forEach((cell, cellIndex) => {
+                        // REMOVED 'overflow-hidden' to prevent cropping
+                        let baseClass = 'px-0.5 py-1 text-[7px] text-black leading-tight break-words tabular-nums';
+                        if (cellIndex === 0) baseClass += ' font-bold'; // No
+                        if (cellIndex === 4 || cellIndex === 9 || (window.currentCollection === 'pembayaran' && (cellIndex === 3 || cellIndex === 4 || cellIndex === 14))) {
+                            baseClass += ' whitespace-normal'; // Wrap for large text columns
+                        }
+                        if (cellIndex === 2) baseClass += ' text-[6.5px]'; // No Proyek
+                        
+                        if (cell.classList.contains('angka')) {
+                            cell.textContent = formatIndonesian(cell.textContent); // Localization
+                            baseClass += ' text-right font-medium text-[6.5px] whitespace-nowrap pr-1'; // Numeric cells at 6.5px
+                        }
+                        cell.className = baseClass;
+                        
+                        const badge = cell.querySelector('.status-badge');
+                        if (badge) {
+                            badge.className = 'px-1 py-0.5 bg-[#d5d4d9] text-[#1a1b1f] text-[7px] font-bold rounded-full uppercase inline-block';
+                        }
+                    });
                 }
-            }).save().then(() => {
-                btnPdf.innerHTML = originalHtml;
-            }).catch(err => {
-                console.error("Gagal melakukan export PDF: ", err);
-                btnPdf.innerHTML = originalHtml;
-                alert("Terjadi kesalahan saat memproses file PDF.");
             });
+
+            const printWindow = window.open('', '_blank', 'width=1200,height=900');
+            
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html lang="id">
+                <head>
+                    <meta charset="utf-8"/>
+                    <title>${pdfFilename}</title>
+                    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"><\/script>
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+                    <style>
+                        * { box-sizing: border-box; }
+                        @media print {
+                            @page { size: A4 landscape; margin: 0 !important; }
+                            body { background: white !important; -webkit-print-color-adjust: exact; }
+                        }
+                        body { 
+                            font-family: 'Inter', sans-serif; 
+                            -webkit-print-color-adjust: exact; 
+                            margin: 0 !important; 
+                            padding: 12mm !important; /* Reliable Internal Margin */
+                            background: white;
+                            min-height: 100vh;
+                            font-variant-numeric: tabular-nums; 
+                        }
+                        main { width: 100%; border: 1px solid transparent; overflow: hidden; }
+                        table { 
+                            width: 100% !important; 
+                            table-layout: fixed; 
+                            border-collapse: collapse; 
+                            word-wrap: break-word;
+                        }
+                        thead { display: table-header-group; }
+                    </style>
+                </head>
+                <body class="bg-white text-[#1a1c1c]">
+                    <main>
+                        <!-- Condensed Header -->
+                        <div class="mb-8">
+                            <div class="flex justify-between items-end mb-3">
+                                <div>
+                                    <h1 class="text-2xl font-extrabold tracking-tighter uppercase mb-0.5">${pageTitleText}</h1>
+                                    <p class="text-[#5e5e63] font-medium tracking-wide text-[8.5px]">LAPORAN MAN PRO ARCHITECTURAL LEDGER</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[8px] text-[#5e5e63] uppercase tracking-[0.2em]">Generated</p>
+                                    <p class="text-xs font-bold text-black">${currentDate}</p>
+                                </div>
+                            </div>
+                            <div class="h-[2px] bg-black w-16"></div>
+                        </div>
+
+                        <!-- Scale-to-Fit Table -->
+                        ${tempTable.outerHTML}
+
+                        <!-- Minimal Footer -->
+                        <div class="mt-12 grid grid-cols-3 gap-8 border-t border-zinc-100 pt-6" style="page-break-inside: avoid;">
+                            <div>
+                                <p class="text-[8px] uppercase tracking-widest text-[#5e5e63] mb-3">Dibuat Oleh,</p>
+                                <div class="h-10 mb-2 border-b border-zinc-200 w-32"></div>
+                                <p class="font-bold text-[10px]">Dedi Kurniawan</p>
+                                <p class="text-[9px] text-[#5e5e63]">Project Manager</p>
+                            </div>
+                            <div>
+                                <p class="text-[8px] uppercase tracking-widest text-[#5e5e63] mb-3">Menyetujui,</p>
+                                <div class="h-10 mb-2 border-b border-zinc-200 w-32"></div>
+                                <p class="font-bold text-[10px]">Hilary Agung</p>
+                                <p class="text-[9px] text-[#5e5e63]">Direktur Operasional</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[8px] uppercase tracking-widest text-[#5e5e63] mb-1.5">Note</p>
+                                <p class="text-[9px] text-[#5e5e63] leading-relaxed italic">
+                                    Laporan ini dihasilkan secara otomatis oleh sistem Man Pro.
+                                </p>
+                            </div>
+                        </div>
+                    </main>
+                    <script>
+                        window.onload = function() {
+                            setTimeout(function() {
+                                window.print();
+                                setTimeout(function() { window.close(); }, 500);
+                            }, 1000);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `;
+
+            printWindow.document.open();
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
         });
 
         // --- CEK SESI ---

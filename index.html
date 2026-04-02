@@ -2718,10 +2718,20 @@
 
             let colWidths = ['2.5%', '7%', '8.5%', '11%', '18%', '9%', '9%', '9%', '7%', '19%'];
             
-            // Override colWidths for "Pembayaran" page to handle 15 columns properly
+            const colCount = Array.from(tempTable.rows[0].cells).length;
+            const isMaterialPage = ['db25','db26','db27','db28'].includes(window.currentCollection);
+
             if (window.currentCollection === 'pembayaran') {
-                // Optimized to give 9.5% to ALL money columns (Nilai, PPn, Total, Nilai Bayar)
                 colWidths = ['2%', '4%', '6%', '8%', '8%', '6%', '6%', '9.5%', '9.5%', '9.5%', '4%', '3.5%', '5.5%', '9.5%', '9%'];
+            } else if (isMaterialPage) {
+                // Optimized for Material Data (14-15 columns)
+                colWidths = ['2%', '6%', '8%', '10%', '10%', '12%', '4%', '5%', '8%', '8%', '6%', '8%', '5%', '8%'];
+            } else if (colCount <= 9 && (window.currentCollection.startsWith('db') && !isMaterialPage)) {
+                if (colCount === 8) {
+                    colWidths = ['5%', '35%', '8%', '12%', '10%', '14%', '6%', '10%'];
+                } else if (colCount === 9) {
+                    colWidths = ['4%', '30%', '7%', '10%', '10%', '10%', '10%', '10%', '9%'];
+                }
             }
 
             // Prepare the cleaned entries for the Ledger (Indonesian Formatting)
@@ -2732,41 +2742,42 @@
                 if (isHeader) {
                     tr.className = 'bg-[#eeeeee]';
                     Array.from(tr.cells).forEach((cell, cellIndex) => {
-                        // REMOVED 'tracking-wider' and ensured no cropping in header
-                        cell.className = 'px-0.5 py-1.5 text-[7px] font-bold uppercase border-b border-[#c6c6c6]/20 text-black';
+                        // ULTRA-CONDENSED HEADER: 6px + py-1 to prevent multi-line wrapping
+                        cell.className = 'px-0.5 py-1 text-[6px] font-bold uppercase border-b border-[#c6c6c6]/20 text-black leading-none whitespace-nowrap overflow-hidden';
                         cell.style.width = colWidths[cellIndex] || 'auto';
                         cell.querySelectorAll('i').forEach(i => i.remove());
                     });
                 } else if (isFooter) {
                     tr.className = 'bg-[#000000] text-white';
                     Array.from(tr.cells).forEach(cell => {
-                        // RE-FORMAT: Apply Indonesian localization to totals
                         if (cell.textContent.match(/[0-9]/)) {
                             cell.textContent = formatIndonesian(cell.textContent);
                         }
-                        
-                        // FIX: Overlapping text by reducing size to 6.5px and minimizing padding
                         cell.className = 'px-0.5 py-3 font-bold uppercase text-[6.5px] border-none tabular-nums';
                         if (cell.colSpan > 1 && cell.textContent.trim().toLowerCase().includes('total')) {
-                            cell.className += ' text-left pl-2'; // Standard
+                            cell.className += ' text-left pl-2';
                         } else {
-                            cell.className += ' text-right pr-1 whitespace-nowrap'; // No tracking for digits
+                            cell.className += ' text-right pr-1 whitespace-nowrap';
                         }
                     });
                 } else {
                     tr.className = 'hover:bg-zinc-50 transition-colors border-b border-zinc-100';
                     Array.from(tr.cells).forEach((cell, cellIndex) => {
-                        // REMOVED 'overflow-hidden' to prevent cropping
                         let baseClass = 'px-0.5 py-1 text-[7px] text-black leading-tight break-words tabular-nums';
-                        if (cellIndex === 0) baseClass += ' font-bold'; // No
-                        if (cellIndex === 4 || cellIndex === 9 || (window.currentCollection === 'pembayaran' && (cellIndex === 3 || cellIndex === 4 || cellIndex === 14))) {
-                            baseClass += ' whitespace-normal'; // Wrap for large text columns
-                        }
-                        if (cellIndex === 2) baseClass += ' text-[6.5px]'; // No Proyek
+                        if (cellIndex === 0) baseClass += ' font-bold';
+                        
+                        let shouldWrap = false;
+                        if (window.currentCollection === 'dball' && [4, 10].includes(cellIndex)) shouldWrap = true;
+                        else if (window.currentCollection === 'pembayaran' && [3, 4, 14].includes(cellIndex)) shouldWrap = true;
+                        else if (isMaterialPage && [3, 4, 5, 13].includes(cellIndex)) shouldWrap = true;
+                        else if (colCount <= 9 && [1, colCount - 1].includes(cellIndex)) shouldWrap = true;
+                        
+                        if (shouldWrap) baseClass += ' whitespace-normal';
+                        if (cellIndex === 2 && window.currentCollection === 'dball') baseClass += ' text-[6.5px]';
                         
                         if (cell.classList.contains('angka')) {
-                            cell.textContent = formatIndonesian(cell.textContent); // Localization
-                            baseClass += ' text-right font-medium text-[6.5px] whitespace-nowrap pr-1'; // Numeric cells at 6.5px
+                            cell.textContent = formatIndonesian(cell.textContent);
+                            baseClass += ' text-right font-medium text-[6.5px] whitespace-nowrap pr-1';
                         }
                         cell.className = baseClass;
                         

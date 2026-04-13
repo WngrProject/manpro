@@ -2120,12 +2120,16 @@
                                         isSumProductMatch ? sumProductCols.find(spc => spc.toLowerCase() === lowerCol) : 
                                         isSumProductDb9Match ? (sumProductColsFeeder.find(spc => spc.toLowerCase() === lowerCol) || sumProductColsDistribusi.find(spc => spc.toLowerCase() === lowerCol)) : null;
 
-                    if (colName === 'pembayaran' && col === 'Uraian Proyek') footerHTML += `<th style="text-align:left;">Total Summary:</th>`;
-                    else if (col === countCol) footerHTML += `<th style="text-align:left;">${counts} Data</th>`;
+                    if (colName === 'pembayaran' && col === 'Uraian Proyek') footerHTML += `<th style="text-align:left;">SUBTOTAL:</th>`;
+                    else if (col === countCol) {
+                        let countIdAttr = (colName === 'pembayaran') ? ` id="sum-count"` : '';
+                        footerHTML += `<th style="text-align:left;"${countIdAttr}>${counts} Data</th>`;
+                    }
                     else if (targetDataKey) {
                         let subValue = subtotalsData[targetDataKey] || 0;
                         let formattedSubValue = percentCols.includes(lowerCol) ? formatDecimalUS(subValue) + "%" : formatDecimalUS(subValue);
-                        footerHTML += `<th class="angka">${formattedSubValue}</th>`;
+                        let idAttr = (colName === 'pembayaran') ? ` id="sum-${lowerCol.replace(/[^a-z0-9]/g, '')}"` : '';
+                        footerHTML += `<th class="angka"${idAttr}>${formattedSubValue}</th>`;
                     } else {
                         if (index === 0 && colName !== 'pembayaran') footerHTML += `<th style="text-align:left;">Total</th>`;
                         else footerHTML += `<th></th>`;
@@ -2293,6 +2297,8 @@
             if(rows.length === 0) return;
 
             let viewTotalNilai = 0, viewTotalInv = 0, viewTotalTerbayar = 0;
+            let sumNilaiInvoice = 0, sumPpn11 = 0, sumTotalInvoice = 0, sumNilaiBayar = 0;
+            let visibleCount = 0;
             const bulanMap = { "Januari": "Jan", "Februari": "Feb", "Maret": "Mar", "April": "Apr", "Mei": "Mei", "Juni": "Jun", "Juli": "Jul", "Agustus": "Agt", "September": "Sep", "Oktober": "Okt", "November": "Nov", "Desember": "Des" };
 
             rows.forEach(row => {
@@ -2364,6 +2370,12 @@
                         viewTotalNilai += parseFloat(row.cells[5].textContent.replace(/,/g, "")) || 0;
                         viewTotalInv += parseFloat(row.cells[6].textContent.replace(/,/g, "")) || 0;
                         viewTotalTerbayar += parseFloat(row.cells[7].textContent.replace(/,/g, "")) || 0;
+                    } else if (window.currentCollection === 'pembayaran' && row.cells.length > 14) {
+                        visibleCount++;
+                        sumNilaiInvoice += parseFloat(row.cells[7].textContent.replace(/,/g, "")) || 0;
+                        sumPpn11 += parseFloat(row.cells[8].textContent.replace(/,/g, "")) || 0;
+                        sumTotalInvoice += parseFloat(row.cells[9].textContent.replace(/,/g, "")) || 0;
+                        sumNilaiBayar += parseFloat(row.cells[14].textContent.replace(/,/g, "")) || 0;
                     }
                 } else {
                     row.style.display = 'none';
@@ -2374,6 +2386,12 @@
                 if(document.getElementById('sum-nilai')) document.getElementById('sum-nilai').textContent = formatDecimalUS(viewTotalNilai);
                 if(document.getElementById('sum-invoice')) document.getElementById('sum-invoice').textContent = formatDecimalUS(viewTotalInv);
                 if(document.getElementById('sum-terbayar')) document.getElementById('sum-terbayar').textContent = formatDecimalUS(viewTotalTerbayar);
+            } else if (window.currentCollection === 'pembayaran') {
+                if(document.getElementById('sum-count')) document.getElementById('sum-count').textContent = visibleCount + ' Data';
+                if(document.getElementById('sum-nilaiinvoice')) document.getElementById('sum-nilaiinvoice').textContent = formatDecimalUS(sumNilaiInvoice);
+                if(document.getElementById('sum-ppn11')) document.getElementById('sum-ppn11').textContent = formatDecimalUS(sumPpn11);
+                if(document.getElementById('sum-totalinvoice')) document.getElementById('sum-totalinvoice').textContent = formatDecimalUS(sumTotalInvoice);
+                if(document.getElementById('sum-nilaibayar')) document.getElementById('sum-nilaibayar').textContent = formatDecimalUS(sumNilaiBayar);
             }
         }
 

@@ -20,8 +20,24 @@
         /* --- RESET & CSS VARIABLES --- */
         :root {
             --primary-blue: #5C55FA;
+            --primary-grad-start: #5C55FA;
+            --primary-grad-end: #8A84FF;
             --primary-hover: #4841E0;
             --primary-light: #EAE6FF;
+
+            /* --- THEME STYLE DYNAMIC VARIABLES --- */
+            --glass-blur: 0px;
+            --glass-opacity: 1;
+            --border-glow: 0 0 0px transparent;
+            --card-border: var(--border-color);
+            --mesh-opacity: 0.6;
+            --card-radius: 12px;
+            --card-shadow: var(--shadow-sm);
+            --sidebar-blur: 0px;
+            --sidebar-opacity: 1;
+            --topbar-blur: 0px;
+            --topbar-opacity: 1;
+            --accent-glow: transparent;
 
             --bg-color: #F4F5F7;
             --sidebar-bg: #FFFFFF;
@@ -34,10 +50,10 @@
             --border-color: #EBECF0;
             --border-strong: #DFE1E6;
 
-            /* Premium Soft Shadows */
-            --shadow-sm: 0 1px 1px rgba(9, 30, 66, 0.05), 0 0 1px rgba(9, 30, 66, 0.13);
-            --shadow-md: 0 4px 8px -2px rgba(9, 30, 66, 0.08), 0 0 1px rgba(9, 30, 66, 0.13);
-            --shadow-lg: 0 8px 16px -4px rgba(9, 30, 66, 0.08), 0 0 1px rgba(9, 30, 66, 0.13);
+            /* Premium Soft Shadows - Removed hairline stroke */
+            --shadow-sm: 0 1px 2px rgba(9, 30, 66, 0.05);
+            --shadow-md: 0 4px 8px -2px rgba(9, 30, 66, 0.08);
+            --shadow-lg: 0 8px 16px -4px rgba(9, 30, 66, 0.08);
 
             --sidebar-width: 260px;
             --sidebar-collapsed-width: 76px;
@@ -49,29 +65,32 @@
             /* Default hover color mode terang */
         }
 
-        /* --- PENYEMPURNAAN DARK MODE (SLATE/BIRU-ABU GELAP) --- */
+        /* --- PENYEMPURNAAN DARK MODE (DEEP COSMIC / INDIGO-NAVY) --- */
         :root[data-theme="dark"] {
-            --bg-color: #0f172a;
-            /* Slate 900 */
-            --sidebar-bg: #1e293b;
-            /* Slate 800 */
-            --text-main: #f8fafc;
-            /* Slate 50 */
-            --text-muted: #cbd5e1;
-            /* Slate 300 */
-            --text-light: #94a3b8;
+            --bg-color: #0b1121;
+            /* Deep Midnight Blue */
+            --sidebar-bg: #111827;
+            /* Rich Dark Blue */
+            --text-main: #f1f5f9;
+            /* Slate 100 */
+            --text-muted: #94a3b8;
             /* Slate 400 */
-            --border-color: #334155;
-            /* Slate 700 */
-            --border-strong: #475569;
-            /* Slate 600 */
-            --card-bg: #1e293b;
+            --text-light: #64748b;
+            /* Slate 500 */
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.15);
+            --card-bg: rgba(17, 24, 39, 0.8);
+            /* Translucent for Glassmorphism */
             --th-bg: transparent;
-            --row-hover: #334155;
+            --row-hover: rgba(51, 65, 85, 0.4);
             --dropdown-bg: #1e293b;
-            --primary-light: #334155;
+            --primary-blue: #818cf8;
+            /* Luminous Indigo */
+            --primary-light: rgba(129, 140, 248, 0.1);
             --table-hover-text: #ffffff;
-            /* Hover text color mode gelap */
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
         }
 
         * {
@@ -94,38 +113,99 @@
         }
 
         /* --- GLOBAL SMOOTH ANIMATIONS --- */
-        @keyframes fadeSlideUp {
+        @keyframes pageEnter {
             from {
                 opacity: 0;
-                transform: translateY(15px);
+                transform: scale(0.97) translateY(20px);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1) translateY(0);
             }
         }
 
-        .animate-fade-in {
-            animation: fadeSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        /* --- NEW ANIMATION: FADE SLIDE DOWN --- */
-        @keyframes fadeSlideDown {
+        @keyframes rowEnter {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateX(-15px);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateX(0);
             }
         }
 
+        .animate-fade-in,
         .animate-fade-down {
-            animation: fadeSlideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation: pageEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
+
+        /* --- DECORATIVE BLOBS --- */
+        .blobs-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            animation: float 20s infinite alternate;
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: rgba(92, 85, 250, 0.2);
+            top: -50px;
+            right: -50px;
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(16, 185, 129, 0.15);
+            bottom: -100px;
+            left: -50px;
+            animation-duration: 25s;
+        }
+
+        .blob-3 {
+            width: 250px;
+            height: 250px;
+            background: rgba(251, 146, 60, 0.15);
+            top: 20%;
+            left: 30%;
+            animation-duration: 30s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(50px, 50px) scale(1.2);
+            }
+        }
+
+        /* Helper for staggered animation */
+        .stagger-item {
+            opacity: 0;
+            animation: rowEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+
 
         /* --- LOGIN SCREEN --- */
         #loginScreen {
@@ -139,7 +219,7 @@
 
         .login-box {
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 16px;
             box-shadow: var(--shadow-lg);
             border: 1px solid var(--border-color);
             width: 380px;
@@ -180,7 +260,7 @@
             display: none;
             background: rgba(239, 68, 68, 0.1);
             padding: 10px;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
@@ -199,12 +279,20 @@
             box-shadow: 1px 0 0 0 rgba(9, 30, 66, 0.06);
             display: flex;
             flex-direction: column;
-            z-index: 50;
+            z-index: 1000;
             /* Pergerakan sidebar yang jauh lebih smooth */
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-x: hidden;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
+            overflow: visible;
+            /* Penting agar flyout tidak terpotong */
             white-space: nowrap;
             position: relative;
+            background: rgba(255, 255, 255, var(--sidebar-opacity));
+            backdrop-filter: blur(var(--sidebar-blur));
+            -webkit-backdrop-filter: blur(var(--sidebar-blur));
+        }
+
+        :root[data-theme="dark"] .sidebar {
+            background: rgba(17, 24, 39, var(--sidebar-opacity));
         }
 
         .sidebar.collapsed {
@@ -259,7 +347,7 @@
             height: 32px;
             background: var(--primary-blue);
             color: #fff;
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -269,7 +357,8 @@
         .nav-menu {
             list-style: none;
             padding: 10px 0;
-            overflow-y: auto;
+            overflow: visible;
+            /* Penting agar flyout tidak terpotong */
             flex: 1;
         }
 
@@ -282,49 +371,99 @@
             border-radius: 4px;
         }
 
+        .nav-group {
+            position: relative;
+            margin-bottom: 4px;
+        }
+
         .nav-category {
-            padding: 16px 24px 8px 24px;
-            font-weight: 600;
-            font-size: 11px;
-            color: var(--text-main);
-            letter-spacing: 0.05em;
+            padding: 12px 24px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             cursor: pointer;
-            transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-main);
+            font-weight: 500;
+            font-size: 14px;
+            border-left: 4px solid transparent;
         }
 
         .nav-category:hover {
+            background: var(--row-hover);
             color: var(--primary-blue);
         }
 
-        .nav-category .chevron {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        .nav-category.open {
+            /* Styles merged with .nav-item.active below */
+        }
+
+        .chevron {
             font-size: 10px;
+            transition: transform 0.3s;
+            color: var(--text-muted);
         }
 
         .nav-category.open .chevron {
-            transform: rotate(180deg);
+            transform: rotate(90deg);
         }
 
         .submenu {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            min-width: 250px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px;
             list-style: none;
-            display: none;
-            padding-bottom: 8px;
-            animation: fadeSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
         }
 
-        .submenu.open {
-            display: block;
+        .submenu.open,
+        .nav-group:hover .submenu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(12px);
+        }
+
+        /* Triangle indicator for submenu */
+        .submenu::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 15px;
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-right: 6px solid var(--border-color);
+        }
+
+        .submenu::after {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 15px;
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-right: 6px solid var(--card-bg);
         }
 
         .nav-item {
             padding: 10px 16px;
             margin: 4px 16px;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -339,22 +478,100 @@
             text-align: center;
             font-size: 15px;
             color: var(--text-main);
-            transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .nav-item:hover {
+        /* --- SIDEBAR ICON COLORS & INTERACTION --- */
+        .ic-dashboard {
+            --ic-color: #5C55FA;
+            color: var(--ic-color);
+        }
+
+        .ic-jobj {
+            --ic-color: #00C2B2;
+            color: var(--ic-color);
+        }
+
+        .ic-cao2 {
+            --ic-color: #FF8B00;
+            color: var(--ic-color);
+        }
+
+        .ic-cao4 {
+            --ic-color: #E74C3C;
+            color: var(--ic-color);
+        }
+
+        .ic-cao3a {
+            --ic-color: #9B59B6;
+            color: var(--ic-color);
+        }
+
+        .ic-cao3b {
+            --ic-color: #3498DB;
+            color: var(--ic-color);
+        }
+
+        .ic-fm1 {
+            --ic-color: #F39C12;
+            color: var(--ic-color);
+        }
+
+        .ic-surge-ex {
+            --ic-color: #E67E22;
+            color: var(--ic-color);
+        }
+
+        .ic-surge-new {
+            --ic-color: #2ECC71;
+            color: var(--ic-color);
+        }
+
+        .ic-invoice {
+            --ic-color: #006644;
+            color: var(--ic-color);
+        }
+
+        .ic-contact {
+            --ic-color: #FF5F58;
+            color: var(--ic-color);
+        }
+
+        .nav-item:hover,
+        .nav-category:hover {
             background-color: var(--row-hover);
             transform: translateX(4px);
+            color: var(--primary-blue);
         }
 
-        .nav-item.active {
-            background: linear-gradient(90deg, var(--primary-blue) 0%, #8A84FF 100%);
+        .nav-item:hover i,
+        .nav-category:hover i:first-child {
+            filter: drop-shadow(0 0 8px currentColor);
+            transform: scale(1.3) rotate(8deg);
+            color: var(--ic-color) !important;
+        }
+
+        .nav-category i:first-child {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-item.active,
+        .nav-category.active,
+        .nav-category.open {
+            background: linear-gradient(90deg, var(--primary-grad-start) 0%, var(--primary-grad-end) 100%);
             color: #ffffff;
             font-weight: 600;
+            box-shadow: 0 4px 12px rgba(92, 85, 250, 0.3), var(--accent-glow);
+            border-left-color: transparent;
         }
 
-        .nav-item.active i {
+        .nav-item.active i,
+        .nav-category.active i,
+        .nav-category.open i,
+        .nav-category.active .chevron,
+        .nav-category.open .chevron {
             color: #ffffff !important;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
         }
 
         /* --- TOPBAR --- */
@@ -367,13 +584,133 @@
         }
 
         .topbar {
-            background: var(--bg-color);
-            padding: 16px 32px;
+            position: relative;
+            z-index: 10000;
+            background: rgba(255, 255, 255, var(--sidebar-opacity));
+            backdrop-filter: blur(var(--sidebar-blur));
+            -webkit-backdrop-filter: blur(var(--sidebar-blur));
+            padding: 6px 20px;
+            /* Increased from 0 */
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        :root[data-theme="dark"] .topbar {
+            background: rgba(17, 24, 39, var(--sidebar-opacity));
+        }
+
+        /* --- TOTAL VISUAL PRESETS --- */
+
+        /* 🧊 GLASSMORPHISM PRESET */
+        :root[data-visual-style="glass"] {
+            --card-radius: 20px;
+            --sidebar-opacity: 0.35;
+            --topbar-opacity: 0.35;
+            --sidebar-blur: 40px;
+            --topbar-blur: 40px;
+            --glass-blur: 35px;
+            --glass-opacity: 0.35;
+        }
+
+        :root[data-visual-style="glass"] .sidebar {
+            margin: 12px;
+            border-radius: 20px;
+            height: calc(100% - 24px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        :root[data-visual-style="glass"] .topbar {
+            margin: 12px 12px 0 0;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        :root[data-visual-style="glass"] .card,
+        :root[data-visual-style="glass"] .kpi-card {
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* ⚡ QUANTUM CYBER PRESET */
+        :root[data-visual-style="cyber"] {
+            --card-radius: 4px;
+            --accent-glow: 0 0 15px var(--primary-blue);
+        }
+
+        :root[data-visual-style="cyber"] .card,
+        :root[data-visual-style="cyber"] .kpi-card {
+            border-left: 3px solid var(--primary-blue) !important;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+        }
+
+        :root[data-visual-style="cyber"] .nav-item.active {
+            position: relative;
+            overflow: hidden;
+        }
+
+        :root[data-visual-style="cyber"] .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: cyberScan 2s infinite;
+        }
+
+        @keyframes cyberScan {
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* 🍱 BENTO SOFT PRESET */
+        :root[data-visual-style="soft"] {
+            --card-radius: 32px;
+            --card-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+        }
+
+        :root[data-visual-style="soft"] .sidebar {
+            border-right: none;
+            padding: 10px;
+        }
+
+        :root[data-visual-style="soft"] .nav-item,
+        :root[data-visual-style="soft"] .nav-category {
+            border-radius: 16px;
+            margin: 4px 12px;
+        }
+
+        :root[data-visual-style="soft"] .card {
+            padding: 24px;
+        }
+
+        /* 👑 EXECUTIVE SLATE PRESET */
+        :root[data-visual-style="executive"] {
+            --card-radius: 8px;
+            --primary-blue: #D4AF37;
+        }
+
+        :root[data-visual-style="executive"] .sidebar-header {
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 25px;
+        }
+
+        :root[data-visual-style="executive"] .card-header h4,
+        :root[data-visual-style="executive"] .page-header {
+            font-family: 'Cambria', 'Georgia', serif;
+            letter-spacing: 0.02em;
+            color: #D4AF37;
+        }
+
+        :root[data-visual-style="executive"] .topbar {
+            border-bottom: 2px solid #D4AF37;
+        }
+
 
         .topbar-left {
             display: flex;
@@ -384,11 +721,13 @@
 
         .btn-toggle {
             background: transparent;
-            border: none;
-            font-size: 16px;
+            border: 1px solid var(--border-strong);
+            font-size: 22px;
+            /* Restored size */
             color: var(--text-muted);
             cursor: pointer;
             padding: 8px;
+            /* Slightly increased padding */
             border-radius: 6px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
@@ -400,6 +739,7 @@
             background: var(--border-strong);
             color: var(--text-main);
             transform: scale(1.05);
+            border-radius: 10px;
         }
 
         .page-header {
@@ -415,14 +755,16 @@
 
         .search-bar-top {
             background: var(--card-bg);
-            border-radius: 6px;
-            padding: 8px 16px;
+            border-radius: 10px;
+            padding: 6px 14px;
+            /* Slightly increased from 4px 12px */
             display: flex;
             align-items: center;
             gap: 10px;
             width: 350px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-strong);
+            box-shadow: none;
+            /* Removed shadow */
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -533,34 +875,142 @@
         /* CONTENT AREA */
         .content {
             flex: 1;
-            padding: 0 32px 32px 32px;
+            padding: 12px;
             overflow-y: auto;
+            background: var(--card-bg);
+            margin: 12px;
+            border-radius: 12px;
+            box-shadow: none;
+            border: none;
+        }
+
+        /* Adjusting for dark mode if needed */
+        :root[data-theme="dark"] .content {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: none;
+            /* Removed shadow */
+            border: none;
         }
 
         /* --- CARDS & WIDGETS --- */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin-bottom: 24px;
+            gap: 16px;
+            /* Reduced from 24px */
+            margin-bottom: 20px;
         }
 
         .card,
         .kpi-card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: var(--shadow-sm);
-            border: none;
-            padding: 24px;
+            background: rgba(255, 255, 255, var(--glass-opacity));
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--card-radius);
+            border: 1px solid var(--card-border);
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: var(--card-shadow), var(--border-glow);
+        }
+
+        :root[data-theme="dark"] .card,
+        :root[data-theme="dark"] .kpi-card {
+            background: rgba(17, 24, 39, var(--glass-opacity));
+        }
+
+        .blobs-container {
+            opacity: var(--mesh-opacity);
+            transition: opacity 0.5s ease;
+        }
+
+        /* Border khusus untuk elemen di navigasi Overview */
+        #section-overview .card,
+        #section-overview .kpi-card,
+        #section-overview .ai-banner,
+        #section-overview .chart-wrapper,
+        #section-overview .activity-item {
+            border: 1px solid var(--border-color) !important;
+        }
+
+        :root[data-theme="dark"] #section-overview .card,
+        :root[data-theme="dark"] #section-overview .kpi-card,
+        :root[data-theme="dark"] #section-overview .ai-banner {
+            border: 1px solid var(--border-strong) !important;
+        }
+
+
+        /* Latar belakang kartu kini menggunakan style transparan default */
+        #section-overview .kpi-card,
+        #section-overview .chart-wrapper {
+            background: rgba(255, 255, 255, var(--glass-opacity));
+            transition: all 0.3s ease;
+        }
+
+        :root[data-theme="dark"] #section-overview .kpi-card,
+        :root[data-theme="dark"] #section-overview .chart-wrapper {
+            background: rgba(17, 24, 39, var(--glass-opacity));
+        }
+
+        #section-overview .card.chart-wrapper:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+        }
+
+        /* Perbaikan agar menu filter tidak terpotong (overflow) */
+        .chart-wrapper {
+            overflow: visible !important;
+        }
+
+        .activity-item:hover {
+            background: var(--row-hover);
+            transform: translate(12px, -2px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .mini-table tr:hover {
+            background: var(--row-hover);
+            transform: scale(1.01) translateX(4px);
+            box-shadow: inset 0 0 10px rgba(92, 85, 250, 0.05);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--card-accent, var(--primary-blue));
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .kpi-card:hover::before {
+            opacity: 1;
+        }
+
+        :root[data-theme="dark"] .card,
+        :root[data-theme="dark"] .kpi-card {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-strong);
+            /* Restored for dark mode */
         }
 
         .kpi-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-6px) scale(1.02);
+            border-color: var(--card-hover-border, var(--primary-blue));
+            box-shadow: 0 12px 24px -10px var(--card-hover-glow, rgba(92, 85, 250, 0.2));
+            z-index: 10;
         }
 
         .kpi-top {
@@ -572,7 +1022,7 @@
         .kpi-icon-box {
             width: 40px;
             height: 40px;
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -582,21 +1032,54 @@
         .icon-box-blue {
             background: rgba(92, 85, 250, 0.15);
             color: #5C55FA;
+            --card-hover-border: #818cf8;
+            --card-hover-glow: rgba(92, 85, 250, 0.35);
+            --card-accent: linear-gradient(90deg, #5C55FA, #818cf8);
         }
 
         .icon-box-purple {
-            background: rgba(0, 102, 68, 0.15);
-            color: #006644;
+            background: rgba(155, 89, 182, 0.15);
+            color: #9B59B6;
+            --card-hover-border: #a855f7;
+            --card-hover-glow: rgba(168, 85, 247, 0.35);
+            --card-accent: linear-gradient(90deg, #9B59B6, #a855f7);
         }
 
         .icon-box-orange {
             background: rgba(255, 139, 0, 0.15);
             color: #FF8B00;
+            --card-hover-border: #fb923c;
+            --card-hover-glow: rgba(251, 146, 60, 0.35);
+            --card-accent: linear-gradient(90deg, #FF8B00, #fb923c);
         }
 
         .icon-box-green {
-            background: rgba(7, 71, 166, 0.15);
-            color: #0747A6;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10B981;
+            --card-hover-border: #34d399;
+            --card-hover-glow: rgba(52, 211, 153, 0.35);
+            --card-accent: linear-gradient(90deg, #10B981, #34d399);
+        }
+
+        /* Dark mode overrides for icon boxes */
+        :root[data-theme="dark"] .icon-box-blue {
+            background: rgba(129, 140, 248, 0.2);
+            color: #A5B4FC;
+        }
+
+        :root[data-theme="dark"] .icon-box-purple {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6EE7B7;
+        }
+
+        :root[data-theme="dark"] .icon-box-orange {
+            background: rgba(251, 146, 60, 0.2);
+            color: #FDBA74;
+        }
+
+        :root[data-theme="dark"] .icon-box-green {
+            background: rgba(56, 189, 248, 0.2);
+            color: #7DD3FC;
         }
 
         .kpi-trend {
@@ -615,6 +1098,14 @@
             color: #FF5630;
         }
 
+        :root[data-theme="dark"] .trend-up {
+            color: #4ade80;
+        }
+
+        :root[data-theme="dark"] .trend-down {
+            color: #f87171;
+        }
+
         .kpi-bottom {
             display: flex;
             flex-direction: column;
@@ -623,36 +1114,80 @@
 
         .kpi-bottom p {
             color: var(--text-muted);
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.05em;
             margin: 0;
         }
 
         .kpi-bottom h2 {
             color: var(--text-main);
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 26px;
+            /* Slightly larger */
+            font-weight: 800;
+            /* Extra Sharp */
             margin: 0;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.01em;
+        }
+
+        @keyframes meshGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .ai-banner {
-            background: linear-gradient(90deg, var(--primary-light) 0%, var(--card-bg) 100%);
-            border-radius: 8px;
-            padding: 20px 24px;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: meshGradient 15s ease infinite;
+            border-radius: 12px;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .ai-banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: skewX(-25deg);
+            animation: shimmer 4s infinite 1s;
+        }
+
+        :root[data-theme="dark"] .ai-banner {
+            background: linear-gradient(-45deg, #4c1d95, #1e3a8a, #065f46, #1e3a8a);
+            background-size: 400% 400%;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-ai:hover {
+            transform: scale(1.1) translateY(-3px);
+            background: rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
         .ai-banner:hover {
-            transform: scale(1.01);
+            transform: scale(1.01) translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
 
         .ai-left {
@@ -685,7 +1220,7 @@
             color: #fff;
             border: none;
             padding: 8px 16px;
-            border-radius: 6px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -703,22 +1238,40 @@
         .chart-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-bottom: 24px;
+            gap: 16px;
+            /* Reduced from 24px */
+            margin-bottom: 20px;
         }
 
         .chart-wrapper {
-            padding: 24px;
-            height: 380px;
+            padding: 16px;
+            /* Reduced from 24px */
+            height: 350px;
+            /* Slightly reduced height */
             display: flex;
             flex-direction: column;
+            background: linear-gradient(180deg, var(--card-bg) 0%, rgba(255, 255, 255, 0.8) 100%);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        :root[data-theme="dark"] .chart-wrapper {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.5) 100%);
+        }
+
+        .chart-wrapper:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-blue);
         }
 
         .chart-title {
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 800;
+            /* Sharpened */
             color: var(--text-main);
             margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
 
         .chart-container {
@@ -728,6 +1281,116 @@
             height: 100%;
             display: flex;
             justify-content: center;
+        }
+
+        /* --- MODERN CHART FILTERS --- */
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .chart-header .chart-title {
+            margin-bottom: 0;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-chart-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 13px;
+        }
+
+        .btn-chart-action:hover {
+            background: var(--primary-blue);
+            color: #fff;
+            border-color: var(--primary-blue);
+            transform: scale(1.1);
+        }
+
+        .btn-chart-action.active {
+            background: rgba(92, 85, 250, 0.1);
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 10px rgba(92, 85, 250, 0.2);
+        }
+
+        .chart-filter-menu {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-strong);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            z-index: 9999;
+            width: 220px;
+            padding: 12px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .filter-option {
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .filter-option:hover {
+            background: var(--row-hover);
+        }
+
+        .filter-option input {
+            cursor: pointer;
+        }
+
+        .btn-reset-mini {
+            color: var(--primary-blue);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+            text-align: right;
+            border: none;
+            background: transparent;
+            display: none; /* Hidden by default */
+        }
+
+        .btn-reset-mini:hover {
+            text-decoration: underline;
         }
 
         .bottom-grid {
@@ -765,17 +1428,20 @@
         .mini-table {
             width: 100%;
             border-collapse: collapse;
+            border: none;
         }
 
         .mini-table th {
             text-align: left;
             padding: 12px 16px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 800;
             color: var(--text-light);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
             border-bottom: 2px solid var(--border-strong);
+            border-left: none;
+            border-right: none;
         }
 
         .mini-table td {
@@ -783,13 +1449,28 @@
             font-size: 13px;
             color: var(--text-main);
             border-bottom: 1px solid var(--border-color);
+            border-left: none;
+            border-right: none;
             vertical-align: middle;
             font-weight: 500;
-            transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .mini-table tr {
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
         }
 
         .mini-table tr:hover td {
             background-color: var(--row-hover);
+            transform: scale(1.002);
+        }
+
+        .mini-table tr:hover {
+            box-shadow: 0 4px 20px -5px rgba(9, 30, 66, 0.15);
+            transform: translateX(4px) scale(1.01);
+            z-index: 5;
+            position: relative;
         }
 
         .mini-table tr:last-child td {
@@ -810,14 +1491,18 @@
             flex-direction: column;
             gap: 4px;
             position: relative;
-            padding-left: 20px;
+            padding: 8px 12px 8px 20px;
             border-left: 2px solid var(--border-strong);
             margin-left: 8px;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
         }
 
         .activity-item:hover {
-            transform: translateX(4px);
+            background: var(--row-hover);
+            transform: translateX(6px);
+            border-left-color: var(--primary-blue);
         }
 
         .activity-item::before {
@@ -857,11 +1542,12 @@
 
         /* --- BORDIO STYLE DATA TABLES --- */
         .table-toolbar {
-            padding: 20px 24px;
+            padding: 12px 16px;
+            /* Reduced from 20px 24px */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: none;
             background: var(--card-bg);
             transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -874,7 +1560,7 @@
 
         .search-bar {
             background: var(--bg-color);
-            border-radius: 6px;
+            border-radius: 10px;
             padding: 8px 14px;
             display: flex;
             align-items: center;
@@ -885,8 +1571,7 @@
         }
 
         .search-bar:focus-within {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(92, 85, 250, 0.15);
+            box-shadow: 0 0 0 2px var(--primary-blue);
             width: 300px;
         }
 
@@ -901,10 +1586,12 @@
         .btn-icon {
             background: var(--card-bg);
             border: 1px solid var(--border-strong);
+            box-shadow: none;
+            /* Removed shadow */
             color: var(--text-muted);
             width: 36px;
             height: 36px;
-            border-radius: 6px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -925,7 +1612,7 @@
         .action-add {
             background: var(--primary-blue);
             color: #ffffff;
-            border: none;
+            border: 1px solid var(--primary-hover);
             font-weight: 600;
             box-shadow: none;
         }
@@ -961,7 +1648,7 @@
             background: var(--dropdown-bg);
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-lg);
-            border-radius: 8px;
+            border-radius: 12px;
             z-index: 1000;
             min-width: 200px;
             max-height: 250px;
@@ -1010,9 +1697,9 @@
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse; /* Changed from separate to collapse for cleaner lines */
             white-space: nowrap;
+            border: none; /* No outer border */
         }
 
         thead {
@@ -1027,17 +1714,11 @@
         th {
             background-color: transparent;
             color: var(--text-main);
-            /* Sama dengan td */
             font-weight: 600;
             font-size: 13px;
-            /* Sama dengan td */
-            text-transform: none;
-            /* Hilangkan kapitalisasi bawaan */
-            letter-spacing: normal;
-            /* Hilangkan letter-spacing lebar */
             text-align: left;
-            padding: 16px 20px;
-            border-bottom: 2px solid var(--border-strong);
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-strong); /* Stronger line for header */
             transition: color 0.3s;
         }
 
@@ -1069,8 +1750,10 @@
         }
 
         td {
-            padding: 16px 20px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
+            border-left: none;
+            border-right: none;
             vertical-align: middle;
             color: var(--text-main);
             font-size: 13px;
@@ -1078,22 +1761,64 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* --- EFEK HOVER BARIS DAN TEKS SMOOTH --- */
+        tbody tr {
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        tbody tr:hover {
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(92, 85, 250, 0.15);
+            transform: scale(1.01) translateY(-3px);
+            z-index: 10;
+            /* Spotlight background driven by JS variables */
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                    rgba(92, 85, 250, 0.08),
+                    transparent 40%), var(--row-hover);
+        }
+
         tbody tr:hover td {
-            background-color: var(--row-hover) !important;
-            color: var(--table-hover-text);
+            color: var(--primary-blue);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom-color: transparent;
         }
 
         tbody tr:hover td:first-child {
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
-            border-left: 4px solid var(--primary-blue);
-            padding-left: 26px;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            border-left: 8px solid var(--primary-blue);
+            padding-left: 32px;
+            box-shadow: 10px 0 20px -5px rgba(92, 85, 250, 0.2);
+        }
+
+        tbody tr:hover td:first-child::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 20px;
+            background: linear-gradient(90deg, rgba(92, 85, 250, 0.1) 0%, transparent 100%);
+            pointer-events: none;
         }
 
         tbody tr:hover td:last-child {
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        /* Micro-interactions for icons and buttons in hovered row */
+        tbody tr:hover .btn-icon {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(92, 85, 250, 0.2);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        tbody tr:hover .badge {
+            transform: scale(1.05) translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Memastikan badge tidak terpengaruh perubahan warna teks baris */
@@ -1109,7 +1834,7 @@
         /* Badges */
         .badge {
             padding: 4px 10px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 11px;
             border: none;
@@ -1153,13 +1878,39 @@
             color: var(--text-muted);
         }
 
+        /* Dark Mode Badge Overrides */
+        :root[data-theme="dark"] .badge-progress {
+            background: rgba(129, 140, 248, 0.25);
+            color: #A5B4FC;
+        }
+
+        :root[data-theme="dark"] .badge-invoice {
+            background: rgba(16, 185, 129, 0.25);
+            color: #6EE7B7;
+        }
+
+        :root[data-theme="dark"] .badge-survey {
+            background: rgba(56, 189, 248, 0.25);
+            color: #7DD3FC;
+        }
+
+        :root[data-theme="dark"] .badge-lunas {
+            background: rgba(251, 146, 60, 0.25);
+            color: #FDBA74;
+        }
+
+        :root[data-theme="dark"] .badge-hold {
+            background: rgba(248, 113, 113, 0.25);
+            color: #FCA5A5;
+        }
+
         /* Hidden Action Buttons */
         td .btn-icon {
             width: 32px;
             height: 32px;
             font-size: 13px;
             margin: 0 auto;
-            border-radius: 6px;
+            border-radius: 8px;
             box-shadow: none;
             border: none;
             background: transparent;
@@ -1218,7 +1969,7 @@
 
         .modal-content {
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 16px;
             width: 600px;
             max-width: 90%;
             box-shadow: var(--shadow-lg);
@@ -1539,7 +2290,7 @@
     <div id="appContainer">
         <aside class="sidebar" id="mainSidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="sidebar-logo"><i class="fa-solid fa-compass-drafting"></i></div>
                 <span class="sidebar-title">Man Pro</span>
             </div>
             <ul class="nav-menu">
@@ -1547,225 +2298,311 @@
                 <div class="sidebar-title"
                     style="padding: 16px 24px 8px 24px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none;">
                     Menu Dashboard</div>
-                <div class="nav-category open" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-gauge" style="color: #5C55FA; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Dashboard</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-gauge-high ic-dashboard"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item active" onclick="loadPage('Overview', 'dball', 'overview', this)"><i
+                                class="fa-solid fa-chart-column ic-dashboard"></i> <span
+                                class="nav-text">Overview</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Semua Proyek', 'dball', 'table', this)"><i
+                                class="fa-solid fa-sitemap ic-dashboard"></i> <span class="nav-text">Semua Proyek</span>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="submenu open">
-                    <li class="nav-item active" onclick="loadPage('Overview', 'dball', 'overview', this)"><i
-                            class="fa-solid fa-chart-pie"></i> <span class="nav-text">Overview</span></li>
-                    <li class="nav-item" onclick="loadPage('Semua Proyek', 'dball', 'table', this)"><i
-                            class="fa-solid fa-folder-tree"></i> <span class="nav-text">Semua Proyek</span></li>
-                </ul>
 
                 <div class="sidebar-title"
                     style="padding: 16px 24px 8px 24px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none;">
                     Menu Daftar Proyek</div>
 
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-briefcase" style="color: #00C2B2; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Proyek JRP JOBJ</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-diagram-project ic-jobj"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Proyek JRP JOBJ</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item" onclick="loadPage('PO JRP JOBJ', 'db1', 'table', this)"><i
+                                class="fa-solid fa-file-invoice ic-jobj"></i> <span class="nav-text">PO JRP JOBJ</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('BoQ JRP JOBJ', 'db9', 'table', this)"><i
+                                class="fa-solid fa-list-check ic-jobj"></i> <span class="nav-text">BoQ JRP JOBJ</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Material JRP JOBJ', 'db25', 'table', this)"><i
+                                class="fa-solid fa-boxes-stacked ic-jobj"></i> <span class="nav-text">Material JRP
+                                JOBJ</span></li>
+                        <li class="nav-item" onclick="loadPage('Peta JRP JOBJ', 'peta_jobj', 'map', this)"><i
+                                class="fa-solid fa-map-location-dot ic-jobj"></i> <span class="nav-text">Peta JRP
+                                JOBJ</span></li>
+                    </ul>
                 </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('PO JRP JOBJ', 'db1', 'table', this)"><i
-                            class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO JRP JOBJ</span></li>
-                    <li class="nav-item" onclick="loadPage('BoQ JRP JOBJ', 'db9', 'table', this)"><i
-                            class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ JRP JOBJ</span></li>
-                    <li class="nav-item" onclick="loadPage('Material JRP JOBJ', 'db25', 'table', this)"><i
-                            class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material JRP JOBJ</span></li>
-                    <li class="nav-item" onclick="loadPage('Peta JRP JOBJ', 'peta_jobj', 'map', this)"><i
-                            class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta JRP JOBJ</span></li>
-                </ul>
 
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-network-wired" style="color: #FF8B00; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Proyek IJE CAO Ring 2</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-circle-nodes ic-cao2"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Proyek IJE CAO Ring 2</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 2', 'db2', 'table', this)"><i
+                                class="fa-solid fa-file-invoice ic-cao2"></i> <span class="nav-text">PO IJE CAO Ring
+                                2</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 2', 'db10', 'table', this)"><i
+                                class="fa-solid fa-list-check ic-cao2"></i> <span class="nav-text">BoQ IJE CAO Ring
+                                2</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 2', 'db26', 'table', this)"><i
+                                class="fa-solid fa-boxes-stacked ic-cao2"></i> <span class="nav-text">Material IJE CAO
+                                Ring
+                                2</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 2', 'peta_cao_ring_2', 'map', this)">
+                            <i class="fa-solid fa-map-location-dot ic-cao2"></i> <span class="nav-text">Peta IJE CAO
+                                Ring
+                                2</span>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 2', 'db2', 'table', this)"><i
-                            class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 2</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 2', 'db10', 'table', this)"><i
-                            class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 2</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 2', 'db26', 'table', this)"><i
-                            class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 2</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 2', 'peta_cao_ring_2', 'map', this)"><i
-                            class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 2</span>
-                    </li>
-                </ul>
 
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-network-wired" style="color: #E74C3C; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Proyek IJE CAO Ring 4</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-circle-nodes ic-cao4"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Proyek IJE CAO Ring 4</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 4', 'db3', 'table', this)"><i
+                                class="fa-solid fa-file-invoice ic-cao4"></i> <span class="nav-text">PO IJE CAO Ring
+                                4</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 4', 'db11', 'table', this)"><i
+                                class="fa-solid fa-list-check ic-cao4"></i> <span class="nav-text">BoQ IJE CAO Ring
+                                4</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 4', 'db27', 'table', this)"><i
+                                class="fa-solid fa-boxes-stacked ic-cao4"></i> <span class="nav-text">Material IJE CAO
+                                Ring
+                                4</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 4', 'peta_cao_ring_4', 'map', this)">
+                            <i class="fa-solid fa-map-location-dot ic-cao4"></i> <span class="nav-text">Peta IJE CAO
+                                Ring
+                                4</span>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 4', 'db3', 'table', this)"><i
-                            class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 4</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 4', 'db11', 'table', this)"><i
-                            class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 4</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 4', 'db27', 'table', this)"><i
-                            class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 4</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 4', 'peta_cao_ring_4', 'map', this)"><i
-                            class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 4</span>
-                    </li>
-                </ul>
 
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-network-wired" style="color: #9B59B6; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Proyek IJE CAO Ring 3A</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-circle-nodes ic-cao3a"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Proyek IJE CAO Ring 3A</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 3A', 'db4', 'table', this)"><i
+                                class="fa-solid fa-file-invoice ic-cao3a"></i> <span class="nav-text">PO IJE CAO Ring
+                                3A</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 3A', 'db12', 'table', this)"><i
+                                class="fa-solid fa-list-check ic-cao3a"></i> <span class="nav-text">BoQ IJE CAO Ring
+                                3A</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 3A', 'db28', 'table', this)"><i
+                                class="fa-solid fa-boxes-stacked ic-cao3a"></i> <span class="nav-text">Material IJE CAO
+                                Ring
+                                3A</span>
+                        </li>
+                        <li class="nav-item"
+                            onclick="loadPage('Peta IJE CAO Ring 3A', 'peta_cao_ring_3a', 'map', this)"><i
+                                class="fa-solid fa-map-location-dot ic-cao3a"></i> <span class="nav-text">Peta IJE CAO
+                                Ring
+                                3A</span>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 3A', 'db4', 'table', this)"><i
-                            class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 3A</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 3A', 'db12', 'table', this)"><i
-                            class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 3A</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 3A', 'db28', 'table', this)"><i
-                            class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 3A</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 3A', 'peta_cao_ring_3a', 'map', this)"><i
-                            class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 3A</span>
-                    </li>
-                </ul>
 
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-network-wired" style="color: #3498DB; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Proyek IJE CAO Ring 3B</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-circle-nodes ic-cao3b"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Proyek IJE CAO Ring 3B</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 3B', 'db5', 'table', this)"><i
+                                class="fa-solid fa-file-invoice ic-cao3b"></i> <span class="nav-text">PO IJE CAO Ring
+                                3B</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 3B', 'db13', 'table', this)"><i
+                                class="fa-solid fa-list-check ic-cao3b"></i> <span class="nav-text">BoQ IJE CAO Ring
+                                3B</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 3B', 'db29', 'table', this)"><i
+                                class="fa-solid fa-boxes-stacked ic-cao3b"></i> <span class="nav-text">Material IJE CAO
+                                Ring
+                                3B</span>
+                        </li>
+                        <li class="nav-item"
+                            onclick="loadPage('Peta IJE CAO Ring 3B', 'peta_cao_ring_3b', 'map', this)"><i
+                                class="fa-solid fa-map-location-dot ic-cao3b"></i> <span class="nav-text">Peta IJE CAO
+                                Ring
+                                3B</span>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('PO IJE CAO Ring 3B', 'db5', 'table', this)"><i
-                            class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE CAO Ring 3B</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('BoQ IJE CAO Ring 3B', 'db13', 'table', this)"><i
-                            class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE CAO Ring 3B</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Material IJE CAO Ring 3B', 'db29', 'table', this)"><i
-                            class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material IJE CAO Ring 3B</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Peta IJE CAO Ring 3B', 'peta_cao_ring_3b', 'map', this)"><i
-                            class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE CAO Ring 3B</span>
-                    </li>
-                </ul>
 
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-tower-cell" style="color: #F39C12; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Proyek IJE FM Ring 1</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-tower-broadcast ic-fm1"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Proyek IJE FM Ring 1</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item" onclick="loadPage('PO IJE FM Ring 1', 'db6', 'table', this)"><i
+                                class="fa-solid fa-file-invoice ic-fm1"></i> <span class="nav-text">PO IJE FM Ring
+                                1</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('BoQ IJE FM Ring 1', 'db14', 'table', this)"><i
+                                class="fa-solid fa-list-check ic-fm1"></i> <span class="nav-text">BoQ IJE FM Ring
+                                1</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Material FM Ring 1', 'db30', 'table', this)"><i
+                                class="fa-solid fa-boxes-stacked ic-fm1"></i> <span class="nav-text">Material FM Ring
+                                1</span></li>
+                        <li class="nav-item"
+                            onclick="loadPage('Peta IJE FM Ring 1', 'peta_ije_fm_ring_1', 'map', this)"><i
+                                class="fa-solid fa-map-location-dot ic-fm1"></i> <span class="nav-text">Peta IJE FM Ring
+                                1</span>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('PO IJE FM Ring 1', 'db6', 'table', this)"><i
-                            class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO IJE FM Ring 1</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('BoQ IJE FM Ring 1', 'db14', 'table', this)"><i
-                            class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ IJE FM Ring 1</span></li>
-                    <li class="nav-item" onclick="loadPage('Material FM Ring 1', 'db30', 'table', this)"><i
-                            class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material FM Ring 1</span></li>
-                    <li class="nav-item" onclick="loadPage('Peta IJE FM Ring 1', 'peta_ije_fm_ring_1', 'map', this)"><i
-                            class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta IJE FM Ring 1</span>
-                    </li>
-                </ul>
 
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-bolt" style="color: #E67E22; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Proyek SURGE FM Ex Pole</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-bolt-lightning ic-surge-ex"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Proyek SURGE FM Ex Pole</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item" onclick="loadPage('PO SURGE FM Ex Pole', 'db7', 'table', this)"><i
+                                class="fa-solid fa-file-invoice ic-surge-ex"></i> <span class="nav-text">PO SURGE FM Ex
+                                Pole</span></li>
+                        <li class="nav-item" onclick="loadPage('BoQ SURGE FM Ex Pole', 'db15', 'table', this)"><i
+                                class="fa-solid fa-list-check ic-surge-ex"></i> <span class="nav-text">BoQ SURGE FM Ex
+                                Pole</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Material SURGE FM Ex Pole', 'db31', 'table', this)"><i
+                                class="fa-solid fa-boxes-stacked ic-surge-ex"></i> <span class="nav-text">Material SURGE
+                                FM
+                                Ex Pole</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Peta SURGE FM Ex Pole', 'peta_surge', 'map', this)"><i
+                                class="fa-solid fa-map-location-dot ic-surge-ex"></i> <span class="nav-text">Peta SURGE
+                                FM Ex
+                                Pole</span></li>
+                    </ul>
                 </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('PO SURGE FM Ex Pole', 'db7', 'table', this)"><i
-                            class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO SURGE FM Ex
-                            Pole</span></li>
-                    <li class="nav-item" onclick="loadPage('BoQ SURGE FM Ex Pole', 'db15', 'table', this)"><i
-                            class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ SURGE FM Ex Pole</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Material SURGE FM Ex Pole', 'db31', 'table', this)"><i
-                            class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material SURGE FM Ex Pole</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Peta SURGE FM Ex Pole', 'peta_surge', 'map', this)"><i
-                            class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta SURGE FM Ex
-                            Pole</span></li>
-                </ul>
 
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-bolt" style="color: #2ECC71; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Proyek SURGE FM New Pole</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-bolt-lightning ic-surge-new"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Proyek SURGE FM New Pole</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item" onclick="loadPage('PO SURGE FM New Pole', 'db8', 'table', this)"><i
+                                class="fa-solid fa-file-invoice ic-surge-new"></i> <span class="nav-text">PO SURGE FM
+                                New
+                                Pole</span></li>
+                        <li class="nav-item" onclick="loadPage('BoQ SURGE FM New Pole', 'db16', 'table', this)"><i
+                                class="fa-solid fa-list-check ic-surge-new"></i> <span class="nav-text">BoQ SURGE FM New
+                                Pole</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Material SURGE FM New Pole', 'db32', 'table', this)"><i
+                                class="fa-solid fa-boxes-stacked ic-surge-new"></i> <span class="nav-text">Material
+                                SURGE FM
+                                New Pole</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Peta SURGE FM New Pole', 'peta_surge', 'map', this)"><i
+                                class="fa-solid fa-map-location-dot ic-surge-new"></i> <span class="nav-text">Peta SURGE
+                                FM
+                                New Pole</span></li>
+                    </ul>
                 </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('PO SURGE FM New Pole', 'db8', 'table', this)"><i
-                            class="fa-solid fa-envelope-open-text"></i> <span class="nav-text">PO SURGE FM New
-                            Pole</span></li>
-                    <li class="nav-item" onclick="loadPage('BoQ SURGE FM New Pole', 'db16', 'table', this)"><i
-                            class="fa-solid fa-clipboard-list"></i> <span class="nav-text">BoQ SURGE FM New Pole</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Material SURGE FM New Pole', 'db32', 'table', this)"><i
-                            class="fa-solid fa-truck-fast"></i> <span class="nav-text">Material SURGE FM New Pole</span>
-                    </li>
-                    <li class="nav-item" onclick="loadPage('Peta SURGE FM New Pole', 'peta_surge', 'map', this)"><i
-                            class="fa-solid fa-map-location-dot"></i> <span class="nav-text">Peta SURGE FM New
-                            Pole</span></li>
-                </ul>
 
                 <div class="sidebar-title"
                     style="padding: 16px 24px 8px 24px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none;">
                     Menu Invoice</div>
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-file-invoice-dollar" style="color: #006644; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Invoice</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-receipt ic-invoice"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Invoice</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item" onclick="loadPage('Pembayaran', 'pembayaran', 'table', this)"><i
+                                class="fa-solid fa-money-check-dollar ic-invoice"></i> <span
+                                class="nav-text">Pembayaran</span></li>
+                    </ul>
                 </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('Pembayaran', 'pembayaran', 'table', this)"><i
-                            class="fa-solid fa-dollar-sign"></i> <span class="nav-text">Pembayaran</span></li>
-                </ul>
 
                 <div class="sidebar-title"
                     style="padding: 16px 24px 8px 24px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none;">
                     Menu Contact Person</div>
-                <div class="nav-category" onclick="toggleMenu(this)">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-address-book" style="color: #FF5F58; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span class="nav-text">Contact Person</span>
+                <div class="nav-group">
+                    <div class="nav-category" onclick="toggleMenu(this)">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-id-card ic-contact"
+                                style="font-size: 14px; width: 16px; text-align: center;"></i>
+                            <span class="nav-text">Contact Person</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down chevron"></i>
+                    <ul class="submenu">
+                        <li class="nav-item" onclick="loadPage('Daftar Pengawas', 'pengawas', 'table', this)"><i
+                                class="fa-solid fa-user-shield ic-contact"></i> <span class="nav-text">Daftar
+                                Pengawas</span>
+                        </li>
+                        <li class="nav-item" onclick="loadPage('Daftar Mandor', 'mandor', 'table', this)"><i
+                                class="fa-solid fa-helmet-safety ic-contact"></i> <span class="nav-text">Daftar
+                                Mandor</span>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="submenu">
-                    <li class="nav-item" onclick="loadPage('Daftar Pengawas', 'pengawas', 'table', this)"><i
-                            class="fa-solid fa-user-tie"></i> <span class="nav-text">Daftar Pengawas</span></li>
-                    <li class="nav-item" onclick="loadPage('Daftar Mandor', 'mandor', 'table', this)"><i
-                            class="fa-solid fa-users-gear"></i> <span class="nav-text">Daftar Mandor</span></li>
-                </ul>
 
             </ul>
         </aside>
@@ -1774,7 +2611,7 @@
             <header class="topbar">
                 <div class="topbar-left">
                     <button class="btn-toggle" id="btnToggleSidebar" title="Toggle Sidebar">
-                        <i class="fa-solid fa-bars"></i>
+                        <i class="fa-solid fa-bars-staggered"></i>
                     </button>
 
                     <div class="page-header">
@@ -1794,6 +2631,77 @@
                     <button class="btn-toggle" id="btnThemeToggle" title="Beralih Tema (Light/Dark)">
                         <i class="fa-regular fa-moon" style="color: var(--primary-blue);"></i>
                     </button>
+
+                    <!-- COLOR PALETTE TOGGLE (Ditempatkan disebelah Theme Toggle) -->
+                    <div class="dropdown-wrapper">
+                        <button class="btn-toggle" id="btnPaletteToggle" title="Pilih Skema Warna">
+                            <i class="fa-solid fa-palette" style="color: var(--primary-grad-start);"></i>
+                        </button>
+                        <div class="palette-menu" id="menuPalette" style="min-width: 320px;">
+                            <div style="display: flex; gap: 20px;">
+                                <!-- Section Warna -->
+                                <div style="flex: 1;">
+                                    <p
+                                        style="font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
+                                        Skema Warna</p>
+                                    <div class="palette-item" onclick="changeAppTheme('default')">
+                                        <div class="color-preview"
+                                            style="background: linear-gradient(135deg, #5C55FA, #8A84FF);"></div>
+                                        <span>Blue Purple</span>
+                                    </div>
+                                    <div class="palette-item" onclick="changeAppTheme('emerald')">
+                                        <div class="color-preview"
+                                            style="background: linear-gradient(135deg, #00C2B2, #36B37E);"></div>
+                                        <span>Emerald</span>
+                                    </div>
+                                    <div class="palette-item" onclick="changeAppTheme('midnight')">
+                                        <div class="color-preview"
+                                            style="background: linear-gradient(135deg, #4F46E5, #06B6D4);"></div>
+                                        <span>Midnight</span>
+                                    </div>
+                                    <div class="palette-item" onclick="changeAppTheme('sunset')">
+                                        <div class="color-preview"
+                                            style="background: linear-gradient(135deg, #F59E0B, #EF4444);"></div>
+                                        <span>Sunset</span>
+                                    </div>
+                                    <div class="palette-item" onclick="changeAppTheme('slate')">
+                                        <div class="color-preview"
+                                            style="background: linear-gradient(135deg, #475569, #94A3B8);"></div>
+                                        <span>Slate</span>
+                                    </div>
+                                </div>
+                                <!-- Section Gaya -->
+                                <div style="flex: 1; border-left: 1px solid var(--border-color); padding-left: 15px;">
+                                    <p
+                                        style="font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
+                                        Gaya Visual</p>
+                                    <div class="palette-item" onclick="applyVisualStyle('solid')">
+                                        <i class="fa-solid fa-square"
+                                            style="font-size: 18px; color: var(--text-muted);"></i>
+                                        <span>Classic Solid</span>
+                                    </div>
+                                    <div class="palette-item" onclick="applyVisualStyle('glass')">
+                                        <i class="fa-solid fa-droplet" style="font-size: 18px; color: #00C2B2;"></i>
+                                        <span>Glassmorphism</span>
+                                    </div>
+                                    <div class="palette-item" onclick="applyVisualStyle('cyber')">
+                                        <i class="fa-solid fa-bolt-lightning"
+                                            style="font-size: 18px; color: #F59E0B;"></i>
+                                        <span>Quantum Cyber</span>
+                                    </div>
+                                    <div class="palette-item" onclick="applyVisualStyle('soft')">
+                                        <i class="fa-solid fa-feather" style="font-size: 18px; color: #8A84FF;"></i>
+                                        <span>Bento Soft</span>
+                                    </div>
+                                    <div class="palette-item" onclick="applyVisualStyle('executive')">
+                                        <i class="fa-solid fa-crown" style="font-size: 18px; color: #D4AF37;"></i>
+                                        <span>Executive Slate</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <button class="btn-toggle" id="btnCalendarToggle" title="Kalender Libur Nasional">
                         <i class="fa-regular fa-calendar" style="color: #36B37E;"></i>
                     </button>
@@ -1828,11 +2736,171 @@
                 </div>
             </header>
 
-            <section class="content">
-                <div id="section-overview" class="hidden" style="padding-top: 32px;">
+            <style>
+                .palette-menu {
+                    position: absolute;
+                    top: calc(100% + 12px);
+                    right: 0;
+                    background: var(--dropdown-bg);
+                    border: 1px solid var(--border-color);
+                    border-radius: 12px;
+                    box-shadow: var(--shadow-lg);
+                    padding: 12px;
+                    min-width: 200px;
+                    display: none;
+                    flex-direction: column;
+                    gap: 4px;
+                    z-index: 99999;
+                    backdrop-filter: blur(15px);
+                }
 
-                    <div class="kpi-grid">
-                        <div class="kpi-card">
+                .palette-menu.show {
+                    display: flex;
+                    animation: dropdownEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+                }
+
+                .palette-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 10px 14px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    color: var(--text-main);
+                    font-weight: 500;
+                }
+
+                .palette-item:hover {
+                    background: var(--row-hover);
+                    transform: translateX(4px);
+                }
+
+                .color-preview {
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 6px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+
+                @keyframes dropdownEnter {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-10px) scale(0.95);
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                    }
+                }
+            </style>
+
+            <section class="content">
+                <style>
+                    /* --- DYNAMIC GRID LAYOUTS --- */
+                    #section-overview {
+                        display: grid;
+                        grid-template-columns: 1fr;
+                        grid-template-areas:
+                            "banner"
+                            "kpi"
+                            "charts"
+                            "tables";
+                        gap: 20px;
+                        padding-top: 20px;
+                        position: relative;
+                        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                    }
+
+                    /* GLASS LAYOUT: Side Focus */
+                    :root[data-visual-style="glass"] #section-overview {
+                        grid-template-columns: 1fr 300px;
+                        grid-template-areas:
+                            "banner banner"
+                            "charts kpi"
+                            "tables kpi";
+                    }
+
+                    :root[data-visual-style="glass"] #section-overview .kpi-grid {
+                        grid-template-columns: 1fr;
+                        /* Stack KPI vertically on the right */
+                    }
+
+                    /* CYBER LAYOUT: Command Split */
+                    :root[data-visual-style="cyber"] #section-overview {
+                        grid-template-columns: 1.2fr 1fr;
+                        grid-template-areas:
+                            "banner kpi"
+                            "tables charts";
+                    }
+
+                    :root[data-visual-style="cyber"] #section-overview .kpi-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+
+                    /* BENTO LAYOUT: Tiled Puzzle */
+                    :root[data-visual-style="soft"] #section-overview {
+                        grid-template-columns: repeat(3, 1fr);
+                        grid-template-areas:
+                            "banner banner kpi"
+                            "charts charts kpi"
+                            "tables tables tables";
+                    }
+
+                    :root[data-visual-style="soft"] #section-overview .kpi-grid {
+                        grid-template-columns: 1fr;
+                        height: 100%;
+                    }
+
+                    /* EXECUTIVE LAYOUT: Formal Balanced */
+                    :root[data-visual-style="executive"] #section-overview {
+                        grid-template-areas:
+                            "banner"
+                            "kpi"
+                            "tables"
+                            "charts";
+                    }
+
+                    @media (max-width: 1200px) {
+
+                        #section-overview,
+                        :root[data-visual-style] #section-overview {
+                            grid-template-columns: 1fr !important;
+                            grid-template-areas: "banner" "kpi" "charts" "tables" !important;
+                        }
+
+                        :root[data-visual-style] .kpi-grid {
+                            grid-template-columns: repeat(2, 1fr) !important;
+                        }
+                    }
+                </style>
+                <div id="section-overview" class="hidden">
+                    <div class="blobs-container">
+                        <div class="blob blob-1"></div>
+                        <div class="blob blob-2"></div>
+                        <div class="blob blob-3"></div>
+                    </div>
+
+                    <div class="ai-banner animate-fade-down" style="grid-area: banner;">
+                        <div class="ai-left">
+                            <div class="ai-icon"><i class="fa-solid fa-wand-magic-sparkles" style="color: #fff;"></i>
+                            </div>
+                            <div class="ai-text">
+                                <h4 style="color: #fff; font-weight: 800;">Overview Perkembangan Proyek</h4>
+                                <p style="color: #fff; font-weight: 600; opacity: 0.9;">Pantau data real-time dengan
+                                    antarmuka
+                                    futuristik yang telah dioptimalkan secara visual.</p>
+                            </div>
+                        </div>
+                        <button class="btn-ai"
+                            style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);"
+                            onclick="loadPage('Semua Proyek', 'dball', 'table', document.querySelectorAll('.nav-item')[1])"><i
+                                class="fa-solid fa-bolt"></i> Lihat Proyek</button>
+                    </div>
+
+                    <div class="kpi-grid" style="grid-area: kpi;">
+                        <div class="kpi-card stagger-item" style="animation-delay: 0.1s">
                             <div class="kpi-top">
                                 <div class="kpi-icon-box icon-box-blue"><i class="fa-solid fa-briefcase"></i></div>
                                 <div class="kpi-trend trend-up">+12% <i class="fa-solid fa-arrow-trend-up"></i></div>
@@ -1842,7 +2910,7 @@
                                 <h2 id="kpi-total-proyek">0</h2>
                             </div>
                         </div>
-                        <div class="kpi-card">
+                        <div class="kpi-card stagger-item" style="animation-delay: 0.2s">
                             <div class="kpi-top">
                                 <div class="kpi-icon-box icon-box-purple"><i class="fa-solid fa-dollar-sign"></i></div>
                                 <div class="kpi-trend trend-up">+8.4% <i class="fa-solid fa-arrow-trend-up"></i></div>
@@ -1852,7 +2920,7 @@
                                 <h2 id="kpi-nilai-proyek">Rp 0.00</h2>
                             </div>
                         </div>
-                        <div class="kpi-card">
+                        <div class="kpi-card stagger-item" style="animation-delay: 0.3s">
                             <div class="kpi-top">
                                 <div class="kpi-icon-box icon-box-orange"><i class="fa-solid fa-arrow-trend-up"></i>
                                 </div>
@@ -1863,7 +2931,7 @@
                                 <h2 id="kpi-nilai-invoice">Rp 0.00</h2>
                             </div>
                         </div>
-                        <div class="kpi-card">
+                        <div class="kpi-card stagger-item" style="animation-delay: 0.4s">
                             <div class="kpi-top">
                                 <div class="kpi-icon-box icon-box-green"><i class="fa-solid fa-users-line"></i></div>
                                 <div class="kpi-trend trend-down">-0.5% <i class="fa-solid fa-arrow-trend-down"></i>
@@ -1876,30 +2944,42 @@
                         </div>
                     </div>
 
-                    <div class="ai-banner">
-                        <div class="ai-left">
-                            <i class="fa-solid fa-wand-magic-sparkles ai-icon"></i>
-                            <div class="ai-text">
-                                <h4>AI Project Insights</h4>
-                                <p>Dapatkan ringkasan cerdas kondisi proyek saat ini.</p>
-                            </div>
-                        </div>
-                        <button class="btn-ai" onclick="document.getElementById('btnTambahProyek').click()"><i
-                                class="fa-solid fa-plus"></i> Tambah Data</button>
-                    </div>
 
-                    <div class="chart-grid">
+
+                    <div class="chart-grid" style="grid-area: charts;">
                         <div class="card chart-wrapper">
-                            <div class="chart-title">Status Semua Proyek</div>
+                            <div class="chart-header">
+                                <div class="chart-title">Status Semua Proyek</div>
+                                <div class="chart-actions">
+                                    <button class="btn-chart-action" id="btnFilterStatus" title="Filter Status">
+                                        <i class="fas fa-filter"></i>
+                                    </button>
+                                    <button class="btn-reset-mini" id="btnResetStatus">Reset</button>
+                                </div>
+                                <div class="chart-filter-menu" id="menuFilterStatus">
+                                    <!-- Options populated by JS -->
+                                </div>
+                            </div>
                             <div class="chart-container"><canvas id="chartStatus"></canvas></div>
                         </div>
                         <div class="card chart-wrapper">
-                            <div class="chart-title">Akumulasi Nilai Proyek (Per Status)</div>
+                            <div class="chart-header">
+                                <div class="chart-title">Analisis Kumulatif Tahunan (Kurva-S)</div>
+                                <div class="chart-actions">
+                                    <button class="btn-chart-action" id="btnFilterTahun" title="Filter Tahun">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </button>
+                                    <button class="btn-reset-mini" id="btnResetTahun">Reset</button>
+                                </div>
+                                <div class="chart-filter-menu" id="menuFilterTahun">
+                                    <!-- Options populated by JS -->
+                                </div>
+                            </div>
                             <div class="chart-container"><canvas id="chartNilai"></canvas></div>
                         </div>
                     </div>
 
-                    <div class="bottom-grid">
+                    <div class="bottom-grid" style="grid-area: tables;">
                         <div class="card">
                             <div class="section-header">
                                 <h3>Proyek Terbaru</h3>
@@ -2080,8 +3160,9 @@
                 <div id="modal-dynamic-form" style="display: none;"></div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('projectModal')">Batal</button>
-                <button class="btn btn-primary" onclick="saveProjectData()"><i class="fa-solid fa-floppy-disk"></i>
+                <button class="btn btn-secondary" onclick="closeModal('projectModal')">Tutup</button>
+                <button class="btn btn-primary" id="btnSaveData" onclick="saveProjectData()"><i
+                        class="fa-solid fa-floppy-disk"></i>
                     Simpan Data</button>
             </div>
         </div>
@@ -2433,6 +3514,7 @@
                     }
 
                     loadPage('Overview', 'dball', 'overview', document.querySelector('.nav-item'));
+                    resetInactivityTimer(); // Start the 10-minute timer on login success
                 } else {
                     loginError.textContent = "Username atau Password salah!";
                     loginError.style.display = 'block';
@@ -2456,12 +3538,7 @@
             }
         });
 
-        document.getElementById('btnLoginLogout').addEventListener('click', () => {
-            closeAllDropdowns();
-            document.getElementById('logoutModal').classList.add('show');
-        });
-
-        document.getElementById('btnConfirmLogout').addEventListener('click', () => {
+        window.performLogout = function () {
             const userId = sessionStorage.getItem('loggedUserId');
             if (userId) {
                 updateDoc(doc(db, 'users', userId), { isOnline: false });
@@ -2490,7 +3567,41 @@
             displayAvatar.style.backgroundImage = '';
             displayAvatar.textContent = 'U';
 
+            // Clear inactivity timer on manual logout
+            if (window.inactivityTimer) {
+                clearTimeout(window.inactivityTimer);
+                window.inactivityTimer = null;
+            }
+        };
+
+        document.getElementById('btnLoginLogout').addEventListener('click', () => {
+            closeAllDropdowns();
+            document.getElementById('logoutModal').classList.add('show');
+        });
+
+        document.getElementById('btnConfirmLogout').addEventListener('click', () => {
             closeModal('logoutModal');
+            performLogout();
+        });
+
+        // --- AUTO LOGOUT LOGIC (10 MINUTES) ---
+        let INACTIVITY_LIMIT = 10 * 60 * 1000; // 10 Minutes in ms
+
+        window.resetInactivityTimer = function () {
+            if (sessionStorage.getItem('isLoggedIn') !== 'true') return;
+
+            if (window.inactivityTimer) clearTimeout(window.inactivityTimer);
+
+            window.inactivityTimer = setTimeout(() => {
+                console.warn("Session timeout reached (10 minutes). Logging out...");
+                performLogout();
+                alert("Sesi Anda telah berakhir karena tidak ada aktivitas selama 10 menit. Silakan login kembali.");
+            }, INACTIVITY_LIMIT);
+        };
+
+        // Track standard user interactions
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(eventName => {
+            window.addEventListener(eventName, resetInactivityTimer, true);
         });
 
         const tableHeaders = {
@@ -2586,6 +3697,108 @@
                 `).join('');
             }
         });
+
+        // --- COLOR PALETTE TOGGLE ---
+        const btnPaletteToggle = document.getElementById('btnPaletteToggle');
+        const menuPalette = document.getElementById('menuPalette');
+
+        btnPaletteToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuPalette.classList.toggle('show');
+            document.getElementById('menuMyAccount').classList.remove('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!btnPaletteToggle.contains(e.target) && !menuPalette.contains(e.target)) {
+                menuPalette.classList.remove('show');
+            }
+        });
+
+        const appThemes = {
+            'default': { start: '#5C55FA', end: '#8A84FF' },
+            'emerald': { start: '#00C2B2', end: '#36B37E' },
+            'midnight': { start: '#4F46E5', end: '#06B6D4' },
+            'sunset': { start: '#F59E0B', end: '#EF4444' },
+            'slate': { start: '#475569', end: '#94A3B8' }
+        };
+
+        window.changeAppTheme = function (themeId) {
+            const theme = appThemes[themeId] || appThemes['default'];
+            document.documentElement.style.setProperty('--primary-grad-start', theme.start);
+            document.documentElement.style.setProperty('--primary-grad-end', theme.end);
+            document.documentElement.style.setProperty('--primary-blue', theme.start);
+
+            localStorage.setItem('userAppTheme', themeId);
+        };
+
+        const visualStyles = {
+            'solid': {
+                blur: '0px', opacity: '1', border: 'var(--border-color)', glow: 'none', mesh: '0.4',
+                radius: '12px', shadow: 'var(--shadow-sm)', sideBlur: '0px', sideOpac: '1', topBlur: '0px', topOpac: '1', accentGlow: 'transparent'
+            },
+            'glass': {
+                blur: '30px', opacity: '0.4', border: 'rgba(255,255,255,0.2)', glow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)', mesh: '0.7',
+                radius: '20px', shadow: 'none', sideBlur: '40px', sideOpac: '0.4', topBlur: '40px', topOpac: '0.4', accentGlow: '0 0 15px rgba(255,255,255,0.3)'
+            },
+            'cyber': {
+                blur: '0px', opacity: '0.95', border: 'var(--primary-blue)', glow: '0 0 20px var(--primary-blue)', mesh: '0.3',
+                radius: '4px', shadow: 'none', sideBlur: '0px', sideOpac: '1', topBlur: '0px', topOpac: '1', accentGlow: '0 0 25px var(--primary-blue)'
+            },
+            'soft': {
+                blur: '0px', opacity: '1', border: 'transparent', glow: 'none', mesh: '0.9',
+                radius: '28px', shadow: '0 20px 40px -10px rgba(0,0,0,0.08)', sideBlur: '0px', sideOpac: '1', topBlur: '0px', topOpac: '1', accentGlow: 'transparent'
+            },
+            'executive': {
+                blur: '0px', opacity: '1', border: '#D4AF37', glow: '0 0 10px rgba(212, 175, 55, 0.2)', mesh: '0',
+                radius: '8px', shadow: 'var(--shadow-lg)', sideBlur: '0px', sideOpac: '1', topBlur: '0px', topOpac: '1', accentGlow: '0 0 10px rgba(212, 175, 55, 0.3)'
+            }
+        };
+
+        window.applyVisualStyle = function (styleId) {
+            const style = visualStyles[styleId] || visualStyles['solid'];
+            const root = document.documentElement;
+
+            // Set Attribute for CSS Presets (Shapes, Layout, Typography)
+            root.setAttribute('data-visual-style', styleId);
+
+            // Apply Core Card Styles
+            root.style.setProperty('--glass-blur', style.blur);
+            root.style.setProperty('--glass-opacity', style.opacity);
+            root.style.setProperty('--card-border', style.border);
+            root.style.setProperty('--border-glow', style.glow);
+            root.style.setProperty('--mesh-opacity', style.mesh);
+
+            // Apply New Premium Styles
+            root.style.setProperty('--card-radius', style.radius);
+            root.style.setProperty('--card-shadow', style.shadow);
+            root.style.setProperty('--sidebar-blur', style.sideBlur);
+            root.style.setProperty('--sidebar-opacity', style.sideOpac);
+            root.style.setProperty('--topbar-blur', style.topBlur);
+            root.style.setProperty('--topbar-opacity', style.topOpac);
+            root.style.setProperty('--accent-glow', style.accentGlow);
+
+            // Automatic Color Mapping & Side Effects
+            if (styleId === 'executive') {
+                root.style.setProperty('--primary-blue', '#D4AF37');
+                root.style.setProperty('--primary-grad-start', '#1e293b');
+                root.style.setProperty('--primary-grad-end', '#0f172a');
+            } else if (styleId === 'cyber') {
+                // Cyber looks best in Midnight/Dark
+                changeAppTheme('midnight');
+                if (root.getAttribute('data-theme') !== 'dark') toggleTheme();
+            } else if (styleId === 'glass') {
+                changeAppTheme('default');
+            } else if (styleId === 'soft') {
+                changeAppTheme('emerald');
+                if (root.getAttribute('data-theme') !== 'light') toggleTheme();
+            } else {
+                // Restore primary color from saved theme if not a fixed preset style
+                const savedTheme = localStorage.getItem('userAppTheme');
+                if (savedTheme) changeAppTheme(savedTheme);
+            }
+
+            localStorage.setItem('userAppStyle', styleId);
+        };
 
         // --- GLOBAL SEARCH ---
         const globalSearchInput = document.getElementById('globalSearchInput');
@@ -2882,10 +4095,12 @@
 
         window.toggleMenu = function (element) {
             const isOpen = element.classList.contains('open');
+            // Close all others
             document.querySelectorAll('.nav-category').forEach(el => {
                 el.classList.remove('open');
                 if (el.nextElementSibling) el.nextElementSibling.classList.remove('open');
             });
+            // Toggle current
             if (!isOpen) {
                 element.classList.add('open');
                 if (element.nextElementSibling) element.nextElementSibling.classList.add('open');
@@ -2967,7 +4182,36 @@
             sessionStorage.setItem('lastPageType', type);
 
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if (element) element.classList.add('active');
+            document.querySelectorAll('.nav-category').forEach(el => el.classList.remove('active'));
+
+            if (element) {
+                element.classList.add('active');
+
+                // Tambahkan class active pada Menu Navigasi (parent) agar tetap berwarna
+                const parentSubmenu = element.closest('.submenu');
+                if (parentSubmenu) {
+                    const parentCat = parentSubmenu.previousElementSibling;
+                    if (parentCat && parentCat.classList.contains('nav-category')) {
+                        parentCat.classList.add('active');
+                    }
+                }
+            }
+
+            // Sembunyikan flyout setelah pemilihan (khusus untuk mode klik/mobile)
+            document.querySelectorAll('.nav-category').forEach(el => el.classList.remove('open'));
+            document.querySelectorAll('.submenu').forEach(el => el.classList.remove('open'));
+
+            // Re-open current active hierarchy if needed (optional)
+            if (element) {
+                const parentSubmenu = element.closest('.submenu');
+                if (parentSubmenu) {
+                    const parentCat = parentSubmenu.previousElementSibling;
+                    if (parentCat) {
+                        parentCat.classList.add('open');
+                        parentSubmenu.classList.add('open');
+                    }
+                }
+            }
 
             document.getElementById('page-title').innerHTML = title;
 
@@ -3051,11 +4295,12 @@
             let activityContainer = document.getElementById('activity-list-container');
             if (activityContainer) {
                 let actHTML = '';
+                const colors = ['#5C55FA', '#10B981', '#FF8B00', '#9B59B6'];
                 historyData.slice(0, 5).forEach((h, idx) => {
-                    let borderColor = idx % 2 === 0 ? 'var(--primary-blue)' : '#FF8B00';
+                    let borderColor = colors[idx % colors.length];
                     actHTML += `
                     <div class="activity-item" style="border-left-color: ${borderColor};">
-                        <h5>${h.user}</h5>
+                        <h5 style="color: ${borderColor}">${h.user}</h5>
                         <span style="font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em;">${h.time}</span>
                         <p style="margin-top: 4px;">${h.action} <span style="font-weight: 600;">${h.collectionName}</span></p>
                     </div>
@@ -3242,10 +4487,19 @@
 
             let bodyHTML = '';
             allData.forEach((row, index) => {
-                bodyHTML += '<tr class="data-row">';
+                // Limit delay to first 20 rows for performance and UX
+                const delay = index < 20 ? (index * 0.05).toFixed(2) : 0;
+                bodyHTML += `<tr class="data-row stagger-item" style="animation-delay: ${delay}s">`;
                 displayColumns.forEach(col => {
                     if (col === "Aksi") {
-                        bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" onclick="openEditModal(this)" title="Edit Data"><i class="fa-solid fa-pen"></i></button></td>`;
+                        if (!colName.includes('peta')) {
+                            bodyHTML += `<td style="text-align:center; display: flex; justify-content: center; gap: 8px;">
+                                <button class="btn-icon btn-view" data-id="${row.id}" onclick="openViewModal(this)" title="Lihat Data Detail" style="color: var(--primary-blue);"><i class="fa-solid fa-eye"></i></button>
+                                <button class="btn-icon btn-edit" data-id="${row.id}" onclick="openEditModal(this)" title="Edit Data"><i class="fa-solid fa-pen"></i></button>
+                            </td>`;
+                        } else {
+                            bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" onclick="openEditModal(this)" title="Edit Data"><i class="fa-solid fa-pen"></i></button></td>`;
+                        }
                         return;
                     }
 
@@ -3340,19 +4594,14 @@
                         let multiplier = parseFloat(String(row[spc] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
                         subtotalsData[spc] = (subtotalsData[spc] || 0) + (baseValNum * multiplier);
                     });
-                }
-
-                if (colName === 'dball') {
-                    totalNilaiProyek += parseFloat(row['Nilai Proyek']) || 0;
-                    totalInvoice += parseFloat(row['Nilai Invoice']) || 0;
-                    totalTerbayar += parseFloat(row['Nilai Terbayar']) || 0;
+                            if (colName === 'dball') {
+                        totalNilaiProyek += parseFloat(row['Nilai Proyek']) || 0;
+                        totalInvoice += parseFloat(row['Nilai Invoice']) || 0;
+                        totalTerbayar += parseFloat(row['Nilai Terbayar']) || 0;
+                    }
                 }
             });
 
-            // Eksekusi trigger animasi fade in down saat data dirender
-            tBody.style.animation = 'none';
-            void tBody.offsetWidth; // Memicu reflow agar browser memuat ulang animasi
-            tBody.style.animation = 'fadeSlideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards';
             tBody.innerHTML = bodyHTML;
 
             if (colName === 'dball') {
@@ -3366,6 +4615,10 @@
                         <th class="angka" id="sum-terbayar">${formatDecimalUS(totalTerbayar)}</th>
                         <th colspan="${displayColumns.length - spanLimit - 3}"></th>
                     </tr>`;
+                
+                // --- SYNC OVERVIEW DASHBOARD ---
+                // After filtering the table, sync the charts and KPIs
+                updateOverviewChartsFromTable();
             } else {
                 let footerHTML = '<tr>';
                 displayColumns.forEach((col, index) => {
@@ -3411,138 +4664,289 @@
             renderTableDOM();
         };
 
-        // --- OVERVIEW CHART ---
+        // --- DASHBOARD SYNC LOGIC ---
+        window.latestDashboardSnapshot = [];
+        
+        function updateOverviewChartsFromTable() {
+            // Collect data from VISIBLE rows in #table-body
+            const rows = document.querySelectorAll('#table-body tr:not([style*="display: none"])');
+            if (rows.length === 0 && window.latestDashboardSnapshot.length > 0 && activeFilters.status.length === 0 && activeFilters.tahun.length === 0 && activeFilters.keyword === "") {
+                 // If table is not yet rendered or no filters, use full snapshot
+                 renderChartsWithData(window.latestDashboardSnapshot);
+                 return;
+            }
+
+            let filteredData = [];
+            // Map table rows back to data objects or just use current displayed text
+            // For accuracy, it's better to filter the latestDashboardSnapshot using the same activeFilters
+            filteredData = window.latestDashboardSnapshot.filter(data => {
+                const status = (data["Status Proyek"] || "").toLowerCase();
+                const pemberi = (data["Pemberi Proyek"] || "").toLowerCase();
+                const date = data["Tanggal PO"]?.toDate ? data["Tanggal PO"].toDate() : new Date(data["Tanggal PO"]);
+                const yearStr = String(date.getFullYear());
+                const monthStr = date.toLocaleString('id-ID', { month: 'long' });
+
+                let matchStatus = activeFilters.status.length === 0 || activeFilters.status.some(s => status.includes(s.toLowerCase()));
+                let matchTahun = activeFilters.tahun.length === 0 || activeFilters.tahun.some(t => yearStr.includes(t.replace('Tahun ', '')));
+                let matchBulan = activeFilters.bulan.length === 0 || activeFilters.bulan.includes(monthStr);
+                let matchPemberi = activeFilters.pemberi.length === 0 || activeFilters.pemberi.some(p => pemberi.includes(p.toLowerCase()));
+                
+                // Keyword match (sync with project search)
+                const searchStr = `${data["Pemberi Proyek"] || ""} ${data["Uraian Proyek"] || ""} ${data["No. SPK/PO"] || ""}`.toLowerCase();
+                let matchKeyword = !activeFilters.keyword || searchStr.includes(activeFilters.keyword);
+
+                return matchStatus && matchTahun && matchBulan && matchPemberi && matchKeyword;
+            });
+
+            renderChartsWithData(filteredData);
+        }
+
+        function renderChartsWithData(dataList) {
+            let statCounts = {};
+            let statValues = {};
+            let yearlyTimeline = {};
+            let kpiCount = 0, kpiNilai = 0, kpiInvoice = 0, kpiTerbayar = 0;
+
+            dataList.forEach(data => {
+                let status = data["Status Proyek"] || "Unknown";
+                let nilai = parseFloat(data["Nilai Proyek"]) || 0;
+                let invoice = parseFloat(data["Nilai Invoice"]) || 0;
+                let terbayar = parseFloat(data["Nilai Terbayar"]) || 0;
+
+                statCounts[status] = (statCounts[status] || 0) + 1;
+                statValues[status] = (statValues[status] || 0) + nilai;
+
+                if (data["Tanggal PO"]) {
+                    const date = data["Tanggal PO"].toDate ? data["Tanggal PO"].toDate() : new Date(data["Tanggal PO"]);
+                    const year = date.getFullYear();
+                    if (!yearlyTimeline[year]) yearlyTimeline[year] = { nilai: 0, invoice: 0 };
+                    yearlyTimeline[year].nilai += nilai;
+                    yearlyTimeline[year].invoice += invoice;
+                }
+
+                kpiCount++;
+                kpiNilai += nilai;
+                kpiInvoice += invoice;
+                kpiTerbayar += terbayar;
+            });
+
+            // Update KPIs
+            const elKpiProyek = document.getElementById('kpi-total-proyek');
+            const elKpiNilai = document.getElementById('kpi-nilai-proyek');
+            const elKpiInvoice = document.getElementById('kpi-nilai-invoice');
+            const elKpiTerbayar = document.getElementById('kpi-nilai-terbayar');
+
+            if (elKpiProyek) animateCounter(elKpiProyek, 0, kpiCount, 1000, false);
+            if (elKpiNilai) animateCounter(elKpiNilai, 0, kpiNilai, 1000, true);
+            if (elKpiInvoice) animateCounter(elKpiInvoice, 0, kpiInvoice, 1000, true);
+            if (elKpiTerbayar) animateCounter(elKpiTerbayar, 0, kpiTerbayar, 1000, true);
+
+            // Update Doughnut
+            const labelsStatus = Object.keys(statCounts);
+            if (chartInstanceStatus) chartInstanceStatus.destroy();
+            const ctxStatus = document.getElementById('chartStatus').getContext('2d');
+            const statusColorsArray = labelsStatus.map(label => {
+                if (label.includes('Progress')) return '#84A98C';
+                if (label.includes('Survey')) return '#A3B18A';
+                if (label.includes('Invoice')) return '#CCB79E';
+                if (label.includes('Lunas')) return '#52796F';
+                if (label.includes('Hold') || label.includes('Cancel')) return '#BC6C25';
+                return '#D7E3D1';
+            });
+
+            chartInstanceStatus = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: labelsStatus,
+                    datasets: [{ data: Object.values(statCounts), backgroundColor: statusColorsArray, borderWidth: 2 }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, cutout: '70%',
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 10 } } } }
+                }
+            });
+
+            // Update S-Curve
+            const sortedYears = Object.keys(yearlyTimeline).sort();
+            let cumNilai = 0, cumInv = 0;
+            const labelsYear = [], dataNilai = [], dataInv = [];
+            sortedYears.forEach(y => {
+                cumNilai += yearlyTimeline[y].nilai;
+                cumInv += yearlyTimeline[y].invoice;
+                labelsYear.push(y);
+                dataNilai.push(cumNilai);
+                dataInv.push(cumInv);
+            });
+
+            if (chartInstanceNilai) chartInstanceNilai.destroy();
+            const ctxNilai = document.getElementById('chartNilai').getContext('2d');
+            chartInstanceNilai = new Chart(ctxNilai, {
+                type: 'line',
+                data: {
+                    labels: labelsYear,
+                    datasets: [
+                        { label: 'Kumulatif Nilai', data: dataNilai, borderColor: '#52796F', backgroundColor: 'rgba(82, 121, 111, 0.1)', fill: true, tension: 0.4 },
+                        { label: 'Kumulatif Invoice', data: dataInv, borderColor: '#CCB79E', borderDash: [5, 5], fill: false, tension: 0.4 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 10 } } } },
+                    scales: { y: { ticks: { callback: v => 'Rp ' + formatDecimalUS(v), font: { size: 9 } } }, x: { ticks: { font: { size: 9 } } } }
+                }
+            });
+
+            // Update Tabel Proyek Terbaru (Sync with Filters)
+            const tbodyTerbaru = document.getElementById('tbody-proyek-terbaru');
+            if (tbodyTerbaru) {
+                let sortedData = [...dataList].sort((a, b) => {
+                    let da = a["Tanggal PO"]?.seconds || 0;
+                    let db = b["Tanggal PO"]?.seconds || 0;
+                    return db - da; // Descending (Terbaru)
+                });
+
+                let htmlTerbaru = '';
+                sortedData.slice(0, 5).forEach(p => {
+                    htmlTerbaru += `
+                    <tr>
+                        <td style="font-weight: 600;">${p['Pemberi Proyek'] || '-'}</td>
+                        <td>${p['Uraian Proyek'] || '-'}</td>
+                        <td class="angka">Rp ${formatDecimalUS(p['Nilai Proyek'])}</td>
+                        <td class="angka">Rp ${formatDecimalUS(p['Nilai Invoice'])}</td>
+                        <td class="angka">Rp ${formatDecimalUS(p['Nilai Terbayar'])}</td>
+                    </tr>`;
+                });
+                if (dataList.length === 0) htmlTerbaru = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: var(--text-muted);">Tidak ada data sesuai filter</td></tr>';
+                tbodyTerbaru.innerHTML = htmlTerbaru;
+            }
+        }
+
+        function populateChartFilterMenus() {
+            if (!window.latestDashboardSnapshot || window.latestDashboardSnapshot.length === 0) return;
+
+            const statuses = [...new Set(window.latestDashboardSnapshot.map(d => d["Status Proyek"] || "Unknown"))].sort();
+            
+            const years = [...new Set(window.latestDashboardSnapshot
+                .map(d => {
+                    if (!d["Tanggal PO"]) return null;
+                    const date = d["Tanggal PO"].toDate ? d["Tanggal PO"].toDate() : new Date(d["Tanggal PO"]);
+                    return isNaN(date.getTime()) ? null : date.getFullYear();
+                })
+                .filter(y => y !== null)
+            )].sort((a, b) => b - a);
+
+            const menuStatus = document.getElementById('menuFilterStatus');
+            const menuTahun = document.getElementById('menuFilterTahun');
+
+            if (menuStatus) {
+                menuStatus.innerHTML = `
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Pilih Status</div>
+                    <div class="filter-options-scroll" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
+                        ${statuses.map(s => `
+                            <label class="filter-option" style="display: flex; align-items: center; gap: 10px; padding: 6px; cursor: pointer; border-radius: 6px; transition: background 0.2s;">
+                                <input type="checkbox" value="${s}" ${activeFilters.status.includes(s) ? 'checked' : ''} onchange="toggleChartFilter('status', this.value)">
+                                <span style="font-size: 13px;">${s}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            if (menuTahun) {
+                menuTahun.innerHTML = `
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Pilih Tahun</div>
+                    <div class="filter-options-scroll" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
+                        ${years.map(y => `
+                            <label class="filter-option" style="display: flex; align-items: center; gap: 10px; padding: 6px; cursor: pointer; border-radius: 6px; transition: background 0.2s;">
+                                <input type="checkbox" value="Tahun ${y}" ${activeFilters.tahun.includes('Tahun '+y) ? 'checked' : ''} onchange="toggleChartFilter('tahun', this.value)">
+                                <span style="font-size: 13px;">Tahun ${y}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+
+        window.toggleChartFilter = function(type, value) {
+            const idx = activeFilters[type].indexOf(value);
+            if (idx > -1) activeFilters[type].splice(idx, 1);
+            else activeFilters[type].push(value);
+            updateChartActionUI();
+            processFilters(); 
+        };
+
+        window.resetSpecificFilter = function(type) {
+            // Reset categories OR Reset Everything if interconnected
+            activeFilters.status = [];
+            activeFilters.tahun = [];
+            activeFilters.keyword = "";
+            
+            // Sync Search UI
+            const inpSearch = document.getElementById('inputSearchProyek');
+            const globSearch = document.getElementById('globalSearchInput');
+            if (inpSearch) inpSearch.value = "";
+            if (globSearch) globSearch.value = "";
+            
+            updateChartActionUI();
+            processFilters();
+        };
+
+        function updateChartActionUI() {
+            const btnS = document.getElementById('btnFilterStatus');
+            const btnT = document.getElementById('btnFilterTahun');
+            const resS = document.getElementById('btnResetStatus');
+            const resT = document.getElementById('btnResetTahun');
+            if (btnS) btnS.classList.toggle('active', activeFilters.status.length > 0);
+            if (btnT) btnT.classList.toggle('active', activeFilters.tahun.length > 0);
+            if (resS) resS.style.display = (activeFilters.status.length > 0 || activeFilters.keyword !== "") ? 'block' : 'none';
+            if (resT) resT.style.display = (activeFilters.tahun.length > 0 || activeFilters.keyword !== "") ? 'block' : 'none';
+        }
+
+        document.addEventListener('click', (e) => {
+            const btnS = e.target.closest('#btnFilterStatus');
+            const btnT = e.target.closest('#btnFilterTahun');
+            const resS = e.target.closest('#btnResetStatus');
+            const resT = e.target.closest('#btnResetTahun');
+
+            if (btnS) {
+                const m = document.getElementById('menuFilterStatus');
+                m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+                const mt = document.getElementById('menuFilterTahun');
+                if (mt) mt.style.display = 'none';
+            } else if (btnT) {
+                const m = document.getElementById('menuFilterTahun');
+                m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+                const ms = document.getElementById('menuFilterStatus');
+                if (ms) ms.style.display = 'none';
+            } else if (!e.target.closest('.chart-filter-menu')) {
+                const ms = document.getElementById('menuFilterStatus');
+                const mt = document.getElementById('menuFilterTahun');
+                if (ms) ms.style.display = 'none';
+                if (mt) mt.style.display = 'none';
+            }
+            
+            if (resS || resT) resetSpecificFilter();
+        });
+
+        // --- OVERVIEW CHART INITIALIZATION ---
         function renderOverviewChart(colName) {
             try {
                 const targetCol = 'dball';
                 if (window.overviewUnsubscribe) window.overviewUnsubscribe();
 
                 window.overviewUnsubscribe = onSnapshot(collection(db, targetCol), (snapshot) => {
-                    let statCounts = {};
-                    let statValues = {};
+                    window.latestDashboardSnapshot = [];
+                    snapshot.forEach(doc => { window.latestDashboardSnapshot.push(doc.data()); });
 
-                    let kpiTotalProyek = 0;
-                    let kpiNilaiProyek = 0;
-                    let kpiNilaiInvoice = 0;
-                    let kpiNilaiTerbayar = 0;
+                    // Init menus off to start
+                    const ms = document.getElementById('menuFilterStatus');
+                    const mt = document.getElementById('menuFilterTahun');
+                    if (ms) ms.style.display = 'none';
+                    if (mt) mt.style.display = 'none';
 
-                    let allProjectsOverview = [];
-
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        let status = data["Status Proyek"] || "Unknown";
-                        let nilai = parseFloat(data["Nilai Proyek"]) || 0;
-                        let invoice = parseFloat(data["Nilai Invoice"]) || 0;
-                        let terbayar = parseFloat(data["Nilai Terbayar"]) || 0;
-
-                        statCounts[status] = (statCounts[status] || 0) + 1;
-                        statValues[status] = (statValues[status] || 0) + nilai;
-
-                        kpiTotalProyek++;
-                        kpiNilaiProyek += nilai;
-                        kpiNilaiInvoice += invoice;
-                        kpiNilaiTerbayar += terbayar;
-
-                        allProjectsOverview.push(data);
-                    });
-
-                    const elKpiProyek = document.getElementById('kpi-total-proyek');
-                    const elKpiNilai = document.getElementById('kpi-nilai-proyek');
-                    const elKpiInvoice = document.getElementById('kpi-nilai-invoice');
-                    const elKpiTerbayar = document.getElementById('kpi-nilai-terbayar');
-
-                    // Menggunakan fungsi animasi Counter
-                    if (elKpiProyek) animateCounter(elKpiProyek, 0, kpiTotalProyek, 1500, false);
-                    if (elKpiNilai) animateCounter(elKpiNilai, 0, kpiNilaiProyek, 1500, true);
-                    if (elKpiInvoice) animateCounter(elKpiInvoice, 0, kpiNilaiInvoice, 1500, true);
-                    if (elKpiTerbayar) animateCounter(elKpiTerbayar, 0, kpiNilaiTerbayar, 1500, true);
-
-                    allProjectsOverview.sort((a, b) => {
-                        let da = a["Tanggal PO"]?.seconds || 0;
-                        let db = b["Tanggal PO"]?.seconds || 0;
-                        return db - da;
-                    });
-
-                    let tbodyTerbaru = document.getElementById('tbody-proyek-terbaru');
-                    if (tbodyTerbaru) {
-                        let htmlTerbaru = '';
-                        allProjectsOverview.slice(0, 5).forEach(p => {
-                            htmlTerbaru += `
-                            <tr>
-                                <td style="font-weight: 600;">${p['Pemberi Proyek'] || '-'}</td>
-                                <td>${p['Uraian Proyek'] || '-'}</td>
-                                <td class="angka">Rp ${formatDecimalUS(p['Nilai Proyek'])}</td>
-                                <td class="angka">Rp ${formatDecimalUS(p['Nilai Invoice'])}</td>
-                                <td class="angka">Rp ${formatDecimalUS(p['Nilai Terbayar'])}</td>
-                            </tr>`;
-                        });
-                        if (allProjectsOverview.length === 0) htmlTerbaru = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: var(--text-muted);">Tidak ada data proyek</td></tr>';
-                        tbodyTerbaru.innerHTML = htmlTerbaru;
-                    }
-
-                    const labels = Object.keys(statCounts);
-                    if (chartInstanceStatus) chartInstanceStatus.destroy();
-                    if (chartInstanceNilai) chartInstanceNilai.destroy();
-
-                    const ctxStatus = document.getElementById('chartStatus').getContext('2d');
-
-                    const statusColorsArray = labels.map(label => {
-                        if (label.includes('Progress')) return '#403294';
-                        if (label.includes('Survey')) return '#0747A6';
-                        if (label.includes('Invoice')) return '#006644';
-                        if (label.includes('Lunas')) return '#FF8B00';
-                        if (label.includes('Hold') || label.includes('Cancel')) return '#BF2600';
-                        return '#A5ADBA';
-                    });
-
-                    chartInstanceStatus = new Chart(ctxStatus, {
-                        type: 'doughnut',
-                        data: { labels: labels, datasets: [{ data: Object.values(statCounts), backgroundColor: statusColorsArray, borderWidth: 3 }] },
-                        options: {
-                            responsive: true, maintainAspectRatio: false, cutout: '70%',
-                            layout: { padding: { top: 10, bottom: 20 } },
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: { usePointStyle: true, boxWidth: 8, padding: 20, font: { family: "'Inter', sans-serif", size: 12, weight: '500' }, color: '#6B778C' }
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function (context) {
-                                            let label = context.label || '';
-                                            let count = context.parsed || 0;
-                                            let nilai = statValues[label] || 0;
-                                            return ` ${label}: ${count} Proyek (Rp ${formatDecimalUS(nilai)})`;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-
-                    const ctxNilai = document.getElementById('chartNilai').getContext('2d');
-                    chartInstanceNilai = new Chart(ctxNilai, {
-                        type: 'bar',
-                        data: { labels: labels, datasets: [{ label: 'Total Nilai (Rp)', data: Object.values(statValues), backgroundColor: statusColorsArray, borderRadius: 6, barThickness: 32 }] },
-                        options: {
-                            responsive: true, maintainAspectRatio: false,
-                            plugins: {
-                                legend: { display: false },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function (context) { return ` Rp ${formatDecimalUS(context.raw)}`; }
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: { grid: { display: false }, ticks: { color: '#6B778C', font: { weight: '600', family: "'Inter', sans-serif" } } },
-                                y: {
-                                    border: { dash: [4, 4] }, grid: { color: '#EBECF0' },
-                                    ticks: { color: '#6B778C', font: { weight: '600', family: "'Inter', sans-serif" }, callback: function (value) { return 'Rp ' + formatDecimalUS(value); } }
-                                }
-                            }
-                        }
-                    });
+                    // Initial draw & populate menus
+                    updateOverviewChartsFromTable();
+                    populateChartFilterMenus();
                 }, (error) => {
                     console.error("Error memuat chart realtime:", error);
                 });
@@ -3801,7 +5205,14 @@
             });
         }
 
+        function restoreModalState() {
+            document.querySelectorAll('#projectModal input, #projectModal select, #projectModal textarea').forEach(el => el.disabled = false);
+            const btnSave = document.getElementById('btnSaveData');
+            if (btnSave) btnSave.style.display = 'inline-flex';
+        }
+
         document.getElementById('btnTambahProyek').addEventListener('click', () => {
+            restoreModalState();
             window.currentEditId = null;
             if (window.currentCollection !== 'dball') {
                 document.getElementById('modal-title').textContent = "Tambah Data Baru";
@@ -3820,6 +5231,7 @@
         });
 
         window.openEditModal = function (btnElement) {
+            restoreModalState();
             window.currentEditId = btnElement.getAttribute('data-id');
 
             const rowDataObj = window.currentTableDataCache.find(d => d.id === window.currentEditId);
@@ -3857,6 +5269,51 @@
                 document.getElementById('form-file').value = rowDataObj["File"] || "";
                 document.getElementById('form-keterangan').value = rowDataObj["Keterangan"] || "";
             }
+            document.getElementById('projectModal').classList.add('show');
+        }
+
+        window.openViewModal = function (btnElement) {
+            const dataId = btnElement.getAttribute('data-id');
+            const rowDataObj = window.currentTableDataCache.find(d => d.id === dataId);
+            if (!rowDataObj) {
+                alert("Data tidak ditemukan di sistem!");
+                return;
+            }
+
+            if (window.currentCollection !== 'dball') {
+                document.getElementById('modal-title').textContent = "Detail Data";
+                document.getElementById('modal-static-form').style.display = 'none';
+
+                let columns = window.currentTableColumnsCache || tableHeaders[window.currentCollection];
+                let rowData = columns.map(col => {
+                    if (col === 'No' || col === 'Aksi') return '';
+                    return rowDataObj[col] !== undefined ? rowDataObj[col] : '';
+                });
+
+                buildDynamicModal(window.currentCollection, rowData);
+            } else {
+                document.getElementById('modal-title').textContent = "Detail Data";
+                document.getElementById('modal-static-form').style.display = 'contents';
+                document.getElementById('modal-dynamic-form').style.display = 'none';
+
+                document.getElementById('form-tanggal').value = convertTimestampToDateInput(rowDataObj["Tanggal PO"]) || "";
+                document.getElementById('form-nomor').value = rowDataObj["Nomor Proyek"] || "";
+                document.getElementById('form-pemberi').value = rowDataObj["Pemberi Proyek"] || "";
+                document.getElementById('form-uraian').value = rowDataObj["Uraian Proyek"] || "";
+
+                document.getElementById('form-nilai_proyek').value = rowDataObj["Nilai Proyek"] || "";
+                document.getElementById('form-nilai_invoice').value = rowDataObj["Nilai Invoice"] || "";
+                document.getElementById('form-nilai_terbayar').value = rowDataObj["Nilai Terbayar"] || "";
+
+                document.getElementById('form-status').value = rowDataObj["Status Proyek"] || "In Progress";
+                document.getElementById('form-file').value = rowDataObj["File"] || "";
+                document.getElementById('form-keterangan').value = rowDataObj["Keterangan"] || "";
+            }
+
+            document.querySelectorAll('#projectModal input, #projectModal select, #projectModal textarea').forEach(el => el.disabled = true);
+            const btnSave = document.getElementById('btnSaveData');
+            if (btnSave) btnSave.style.display = 'none';
+
             document.getElementById('projectModal').classList.add('show');
         }
 
@@ -4196,6 +5653,18 @@
             printWindow.document.close();
         });
 
+        // --- NEXT-GEN INTERACTIVE TABLE HOVER TRACKING ---
+        document.addEventListener('mousemove', (e) => {
+            const row = e.target.closest('tbody tr');
+            if (row) {
+                const rect = row.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                row.style.setProperty('--mouse-x', `${x}px`);
+                row.style.setProperty('--mouse-y', `${y}px`);
+            }
+        });
+
         // --- CEK SESI ---
         if (sessionStorage.getItem('isLoggedIn') === 'true') {
             loginScreen.style.display = 'none';
@@ -4211,6 +5680,14 @@
                 } catch (e) { }
             }
 
+            // Memuat Tema Warna yang Tersimpan
+            const savedTheme = localStorage.getItem('userAppTheme');
+            if (savedTheme) changeAppTheme(savedTheme);
+
+            // Memuat Gaya Visual yang Tersimpan
+            const savedStyle = localStorage.getItem('userAppStyle');
+            if (savedStyle) applyVisualStyle(savedStyle);
+
             // Menggunakan format inisial singkatan untuk tampilan session yang disimpan
             displayUsername.textContent = getDisplayInitials(savedUser);
             displayUsername.title = savedUser;
@@ -4219,6 +5696,7 @@
             applyProfilePicture(savedPhoto, savedUser);
             applyRolePermissions();
             listenToActiveUsers(); // Mulai memantau user aktif
+            resetInactivityTimer(); // Start the 10-minute timer on page reload if logged in
 
             const lastTitle = sessionStorage.getItem('lastPageTitle') || 'Overview';
             const lastCol = sessionStorage.getItem('lastPageCollection') || 'dball';
@@ -4234,13 +5712,19 @@
             if (!targetNav) targetNav = document.querySelector('.nav-item.active');
 
             if (targetNav) {
-                document.querySelectorAll('.nav-category').forEach(c => c.classList.remove('open'));
+                document.querySelectorAll('.nav-category').forEach(c => {
+                    c.classList.remove('open');
+                    c.classList.remove('active');
+                });
                 document.querySelectorAll('.submenu').forEach(s => s.classList.remove('open'));
 
                 const parentSubmenu = targetNav.closest('.submenu');
                 if (parentSubmenu) {
                     const parentCat = parentSubmenu.previousElementSibling;
-                    if (parentCat) parentCat.classList.add('open');
+                    if (parentCat) {
+                        parentCat.classList.add('open');
+                        parentCat.classList.add('active');
+                    }
                     parentSubmenu.classList.add('open');
                 }
             }

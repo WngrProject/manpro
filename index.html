@@ -435,6 +435,23 @@
             transform: translateX(12px);
         }
 
+        /* Staggered Animation for Submenu Items */
+        .submenu .nav-item {
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+
+        .submenu.open .nav-item {
+            animation: navItemFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes navItemFadeIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         /* Triangle indicator for submenu */
         .submenu::before {
             content: '';
@@ -1600,11 +1617,12 @@
         .search-bar {
             background: var(--bg-color);
             border-radius: 10px;
-            padding: 8px 14px;
+            padding: 0 14px;
             display: flex;
             align-items: center;
             gap: 10px;
             width: 550px;
+            height: 40px;
             border: 1px solid var(--border-strong);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -1685,7 +1703,8 @@
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--border-strong);
             color: var(--text-muted);
-            padding: 6px 14px;
+            padding: 0 14px;
+            height: 40px;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -1782,6 +1801,19 @@
             align-items: center;
             gap: 12px;
             font-weight: 500;
+            opacity: 0; /* For staggered effect */
+            animation: staggerSlideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes staggerSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .dropdown-item:hover {
@@ -4205,15 +4237,28 @@
 
         window.toggleMenu = function (element) {
             const isOpen = element.classList.contains('open');
+            const submenu = element.nextElementSibling;
+
             // Close all others
             document.querySelectorAll('.nav-category').forEach(el => {
                 el.classList.remove('open');
                 if (el.nextElementSibling) el.nextElementSibling.classList.remove('open');
             });
+
             // Toggle current
             if (!isOpen) {
                 element.classList.add('open');
-                if (element.nextElementSibling) element.nextElementSibling.classList.add('open');
+                if (submenu) {
+                    submenu.classList.add('open');
+                    // Apply staggered animation delays
+                    const items = submenu.querySelectorAll('.nav-item');
+                    items.forEach((item, index) => {
+                        item.style.animation = 'none';
+                        item.offsetHeight; // trigger reflow
+                        item.style.animation = '';
+                        item.style.animationDelay = `${index * 0.04}s`;
+                    });
+                }
             }
         };
 
@@ -5219,9 +5264,10 @@
                         });
                     }
                     menu.innerHTML = '';
-                    currentOptions.forEach(opt => {
+                    currentOptions.forEach((opt, index) => {
                         const item = document.createElement('label');
                         item.className = 'dropdown-item';
+                        item.style.animationDelay = `${index * 0.05}s`;
                         const checkbox = document.createElement('input');
                         checkbox.type = 'checkbox';
                         checkbox.value = opt;
@@ -5253,7 +5299,7 @@
         setupDropdown('btnFilterTahun', 'menuFilterTahun', 'tahun', tahunOpts, false, null);
 
         setupDropdown('btnFilterPemberi', 'menuFilterPemberi', 'pemberi', [], true, () => window.currentCollection === 'pembayaran' ? 1 : 3);
-        setupDropdown('btnFilterStatus', 'menuFilterStatus', 'status', [], true, () => materialDBs.includes(window.currentCollection) ? 4 : (window.currentCollection === 'pembayaran' ? 11 : 8));
+        setupDropdown('btnFilterStatus', 'menuFilterStatus', 'status', [], true, () => materialDBs.includes(window.currentCollection) ? 12 : (window.currentCollection === 'pembayaran' ? 11 : 8));
 
         function setupShowEntriesDropdown() {
             const btn = document.getElementById('btnShowEntries');
@@ -5264,7 +5310,16 @@
                 e.stopPropagation();
                 const isShowing = menu.classList.contains('show');
                 closeAllDropdowns();
-                if (!isShowing) menu.classList.add('show');
+                if (!isShowing) {
+                    menu.classList.add('show');
+                    // Reset animation trigger
+                    menu.querySelectorAll('.dropdown-item').forEach((item, index) => {
+                        item.style.animation = 'none';
+                        item.offsetHeight; // trigger reflow
+                        item.style.animation = '';
+                        item.style.animationDelay = `${index * 0.05}s`;
+                    });
+                }
             });
             menu.querySelectorAll('.entry-option').forEach(opt => {
                 opt.addEventListener('click', () => {

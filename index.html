@@ -875,10 +875,10 @@
         /* CONTENT AREA */
         .content {
             flex: 1;
-            padding: 12px;
+            padding: 6px 12px 12px 12px;
             overflow-y: auto;
             background: var(--card-bg);
-            margin: 12px;
+            margin: 13px;
             border-radius: 12px;
             box-shadow: none;
             border: none;
@@ -1340,7 +1340,7 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-strong);
             border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             z-index: 9999;
             width: 220px;
             padding: 12px;
@@ -1351,8 +1351,15 @@
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .filter-option {
@@ -1386,7 +1393,8 @@
             text-align: right;
             border: none;
             background: transparent;
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
         }
 
         .btn-reset-mini:hover {
@@ -1542,7 +1550,7 @@
 
         /* --- BORDIO STYLE DATA TABLES --- */
         .table-toolbar {
-            padding: 12px 16px;
+            padding: 8px 16px;
             /* Reduced from 20px 24px */
             display: flex;
             justify-content: space-between;
@@ -1640,6 +1648,74 @@
             display: inline-flex;
         }
 
+        .btn-show-entries {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--border-strong);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 8px;
+            width: fit-content;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        :root[data-theme="dark"] .btn-show-entries {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .btn-show-entries:hover {
+            background: rgba(92, 85, 250, 0.1);
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(92, 85, 250, 0.15);
+        }
+
+        .btn-show-entries i {
+            font-size: 12px;
+            opacity: 0.9;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-show-entries:hover i:last-child {
+            transform: translateY(2px);
+        }
+
+        #menuShowEntries {
+            border-radius: 16px !important;
+            padding: 8px !important;
+            border: 1px solid var(--border-strong) !important;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+            animation: modernFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modernFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #menuShowEntries .dropdown-item {
+            margin: 2px 0;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        #menuShowEntries .dropdown-item:hover {
+            background: var(--primary-blue);
+            color: white;
+            padding-left: 16px;
+        }
+
         .dropdown-menu {
             display: none;
             position: absolute;
@@ -1697,9 +1773,11 @@
 
         table {
             width: 100%;
-            border-collapse: collapse; /* Changed from separate to collapse for cleaner lines */
+            border-collapse: collapse;
+            /* Changed from separate to collapse for cleaner lines */
             white-space: nowrap;
-            border: none; /* No outer border */
+            border: none;
+            /* No outer border */
         }
 
         thead {
@@ -1718,7 +1796,8 @@
             font-size: 13px;
             text-align: left;
             padding: 12px 16px;
-            border-bottom: 2px solid var(--border-strong); /* Stronger line for header */
+            border-bottom: 2px solid var(--border-strong);
+            /* Stronger line for header */
             transition: color 0.3s;
         }
 
@@ -3015,16 +3094,32 @@
 
                 </div>
 
-                <div id="section-table" class="card hidden" style="margin-top: 32px; padding: 0;">
+                <div id="section-table" class="card hidden" style="margin-top: 8px; padding: 0;">
 
                     <div class="table-toolbar" id="main-table-toolbar" style="display: none;">
                         <div id="toolbar-semua-proyek"
                             style="display: flex; justify-content: space-between; width: 100%; align-items: center; display: none;">
 
-                            <div class="toolbar-group">
+                            <div class="toolbar-group" style="flex-direction: column; align-items: flex-start; gap: 0;">
                                 <div class="search-bar">
                                     <i class="fa-solid fa-magnifying-glass" style="color: var(--text-light);"></i>
                                     <input type="text" id="inputSearchProyek" placeholder="Cari Proyek...">
+                                </div>
+                                <div class="dropdown-wrapper">
+                                    <button class="btn-show-entries" id="btnShowEntries" title="Jumlah data yang ditampilkan">
+                                        <i class="fa-solid fa-list-ol"></i>
+                                        <span style="opacity: 0.8; font-weight: 500; margin-left: 4px;">Show :</span>
+                                        <span id="labelShowEntries" style="font-weight: 800; color: var(--primary-blue); margin-left: 2px;">Semua Data</span>
+                                        <i class="fa-solid fa-chevron-down" style="margin-left: 6px; font-size: 8px; opacity: 0.5;"></i>
+                                    </button>
+                                    <div class="dropdown-menu" id="menuShowEntries" style="min-width: 130px;">
+                                        <div class="dropdown-item entry-option" data-value="5">5 Data</div>
+                                        <div class="dropdown-item entry-option" data-value="10">10 Data</div>
+                                        <div class="dropdown-item entry-option" data-value="25">25 Data</div>
+                                        <div class="dropdown-item entry-option" data-value="50">50 Data</div>
+                                        <div class="dropdown-item entry-option" data-value="100">100 Data</div>
+                                        <div class="dropdown-item entry-option" data-value="999999">Semua Data</div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -3296,6 +3391,8 @@
         window.closeModal = function (modalId) {
             document.getElementById(modalId).classList.remove('show');
         }
+
+        window.entryLimit = 999999;
 
         function closeAllDropdowns() {
             document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
@@ -4594,7 +4691,7 @@
                         let multiplier = parseFloat(String(row[spc] || "").replace(/,/g, '').replace(/%/g, '')) || 0;
                         subtotalsData[spc] = (subtotalsData[spc] || 0) + (baseValNum * multiplier);
                     });
-                            if (colName === 'dball') {
+                    if (colName === 'dball') {
                         totalNilaiProyek += parseFloat(row['Nilai Proyek']) || 0;
                         totalInvoice += parseFloat(row['Nilai Invoice']) || 0;
                         totalTerbayar += parseFloat(row['Nilai Terbayar']) || 0;
@@ -4615,7 +4712,7 @@
                         <th class="angka" id="sum-terbayar">${formatDecimalUS(totalTerbayar)}</th>
                         <th colspan="${displayColumns.length - spanLimit - 3}"></th>
                     </tr>`;
-                
+
                 // --- SYNC OVERVIEW DASHBOARD ---
                 // After filtering the table, sync the charts and KPIs
                 updateOverviewChartsFromTable();
@@ -4666,14 +4763,14 @@
 
         // --- DASHBOARD SYNC LOGIC ---
         window.latestDashboardSnapshot = [];
-        
+
         function updateOverviewChartsFromTable() {
             // Collect data from VISIBLE rows in #table-body
             const rows = document.querySelectorAll('#table-body tr:not([style*="display: none"])');
             if (rows.length === 0 && window.latestDashboardSnapshot.length > 0 && activeFilters.status.length === 0 && activeFilters.tahun.length === 0 && activeFilters.keyword === "") {
-                 // If table is not yet rendered or no filters, use full snapshot
-                 renderChartsWithData(window.latestDashboardSnapshot);
-                 return;
+                // If table is not yet rendered or no filters, use full snapshot
+                renderChartsWithData(window.latestDashboardSnapshot);
+                return;
             }
 
             let filteredData = [];
@@ -4690,7 +4787,7 @@
                 let matchTahun = activeFilters.tahun.length === 0 || activeFilters.tahun.some(t => yearStr.includes(t.replace('Tahun ', '')));
                 let matchBulan = activeFilters.bulan.length === 0 || activeFilters.bulan.includes(monthStr);
                 let matchPemberi = activeFilters.pemberi.length === 0 || activeFilters.pemberi.some(p => pemberi.includes(p.toLowerCase()));
-                
+
                 // Keyword match (sync with project search)
                 const searchStr = `${data["Pemberi Proyek"] || ""} ${data["Uraian Proyek"] || ""} ${data["No. SPK/PO"] || ""}`.toLowerCase();
                 let matchKeyword = !activeFilters.keyword || searchStr.includes(activeFilters.keyword);
@@ -4825,7 +4922,7 @@
             if (!window.latestDashboardSnapshot || window.latestDashboardSnapshot.length === 0) return;
 
             const statuses = [...new Set(window.latestDashboardSnapshot.map(d => d["Status Proyek"] || "Unknown"))].sort();
-            
+
             const years = [...new Set(window.latestDashboardSnapshot
                 .map(d => {
                     if (!d["Tanggal PO"]) return null;
@@ -4858,7 +4955,7 @@
                     <div class="filter-options-scroll" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
                         ${years.map(y => `
                             <label class="filter-option" style="display: flex; align-items: center; gap: 10px; padding: 6px; cursor: pointer; border-radius: 6px; transition: background 0.2s;">
-                                <input type="checkbox" value="Tahun ${y}" ${activeFilters.tahun.includes('Tahun '+y) ? 'checked' : ''} onchange="toggleChartFilter('tahun', this.value)">
+                                <input type="checkbox" value="Tahun ${y}" ${activeFilters.tahun.includes('Tahun ' + y) ? 'checked' : ''} onchange="toggleChartFilter('tahun', this.value)">
                                 <span style="font-size: 13px;">Tahun ${y}</span>
                             </label>
                         `).join('')}
@@ -4867,26 +4964,26 @@
             }
         }
 
-        window.toggleChartFilter = function(type, value) {
+        window.toggleChartFilter = function (type, value) {
             const idx = activeFilters[type].indexOf(value);
             if (idx > -1) activeFilters[type].splice(idx, 1);
             else activeFilters[type].push(value);
             updateChartActionUI();
-            processFilters(); 
+            processFilters();
         };
 
-        window.resetSpecificFilter = function(type) {
+        window.resetSpecificFilter = function (type) {
             // Reset categories OR Reset Everything if interconnected
             activeFilters.status = [];
             activeFilters.tahun = [];
             activeFilters.keyword = "";
-            
+
             // Sync Search UI
             const inpSearch = document.getElementById('inputSearchProyek');
             const globSearch = document.getElementById('globalSearchInput');
             if (inpSearch) inpSearch.value = "";
             if (globSearch) globSearch.value = "";
-            
+
             updateChartActionUI();
             processFilters();
         };
@@ -4924,7 +5021,7 @@
                 if (ms) ms.style.display = 'none';
                 if (mt) mt.style.display = 'none';
             }
-            
+
             if (resS || resT) resetSpecificFilter();
         });
 
@@ -4961,6 +5058,7 @@
             let viewTotalNilai = 0, viewTotalInv = 0, viewTotalTerbayar = 0;
             let sumNilaiInvoice = 0, sumPpn11 = 0, sumTotalInvoice = 0, sumNilaiBayar = 0;
             let visibleCount = 0;
+            let shownInTable = 0;
             const bulanMap = { "Januari": "Jan", "Februari": "Feb", "Maret": "Mar", "April": "Apr", "Mei": "Mei", "Juni": "Jun", "Juli": "Jul", "Agustus": "Agt", "September": "Sep", "Oktober": "Okt", "November": "Nov", "Desember": "Des" };
 
             rows.forEach(row => {
@@ -5027,17 +5125,22 @@
                 }
 
                 if (matchKeyword && matchFilters) {
-                    row.style.display = '';
-                    if (window.currentCollection === 'dball' && row.cells.length > 7) {
-                        viewTotalNilai += parseFloat(row.cells[5].textContent.replace(/,/g, "")) || 0;
-                        viewTotalInv += parseFloat(row.cells[6].textContent.replace(/,/g, "")) || 0;
-                        viewTotalTerbayar += parseFloat(row.cells[7].textContent.replace(/,/g, "")) || 0;
-                    } else if (window.currentCollection === 'pembayaran' && row.cells.length > 14) {
-                        visibleCount++;
-                        sumNilaiInvoice += parseFloat(row.cells[7].textContent.replace(/,/g, "")) || 0;
-                        sumPpn11 += parseFloat(row.cells[8].textContent.replace(/,/g, "")) || 0;
-                        sumTotalInvoice += parseFloat(row.cells[9].textContent.replace(/,/g, "")) || 0;
-                        sumNilaiBayar += parseFloat(row.cells[14].textContent.replace(/,/g, "")) || 0;
+                    if (shownInTable < (window.entryLimit || 999999)) {
+                        row.style.display = '';
+                        shownInTable++;
+                        if (window.currentCollection === 'dball' && row.cells.length > 7) {
+                            viewTotalNilai += parseFloat(row.cells[5].textContent.replace(/,/g, "")) || 0;
+                            viewTotalInv += parseFloat(row.cells[6].textContent.replace(/,/g, "")) || 0;
+                            viewTotalTerbayar += parseFloat(row.cells[7].textContent.replace(/,/g, "")) || 0;
+                        } else if (window.currentCollection === 'pembayaran' && row.cells.length > 14) {
+                            visibleCount++;
+                            sumNilaiInvoice += parseFloat(row.cells[7].textContent.replace(/,/g, "")) || 0;
+                            sumPpn11 += parseFloat(row.cells[8].textContent.replace(/,/g, "")) || 0;
+                            sumTotalInvoice += parseFloat(row.cells[9].textContent.replace(/,/g, "")) || 0;
+                            sumNilaiBayar += parseFloat(row.cells[14].textContent.replace(/,/g, "")) || 0;
+                        }
+                    } else {
+                        row.style.display = 'none';
                     }
                 } else {
                     row.style.display = 'none';
@@ -5124,9 +5227,35 @@
         setupDropdown('btnFilterPemberi', 'menuFilterPemberi', 'pemberi', [], true, () => window.currentCollection === 'pembayaran' ? 1 : 3);
         setupDropdown('btnFilterStatus', 'menuFilterStatus', 'status', [], true, () => materialDBs.includes(window.currentCollection) ? 4 : (window.currentCollection === 'pembayaran' ? 11 : 8));
 
+        function setupShowEntriesDropdown() {
+            const btn = document.getElementById('btnShowEntries');
+            const menu = document.getElementById('menuShowEntries');
+            const label = document.getElementById('labelShowEntries');
+            if (!btn || !menu) return;
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isShowing = menu.classList.contains('show');
+                closeAllDropdowns();
+                if (!isShowing) menu.classList.add('show');
+            });
+            menu.querySelectorAll('.entry-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    const val = parseInt(opt.getAttribute('data-value'));
+                    window.entryLimit = val;
+                    label.textContent = val >= 999999 ? 'Semua Data' : val;
+                    menu.classList.remove('show');
+                    processFilters();
+                });
+            });
+        }
+        setupShowEntriesDropdown();
+
         function resetDataView() {
             document.getElementById('inputSearchProyek').value = "";
             activeFilters = { keyword: "", bulan: [], tahun: [], pemberi: [], status: [] };
+            window.entryLimit = 999999;
+            const labelLimit = document.getElementById('labelShowEntries');
+            if (labelLimit) labelLimit.textContent = 'Semua Data';
             ['btnFilterBulan', 'btnFilterTahun', 'btnFilterPemberi', 'btnFilterStatus'].forEach(id => {
                 document.getElementById(id).classList.remove('filter-active');
             });

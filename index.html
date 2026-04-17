@@ -3154,7 +3154,7 @@
                                 <div class="dropdown-wrapper">
                                     <button class="btn-show-entries" id="btnShowEntries" title="Jumlah data yang ditampilkan">
                                         <i class="fa-solid fa-list-ol"></i>
-                                        <span style="opacity: 0.8; font-weight: 500; margin-left: 4px;">Show :</span>
+                                        <span style="opacity: 0.8; font-weight: 500; margin-left: 4px;">Tampilkan :</span>
                                         <span id="labelShowEntries" style="font-weight: 800; color: var(--primary-blue); margin-left: 2px;">Semua Data</span>
                                         <i class="fa-solid fa-chevron-down" style="margin-left: 6px; font-size: 8px; opacity: 0.5;"></i>
                                     </button>
@@ -4800,7 +4800,7 @@
                     else if (targetDataKey) {
                         let subValue = subtotalsData[targetDataKey] || 0;
                         let formattedSubValue = percentCols.includes(lowerCol) ? formatDecimalUS(subValue) + "%" : formatDecimalUS(subValue);
-                        let idAttr = (colName === 'pembayaran') ? ` id="sum-${lowerCol.replace(/[^a-z0-9]/g, '')}"` : '';
+                        let idAttr = ` id="sum-${lowerCol.replace(/[^a-z0-9]/g, '')}"`;
                         footerHTML += `<th class="angka"${idAttr}>${formattedSubValue}</th>`;
                     } else {
                         if (index === 0 && colName !== 'pembayaran') footerHTML += `<th style="text-align:left;">Total</th>`;
@@ -4983,112 +4983,7 @@
             }
         }
 
-        function populateChartFilterMenus() {
-            if (!window.latestDashboardSnapshot || window.latestDashboardSnapshot.length === 0) return;
 
-            const statuses = [...new Set(window.latestDashboardSnapshot.map(d => d["Status Proyek"] || "Unknown"))].sort();
-
-            const years = [...new Set(window.latestDashboardSnapshot
-                .map(d => {
-                    if (!d["Tanggal PO"]) return null;
-                    const date = d["Tanggal PO"].toDate ? d["Tanggal PO"].toDate() : new Date(d["Tanggal PO"]);
-                    return isNaN(date.getTime()) ? null : date.getFullYear();
-                })
-                .filter(y => y !== null)
-            )].sort((a, b) => b - a);
-
-            const menuStatus = document.getElementById('menuFilterStatus');
-            const menuTahun = document.getElementById('menuFilterTahun');
-
-            if (menuStatus) {
-                menuStatus.innerHTML = `
-                    <div style="font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Pilih Status</div>
-                    <div class="filter-options-scroll" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
-                        ${statuses.map(s => `
-                            <label class="filter-option" style="display: flex; align-items: center; gap: 10px; padding: 6px; cursor: pointer; border-radius: 6px; transition: background 0.2s;">
-                                <input type="checkbox" value="${s}" ${activeFilters.status.includes(s) ? 'checked' : ''} onchange="toggleChartFilter('status', this.value)">
-                                <span style="font-size: 13px;">${s}</span>
-                            </label>
-                        `).join('')}
-                    </div>
-                `;
-            }
-
-            if (menuTahun) {
-                menuTahun.innerHTML = `
-                    <div style="font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Pilih Tahun</div>
-                    <div class="filter-options-scroll" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
-                        ${years.map(y => `
-                            <label class="filter-option" style="display: flex; align-items: center; gap: 10px; padding: 6px; cursor: pointer; border-radius: 6px; transition: background 0.2s;">
-                                <input type="checkbox" value="Tahun ${y}" ${activeFilters.tahun.includes('Tahun ' + y) ? 'checked' : ''} onchange="toggleChartFilter('tahun', this.value)">
-                                <span style="font-size: 13px;">Tahun ${y}</span>
-                            </label>
-                        `).join('')}
-                    </div>
-                `;
-            }
-        }
-
-        window.toggleChartFilter = function (type, value) {
-            const idx = activeFilters[type].indexOf(value);
-            if (idx > -1) activeFilters[type].splice(idx, 1);
-            else activeFilters[type].push(value);
-            updateChartActionUI();
-            processFilters();
-        };
-
-        window.resetSpecificFilter = function (type) {
-            // Reset categories OR Reset Everything if interconnected
-            activeFilters.status = [];
-            activeFilters.tahun = [];
-            activeFilters.keyword = "";
-
-            // Sync Search UI
-            const inpSearch = document.getElementById('inputSearchProyek');
-            const globSearch = document.getElementById('globalSearchInput');
-            if (inpSearch) inpSearch.value = "";
-            if (globSearch) globSearch.value = "";
-
-            updateChartActionUI();
-            processFilters();
-        };
-
-        function updateChartActionUI() {
-            const btnS = document.getElementById('btnFilterStatus');
-            const btnT = document.getElementById('btnFilterTahun');
-            const resS = document.getElementById('btnResetStatus');
-            const resT = document.getElementById('btnResetTahun');
-            if (btnS) btnS.classList.toggle('active', activeFilters.status.length > 0);
-            if (btnT) btnT.classList.toggle('active', activeFilters.tahun.length > 0);
-            if (resS) resS.style.display = (activeFilters.status.length > 0 || activeFilters.keyword !== "") ? 'block' : 'none';
-            if (resT) resT.style.display = (activeFilters.tahun.length > 0 || activeFilters.keyword !== "") ? 'block' : 'none';
-        }
-
-        document.addEventListener('click', (e) => {
-            const btnS = e.target.closest('#btnFilterStatus');
-            const btnT = e.target.closest('#btnFilterTahun');
-            const resS = e.target.closest('#btnResetStatus');
-            const resT = e.target.closest('#btnResetTahun');
-
-            if (btnS) {
-                const m = document.getElementById('menuFilterStatus');
-                m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-                const mt = document.getElementById('menuFilterTahun');
-                if (mt) mt.style.display = 'none';
-            } else if (btnT) {
-                const m = document.getElementById('menuFilterTahun');
-                m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-                const ms = document.getElementById('menuFilterStatus');
-                if (ms) ms.style.display = 'none';
-            } else if (!e.target.closest('.chart-filter-menu')) {
-                const ms = document.getElementById('menuFilterStatus');
-                const mt = document.getElementById('menuFilterTahun');
-                if (ms) ms.style.display = 'none';
-                if (mt) mt.style.display = 'none';
-            }
-
-            if (resS || resT) resetSpecificFilter();
-        });
 
         // --- OVERVIEW CHART INITIALIZATION ---
         function renderOverviewChart(colName) {
@@ -5100,15 +4995,8 @@
                     window.latestDashboardSnapshot = [];
                     snapshot.forEach(doc => { window.latestDashboardSnapshot.push(doc.data()); });
 
-                    // Init menus off to start
-                    const ms = document.getElementById('menuFilterStatus');
-                    const mt = document.getElementById('menuFilterTahun');
-                    if (ms) ms.style.display = 'none';
-                    if (mt) mt.style.display = 'none';
-
-                    // Initial draw & populate menus
+                    // Initial draw
                     updateOverviewChartsFromTable();
-                    populateChartFilterMenus();
                 }, (error) => {
                     console.error("Error memuat chart realtime:", error);
                 });
@@ -5122,6 +5010,7 @@
 
             let viewTotalNilai = 0, viewTotalInv = 0, viewTotalTerbayar = 0;
             let sumNilaiInvoice = 0, sumPpn11 = 0, sumTotalInvoice = 0, sumNilaiBayar = 0;
+            let sumMatTotal = 0, sumMatPpn = 0, sumMatGrand = 0;
             let visibleCount = 0;
             let shownInTable = 0;
             const bulanMap = { "Januari": "Jan", "Februari": "Feb", "Maret": "Mar", "April": "Apr", "Mei": "Mei", "Juni": "Jun", "Juli": "Jul", "Agustus": "Agt", "September": "Sep", "Oktober": "Okt", "November": "Nov", "Desember": "Des" };
@@ -5129,28 +5018,35 @@
             rows.forEach(row => {
                 let matchKeyword = true;
                 if (activeFilters.keyword !== "") {
+                    const kw = activeFilters.keyword.toLowerCase().trim();
                     if (window.currentCollection === 'dball') {
-                        const colPemberi = row.cells.length > 3 ? row.cells[3].textContent.toLowerCase() : "";
-                        const colUraian = row.cells.length > 4 ? row.cells[4].textContent.toLowerCase() : "";
-                        const colStatus = row.cells.length > 8 ? row.cells[8].textContent.toLowerCase() : "";
-                        matchKeyword = colPemberi.includes(activeFilters.keyword) || colUraian.includes(activeFilters.keyword) || colStatus.includes(activeFilters.keyword);
+                        const colNoProyek = row.cells.length > 2 ? row.cells[2].textContent.toLowerCase().trim() : "";
+                        const colPemberi = row.cells.length > 3 ? row.cells[3].textContent.toLowerCase().trim() : "";
+                        const colUraian = row.cells.length > 4 ? row.cells[4].textContent.toLowerCase().trim() : "";
+                        const colStatusArr = row.cells.length > 8 ? Array.from(row.cells[8].querySelectorAll('.status-badge, .badge')).map(b => b.textContent.toLowerCase().trim()) : [];
+                        const colStatusText = row.cells.length > 8 ? row.cells[8].textContent.toLowerCase().trim() : "";
+                        
+                        matchKeyword = colNoProyek.includes(kw) || 
+                                       colPemberi.includes(kw) || 
+                                       colUraian.includes(kw) || 
+                                       colStatusText.includes(kw) ||
+                                       colStatusArr.some(s => s.includes(kw));
                     } else if (window.currentCollection === 'pembayaran') {
-                        const colPemberi = row.cells.length > 1 ? row.cells[1].textContent.toLowerCase() : "";
-                        const colNoProyek = row.cells.length > 2 ? row.cells[2].textContent.toLowerCase() : "";
-                        const colUraian = row.cells.length > 3 ? row.cells[3].textContent.toLowerCase() : "";
-                        const colDetailInv = row.cells.length > 4 ? row.cells[4].textContent.toLowerCase() : "";
-                        const colNoInv = row.cells.length > 5 ? row.cells[5].textContent.toLowerCase() : "";
-                        const colJenis = row.cells.length > 10 ? row.cells[10].textContent.toLowerCase() : "";
-                        const colStatus = row.cells.length > 11 ? row.cells[11].textContent.toLowerCase() : "";
-                        matchKeyword = colPemberi.includes(activeFilters.keyword) || 
-                                       colNoProyek.includes(activeFilters.keyword) || 
-                                       colUraian.includes(activeFilters.keyword) || 
-                                       colDetailInv.includes(activeFilters.keyword) || 
-                                       colNoInv.includes(activeFilters.keyword) || 
-                                       colJenis.includes(activeFilters.keyword) || 
-                                       colStatus.includes(activeFilters.keyword);
+                        const colPemberi = row.cells.length > 1 ? row.cells[1].textContent.toLowerCase().trim() : "";
+                        const colNoProyek = row.cells.length > 2 ? row.cells[2].textContent.toLowerCase().trim() : "";
+                        const colUraian = row.cells.length > 3 ? row.cells[3].textContent.toLowerCase().trim() : "";
+                        const colNoInv = row.cells.length > 5 ? row.cells[5].textContent.toLowerCase().trim() : "";
+                        const colStatusArr = row.cells.length > 11 ? Array.from(row.cells[11].querySelectorAll('.status-badge, .badge')).map(b => b.textContent.toLowerCase().trim()) : [];
+                        const colStatusText = row.cells.length > 11 ? row.cells[11].textContent.toLowerCase().trim() : "";
+
+                        matchKeyword = colPemberi.includes(kw) || 
+                                       colNoProyek.includes(kw) || 
+                                       colUraian.includes(kw) || 
+                                       colNoInv.includes(kw) || 
+                                       colStatusText.includes(kw) ||
+                                       colStatusArr.some(s => s.includes(kw));
                     } else {
-                        matchKeyword = row.textContent.toLowerCase().includes(activeFilters.keyword);
+                        matchKeyword = row.textContent.toLowerCase().trim().includes(kw);
                     }
                 }
 
@@ -5163,17 +5059,20 @@
                     let colStatus = "";
 
                     if (window.currentCollection === 'pembayaran' && row.cells.length > 11) {
-                        colTglText = row.cells[6].textContent;
-                        colPemberi = row.cells[1].textContent.toLowerCase();
-                        colStatus = row.cells[11].textContent.toLowerCase();
-                    } else if (materialDBs.includes(window.currentCollection) && row.cells.length > 4) {
-                        colTglText = row.cells[1].textContent;
-                        colPemberi = row.cells[3].textContent.toLowerCase();
-                        colStatus = row.cells[4].textContent.toLowerCase();
+                        colTglText = row.cells[6].textContent.trim();
+                        colPemberi = row.cells[1].textContent.toLowerCase().trim();
+                        const badge = row.cells[11].querySelector('.badge, .status-badge');
+                        colStatus = (badge ? badge.textContent : row.cells[11].textContent).toLowerCase().trim();
+                    } else if (materialDBs.includes(window.currentCollection) && row.cells.length > 12) {
+                        colTglText = row.cells[1].textContent.trim();
+                        colPemberi = row.cells[3].textContent.toLowerCase().trim();
+                        const badge = row.cells[12].querySelector('.badge, .status-badge');
+                        colStatus = (badge ? badge.textContent : row.cells[12].textContent).toLowerCase().trim();
                     } else if (window.currentCollection === 'dball' && row.cells.length > 8) {
-                        colTglText = row.cells[1].textContent;
-                        colPemberi = row.cells[3].textContent.toLowerCase();
-                        colStatus = row.cells[8].textContent.toLowerCase();
+                        colTglText = row.cells[1].textContent.trim();
+                        colPemberi = row.cells[3].textContent.toLowerCase().trim();
+                        const badge = row.cells[8].querySelector('.badge, .status-badge');
+                        colStatus = (badge ? badge.textContent : row.cells[8].textContent).toLowerCase().trim();
                     }
 
                     let matchBulan = activeFilters.bulan.length === 0;
@@ -5200,20 +5099,27 @@
                 }
 
                 if (matchKeyword && matchFilters) {
+                    // Accumulate totals for ALL matching rows
+                    if (window.currentCollection === 'dball' && row.cells.length > 7) {
+                        viewTotalNilai += parseFloat(row.cells[5].textContent.trim().replace(/,/g, "")) || 0;
+                        viewTotalInv += parseFloat(row.cells[6].textContent.trim().replace(/,/g, "")) || 0;
+                        viewTotalTerbayar += parseFloat(row.cells[7].textContent.trim().replace(/,/g, "")) || 0;
+                    } else if (window.currentCollection === 'pembayaran' && row.cells.length > 14) {
+                        visibleCount++;
+                        sumNilaiInvoice += parseFloat(row.cells[7].textContent.trim().replace(/,/g, "")) || 0;
+                        sumPpn11 += parseFloat(row.cells[8].textContent.trim().replace(/,/g, "")) || 0;
+                        sumTotalInvoice += parseFloat(row.cells[9].textContent.trim().replace(/,/g, "")) || 0;
+                        sumNilaiBayar += parseFloat(row.cells[14].textContent.trim().replace(/,/g, "")) || 0;
+                    } else if (materialDBs.includes(window.currentCollection) && row.cells.length > 11) {
+                        visibleCount++;
+                        sumMatTotal += parseFloat(row.cells[9].textContent.trim().replace(/,/g, "")) || 0;
+                        sumMatPpn += parseFloat(row.cells[10].textContent.trim().replace(/,/g, "")) || 0;
+                        sumMatGrand += parseFloat(row.cells[11].textContent.trim().replace(/,/g, "")) || 0;
+                    }
+
                     if (shownInTable < (window.entryLimit || 999999)) {
                         row.style.display = '';
                         shownInTable++;
-                        if (window.currentCollection === 'dball' && row.cells.length > 7) {
-                            viewTotalNilai += parseFloat(row.cells[5].textContent.replace(/,/g, "")) || 0;
-                            viewTotalInv += parseFloat(row.cells[6].textContent.replace(/,/g, "")) || 0;
-                            viewTotalTerbayar += parseFloat(row.cells[7].textContent.replace(/,/g, "")) || 0;
-                        } else if (window.currentCollection === 'pembayaran' && row.cells.length > 14) {
-                            visibleCount++;
-                            sumNilaiInvoice += parseFloat(row.cells[7].textContent.replace(/,/g, "")) || 0;
-                            sumPpn11 += parseFloat(row.cells[8].textContent.replace(/,/g, "")) || 0;
-                            sumTotalInvoice += parseFloat(row.cells[9].textContent.replace(/,/g, "")) || 0;
-                            sumNilaiBayar += parseFloat(row.cells[14].textContent.replace(/,/g, "")) || 0;
-                        }
                     } else {
                         row.style.display = 'none';
                     }
@@ -5222,16 +5128,23 @@
                 }
             });
 
+            // Update DOM Summaries
             if (window.currentCollection === 'dball') {
                 if (document.getElementById('sum-nilai')) document.getElementById('sum-nilai').textContent = formatDecimalUS(viewTotalNilai);
                 if (document.getElementById('sum-invoice')) document.getElementById('sum-invoice').textContent = formatDecimalUS(viewTotalInv);
                 if (document.getElementById('sum-terbayar')) document.getElementById('sum-terbayar').textContent = formatDecimalUS(viewTotalTerbayar);
+                updateOverviewChartsFromTable();
             } else if (window.currentCollection === 'pembayaran') {
                 if (document.getElementById('sum-count')) document.getElementById('sum-count').textContent = visibleCount + ' Data';
                 if (document.getElementById('sum-nilaiinvoice')) document.getElementById('sum-nilaiinvoice').textContent = formatDecimalUS(sumNilaiInvoice);
                 if (document.getElementById('sum-ppn11')) document.getElementById('sum-ppn11').textContent = formatDecimalUS(sumPpn11);
                 if (document.getElementById('sum-totalinvoice')) document.getElementById('sum-totalinvoice').textContent = formatDecimalUS(sumTotalInvoice);
                 if (document.getElementById('sum-nilaibayar')) document.getElementById('sum-nilaibayar').textContent = formatDecimalUS(sumNilaiBayar);
+            } else if (materialDBs.includes(window.currentCollection)) {
+                if (document.getElementById('sum-count')) document.getElementById('sum-count').textContent = visibleCount + ' Data';
+                if (document.getElementById('sum-totalharga')) document.getElementById('sum-totalharga').textContent = formatDecimalUS(sumMatTotal);
+                if (document.getElementById('sum-ppn11')) document.getElementById('sum-ppn11').textContent = formatDecimalUS(sumMatPpn);
+                if (document.getElementById('sum-grandtotal')) document.getElementById('sum-grandtotal').textContent = formatDecimalUS(sumMatGrand);
             }
         }
 
@@ -5257,8 +5170,8 @@
                         document.querySelectorAll('#table-body .data-row').forEach(row => {
                             if (row.cells.length > colIndex) {
                                 let val = row.cells[colIndex].textContent.trim();
-                                if (filterKey === 'status' && window.currentCollection === 'dball') {
-                                    const badge = row.cells[colIndex].querySelector('.badge');
+                                if (filterKey === 'status') {
+                                    const badge = row.cells[colIndex].querySelector('.badge, .status-badge');
                                     if (badge) val = badge.textContent.trim();
                                 }
                                 if (val && val !== '-' && !currentOptions.includes(val)) currentOptions.push(val);

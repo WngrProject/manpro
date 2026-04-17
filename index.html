@@ -4865,8 +4865,9 @@
         function renderChartsWithData(dataList) {
             let statCounts = {};
             let statValues = {};
-            let yearlyTimeline = {};
+            let monthlyTimeline = {};
             let kpiCount = 0, kpiNilai = 0, kpiInvoice = 0, kpiTerbayar = 0;
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
 
             dataList.forEach(data => {
                 let status = data["Status Proyek"] || "Unknown";
@@ -4879,10 +4880,17 @@
 
                 if (data["Tanggal PO"]) {
                     const date = data["Tanggal PO"].toDate ? data["Tanggal PO"].toDate() : new Date(data["Tanggal PO"]);
-                    const year = date.getFullYear();
-                    if (!yearlyTimeline[year]) yearlyTimeline[year] = { nilai: 0, invoice: 0 };
-                    yearlyTimeline[year].nilai += nilai;
-                    yearlyTimeline[year].invoice += invoice;
+                    if (!isNaN(date.getTime())) {
+                        const mStr = String(date.getMonth() + 1).padStart(2, '0');
+                        const yStr = date.getFullYear();
+                        const ym = yStr + "-" + mStr;
+                        const label = monthNames[date.getMonth()] + " " + yStr;
+                        
+                        if (!monthlyTimeline[ym]) monthlyTimeline[ym] = { nilai: 0, invoice: 0, label: label, projects: [] };
+                        monthlyTimeline[ym].nilai += nilai;
+                        monthlyTimeline[ym].invoice += invoice;
+                        if (data["Uraian Proyek"]) monthlyTimeline[ym].projects.push(data["Uraian Proyek"]);
+                    }
                 }
 
                 kpiCount++;
@@ -4929,15 +4937,16 @@
             });
 
             // Update S-Curve
-            const sortedYears = Object.keys(yearlyTimeline).sort();
+            const sortedYM = Object.keys(monthlyTimeline).sort();
             let cumNilai = 0, cumInv = 0;
-            const labelsYear = [], dataNilai = [], dataInv = [];
-            sortedYears.forEach(y => {
-                cumNilai += yearlyTimeline[y].nilai;
-                cumInv += yearlyTimeline[y].invoice;
-                labelsYear.push(y);
+            const labelsYM = [], dataNilai = [], dataInv = [], tooltipProjects = [];
+            sortedYM.forEach(ym => {
+                cumNilai += monthlyTimeline[ym].nilai;
+                cumInv += monthlyTimeline[ym].invoice;
+                labelsYM.push(monthlyTimeline[ym].label);
                 dataNilai.push(cumNilai);
                 dataInv.push(cumInv);
+                tooltipProjects.push(monthlyTimeline[ym].projects);
             });
 
             if (chartInstanceNilai) chartInstanceNilai.destroy();
@@ -4945,7 +4954,7 @@
             chartInstanceNilai = new Chart(ctxNilai, {
                 type: 'line',
                 data: {
-                    labels: labelsYear,
+                    labels: labelsYM,
                     datasets: [
                         { label: 'Kumulatif Nilai', data: dataNilai, borderColor: '#52796F', backgroundColor: 'rgba(82, 121, 111, 0.1)', fill: true, tension: 0.4 },
                         { label: 'Kumulatif Invoice', data: dataInv, borderColor: '#CCB79E', borderDash: [5, 5], fill: false, tension: 0.4 }
@@ -4953,7 +4962,31 @@
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 10 } } } },
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': Rp ' + formatDecimalUS(context.parsed.y);
+                                },
+                                afterBody: function(context) {
+                                    if(context.length > 0) {
+                                        let idx = context[0].dataIndex;
+                                        let projs = tooltipProjects[idx];
+                                        if(projs && projs.length > 0) {
+                                            let labelLines = ['','--- Uraian Proyek Bulan Ini ---'];
+                                            projs.forEach(p => {
+                                                let t = Array.from(p).length > 40 ? p.substring(0,40) + '...' : p;
+                                                labelLines.push('- ' + t);
+                                            });
+                                            return labelLines;
+                                        }
+                                    }
+                                    return [];
+                                }
+                            }
+                        }
+                    },
                     scales: { y: { ticks: { callback: v => 'Rp ' + formatDecimalUS(v), font: { size: 9 } } }, x: { ticks: { font: { size: 9 } } } }
                 }
             });

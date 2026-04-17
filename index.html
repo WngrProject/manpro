@@ -1573,14 +1573,14 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            width: 280px;
+            width: 550px;
             border: 1px solid var(--border-strong);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .search-bar:focus-within {
             box-shadow: 0 0 0 2px var(--primary-blue);
-            width: 300px;
+            width: 580px;
         }
 
         .search-bar input {
@@ -2642,7 +2642,7 @@
 
                 <div class="sidebar-title"
                     style="padding: 16px 24px 8px 24px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none;">
-                    Menu Invoice</div>
+                    Menu Tagihan</div>
                 <div class="nav-group">
                     <div class="nav-category" onclick="toggleMenu(this)">
                         <div style="display: flex; align-items: center; gap: 10px;">
@@ -2661,7 +2661,7 @@
 
                 <div class="sidebar-title"
                     style="padding: 16px 24px 8px 24px; font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none;">
-                    Menu Contact Person</div>
+                    Menu PIC</div>
                 <div class="nav-group">
                     <div class="nav-category" onclick="toggleMenu(this)">
                         <div style="display: flex; align-items: center; gap: 10px;">
@@ -3103,7 +3103,7 @@
                             <div class="toolbar-group" style="flex-direction: column; align-items: flex-start; gap: 0;">
                                 <div class="search-bar">
                                     <i class="fa-solid fa-magnifying-glass" style="color: var(--text-light);"></i>
-                                    <input type="text" id="inputSearchProyek" placeholder="Cari Proyek...">
+                                    <input type="text" id="inputSearchProyek" placeholder="Cari data Pemberi Proyek, Status Proyek ...">
                                 </div>
                                 <div class="dropdown-wrapper">
                                     <button class="btn-show-entries" id="btnShowEntries" title="Jumlah data yang ditampilkan">
@@ -4319,6 +4319,11 @@
             const toolbarSemuaProyek = document.getElementById('toolbar-semua-proyek');
             const filterContainer = document.getElementById('filter-container');
             const inputSearch = document.getElementById('inputSearchProyek');
+            if (collectionName === 'pembayaran') {
+                inputSearch.placeholder = "Cari Giver, No Proyek, Uraian, Invoice, Status...";
+            } else {
+                inputSearch.placeholder = "Cari data Pemberi Proyek, Status Proyek ...";
+            }
 
             window.currentCollection = collectionName;
             window.currentSortCol = null;
@@ -5071,9 +5076,19 @@
                         matchKeyword = colPemberi.includes(activeFilters.keyword) || colUraian.includes(activeFilters.keyword) || colStatus.includes(activeFilters.keyword);
                     } else if (window.currentCollection === 'pembayaran') {
                         const colPemberi = row.cells.length > 1 ? row.cells[1].textContent.toLowerCase() : "";
+                        const colNoProyek = row.cells.length > 2 ? row.cells[2].textContent.toLowerCase() : "";
                         const colUraian = row.cells.length > 3 ? row.cells[3].textContent.toLowerCase() : "";
+                        const colDetailInv = row.cells.length > 4 ? row.cells[4].textContent.toLowerCase() : "";
+                        const colNoInv = row.cells.length > 5 ? row.cells[5].textContent.toLowerCase() : "";
+                        const colJenis = row.cells.length > 10 ? row.cells[10].textContent.toLowerCase() : "";
                         const colStatus = row.cells.length > 11 ? row.cells[11].textContent.toLowerCase() : "";
-                        matchKeyword = colPemberi.includes(activeFilters.keyword) || colUraian.includes(activeFilters.keyword) || colStatus.includes(activeFilters.keyword);
+                        matchKeyword = colPemberi.includes(activeFilters.keyword) || 
+                                       colNoProyek.includes(activeFilters.keyword) || 
+                                       colUraian.includes(activeFilters.keyword) || 
+                                       colDetailInv.includes(activeFilters.keyword) || 
+                                       colNoInv.includes(activeFilters.keyword) || 
+                                       colJenis.includes(activeFilters.keyword) || 
+                                       colStatus.includes(activeFilters.keyword);
                     } else {
                         matchKeyword = row.textContent.toLowerCase().includes(activeFilters.keyword);
                     }

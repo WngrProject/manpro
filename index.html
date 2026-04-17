@@ -638,12 +638,31 @@
         :root[data-visual-style="cyber"] {
             --card-radius: 4px;
             --accent-glow: 0 0 15px var(--primary-blue);
+            --bg-color: #f8fafc; /* Elegant light slate */
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --border-strong: rgba(92, 85, 250, 0.15);
         }
 
         :root[data-visual-style="cyber"] .card,
         :root[data-visual-style="cyber"] .kpi-card {
+            background: rgba(10, 15, 25, 0.8) !important;
             border-left: 3px solid var(--primary-blue) !important;
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+            border-right: 1px solid rgba(92, 85, 250, 0.2) !important;
+            border-top: 1px solid rgba(92, 85, 250, 0.2) !important;
+            border-bottom: 1px solid rgba(92, 85, 250, 0.2) !important;
+            clip-path: none; /* Changed from polygon to avoid cutting content */
+        }
+
+        :root[data-visual-style="cyber"] .kpi-card {
+            min-height: 110px;
+            gap: 8px;
+            padding: 16px;
+        }
+
+        :root[data-visual-style="cyber"] .card:hover,
+        :root[data-visual-style="cyber"] .kpi-card:hover {
+            box-shadow: 0 0 20px rgba(92, 85, 250, 0.4);
+            border-color: var(--primary-blue) !important;
         }
 
         :root[data-visual-style="cyber"] .nav-item.active {
@@ -685,8 +704,17 @@
             margin: 4px 12px;
         }
 
-        :root[data-visual-style="soft"] .card {
+        :root[data-visual-style="soft"] .card,
+        :root[data-visual-style="soft"] .kpi-card {
             padding: 24px;
+            border-radius: 32px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        :root[data-visual-style="soft"] .card:hover,
+        :root[data-visual-style="soft"] .kpi-card:hover {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-12px) scale(1.02);
         }
 
         /* 👑 EXECUTIVE SLATE PRESET */
@@ -897,10 +925,9 @@
         /* --- CARDS & WIDGETS --- */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            /* Reduced from 24px */
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
         }
 
         .card,
@@ -910,10 +937,12 @@
             -webkit-backdrop-filter: blur(var(--glass-blur));
             border-radius: var(--card-radius);
             border: 1px solid var(--card-border);
-            padding: 12px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 24px;
+            min-height: 140px;
+            justify-content: space-between;
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
@@ -958,10 +987,13 @@
             background: rgba(17, 24, 39, var(--glass-opacity));
         }
 
-        #section-overview .card.chart-wrapper:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        #section-overview .card:hover,
+        #section-overview .kpi-card:hover,
+        #section-overview .chart-wrapper:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.15);
             z-index: 10;
+            border-color: var(--primary-blue) !important;
         }
 
         /* Perbaikan agar menu filter tidak terpotong (overflow) */
@@ -1007,9 +1039,9 @@
         }
 
         .kpi-card:hover {
-            transform: translateY(-6px) scale(1.02);
+            transform: translateY(-8px) scale(1.01);
             border-color: var(--card-hover-border, var(--primary-blue));
-            box-shadow: 0 12px 24px -10px var(--card-hover-glow, rgba(92, 85, 250, 0.2));
+            box-shadow: 0 15px 30px -12px var(--card-hover-glow, rgba(92, 85, 250, 0.3));
             z-index: 10;
         }
 
@@ -1114,7 +1146,7 @@
 
         .kpi-bottom p {
             color: var(--text-muted);
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -1237,10 +1269,9 @@
 
         .chart-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            /* Reduced from 24px */
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
         }
 
         .chart-wrapper {
@@ -3029,30 +3060,12 @@
                         <div class="card chart-wrapper">
                             <div class="chart-header">
                                 <div class="chart-title">Status Semua Proyek</div>
-                                <div class="chart-actions">
-                                    <button class="btn-chart-action" id="btnFilterStatus" title="Filter Status">
-                                        <i class="fas fa-filter"></i>
-                                    </button>
-                                    <button class="btn-reset-mini" id="btnResetStatus">Reset</button>
-                                </div>
-                                <div class="chart-filter-menu" id="menuFilterStatus">
-                                    <!-- Options populated by JS -->
-                                </div>
                             </div>
                             <div class="chart-container"><canvas id="chartStatus"></canvas></div>
                         </div>
                         <div class="card chart-wrapper">
                             <div class="chart-header">
                                 <div class="chart-title">Analisis Kumulatif Tahunan (Kurva-S)</div>
-                                <div class="chart-actions">
-                                    <button class="btn-chart-action" id="btnFilterTahun" title="Filter Tahun">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </button>
-                                    <button class="btn-reset-mini" id="btnResetTahun">Reset</button>
-                                </div>
-                                <div class="chart-filter-menu" id="menuFilterTahun">
-                                    <!-- Options populated by JS -->
-                                </div>
                             </div>
                             <div class="chart-container"><canvas id="chartNilai"></canvas></div>
                         </div>

@@ -655,19 +655,21 @@
         :root[data-visual-style="cyber"] {
             --card-radius: 4px;
             --accent-glow: 0 0 15px var(--primary-blue);
-            --bg-color: #f8fafc; /* Elegant light slate */
+            --bg-color: #f8fafc;
+            /* Elegant light slate */
             --card-bg: rgba(255, 255, 255, 0.85);
             --border-strong: rgba(92, 85, 250, 0.15);
         }
 
         :root[data-visual-style="cyber"] .card,
         :root[data-visual-style="cyber"] .kpi-card {
-            background: rgba(10, 15, 25, 0.8) !important;
+            background: rgba(255, 255, 255, 0.4) !important;
             border-left: 3px solid var(--primary-blue) !important;
             border-right: 1px solid rgba(92, 85, 250, 0.2) !important;
             border-top: 1px solid rgba(92, 85, 250, 0.2) !important;
             border-bottom: 1px solid rgba(92, 85, 250, 0.2) !important;
-            clip-path: none; /* Changed from polygon to avoid cutting content */
+            clip-path: none;
+            /* Changed from polygon to avoid cutting content */
         }
 
         :root[data-visual-style="cyber"] .kpi-card {
@@ -1716,7 +1718,7 @@
             font-weight: 700;
             margin-top: 8px;
             width: fit-content;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         :root[data-theme="dark"] .btn-show-entries {
@@ -1745,13 +1747,20 @@
             border-radius: 16px !important;
             padding: 8px !important;
             border: 1px solid var(--border-strong) !important;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
             animation: modernFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes modernFadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         #menuShowEntries .dropdown-item {
@@ -1802,7 +1811,8 @@
             align-items: center;
             gap: 12px;
             font-weight: 500;
-            opacity: 0; /* For staggered effect */
+            opacity: 0;
+            /* For staggered effect */
             animation: staggerSlideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
@@ -1811,6 +1821,7 @@
                 opacity: 0;
                 transform: translateX(-15px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -3149,14 +3160,20 @@
                             <div class="toolbar-group" style="flex-direction: column; align-items: flex-start; gap: 0;">
                                 <div class="search-bar">
                                     <i class="fa-solid fa-magnifying-glass" style="color: var(--text-light);"></i>
-                                    <input type="text" id="inputSearchProyek" placeholder="Cari data Pemberi Proyek, Status Proyek ...">
+                                    <input type="text" id="inputSearchProyek"
+                                        placeholder="Cari data Pemberi Proyek, Status Proyek ...">
                                 </div>
                                 <div class="dropdown-wrapper">
-                                    <button class="btn-show-entries" id="btnShowEntries" title="Jumlah data yang ditampilkan">
+                                    <button class="btn-show-entries" id="btnShowEntries"
+                                        title="Jumlah data yang ditampilkan">
                                         <i class="fa-solid fa-list-ol"></i>
-                                        <span style="opacity: 0.8; font-weight: 500; margin-left: 4px;">Tampilkan :</span>
-                                        <span id="labelShowEntries" style="font-weight: 800; color: var(--primary-blue); margin-left: 2px;">Semua Data</span>
-                                        <i class="fa-solid fa-chevron-down" style="margin-left: 6px; font-size: 8px; opacity: 0.5;"></i>
+                                        <span style="opacity: 0.8; font-weight: 500; margin-left: 4px;">Tampilkan
+                                            :</span>
+                                        <span id="labelShowEntries"
+                                            style="font-weight: 800; color: var(--primary-blue); margin-left: 2px;">Semua
+                                            Data</span>
+                                        <i class="fa-solid fa-chevron-down"
+                                            style="margin-left: 6px; font-size: 8px; opacity: 0.5;"></i>
                                     </button>
                                     <div class="dropdown-menu" id="menuShowEntries" style="min-width: 130px;">
                                         <div class="dropdown-item entry-option" data-value="5">5 Data</div>
@@ -4885,7 +4902,7 @@
                         const yStr = date.getFullYear();
                         const ym = yStr + "-" + mStr;
                         const label = monthNames[date.getMonth()] + " " + yStr;
-                        
+
                         if (!monthlyTimeline[ym]) monthlyTimeline[ym] = { nilai: 0, invoice: 0, label: label, projects: [] };
                         monthlyTimeline[ym].nilai += nilai;
                         monthlyTimeline[ym].invoice += invoice;
@@ -4962,21 +4979,21 @@
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { 
+                    plugins: {
                         legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 10 } } },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     return context.dataset.label + ': Rp ' + formatDecimalUS(context.parsed.y);
                                 },
-                                afterBody: function(context) {
-                                    if(context.length > 0) {
+                                afterBody: function (context) {
+                                    if (context.length > 0) {
                                         let idx = context[0].dataIndex;
                                         let projs = tooltipProjects[idx];
-                                        if(projs && projs.length > 0) {
-                                            let labelLines = ['','--- Uraian Proyek Bulan Ini ---'];
+                                        if (projs && projs.length > 0) {
+                                            let labelLines = ['', '--- Uraian Proyek Bulan Ini ---'];
                                             projs.forEach(p => {
-                                                let t = Array.from(p).length > 40 ? p.substring(0,40) + '...' : p;
+                                                let t = Array.from(p).length > 40 ? p.substring(0, 40) + '...' : p;
                                                 labelLines.push('- ' + t);
                                             });
                                             return labelLines;
@@ -5058,12 +5075,12 @@
                         const colUraian = row.cells.length > 4 ? row.cells[4].textContent.toLowerCase().trim() : "";
                         const colStatusArr = row.cells.length > 8 ? Array.from(row.cells[8].querySelectorAll('.status-badge, .badge')).map(b => b.textContent.toLowerCase().trim()) : [];
                         const colStatusText = row.cells.length > 8 ? row.cells[8].textContent.toLowerCase().trim() : "";
-                        
-                        matchKeyword = colNoProyek.includes(kw) || 
-                                       colPemberi.includes(kw) || 
-                                       colUraian.includes(kw) || 
-                                       colStatusText.includes(kw) ||
-                                       colStatusArr.some(s => s.includes(kw));
+
+                        matchKeyword = colNoProyek.includes(kw) ||
+                            colPemberi.includes(kw) ||
+                            colUraian.includes(kw) ||
+                            colStatusText.includes(kw) ||
+                            colStatusArr.some(s => s.includes(kw));
                     } else if (window.currentCollection === 'pembayaran') {
                         const colPemberi = row.cells.length > 1 ? row.cells[1].textContent.toLowerCase().trim() : "";
                         const colNoProyek = row.cells.length > 2 ? row.cells[2].textContent.toLowerCase().trim() : "";
@@ -5072,12 +5089,12 @@
                         const colStatusArr = row.cells.length > 11 ? Array.from(row.cells[11].querySelectorAll('.status-badge, .badge')).map(b => b.textContent.toLowerCase().trim()) : [];
                         const colStatusText = row.cells.length > 11 ? row.cells[11].textContent.toLowerCase().trim() : "";
 
-                        matchKeyword = colPemberi.includes(kw) || 
-                                       colNoProyek.includes(kw) || 
-                                       colUraian.includes(kw) || 
-                                       colNoInv.includes(kw) || 
-                                       colStatusText.includes(kw) ||
-                                       colStatusArr.some(s => s.includes(kw));
+                        matchKeyword = colPemberi.includes(kw) ||
+                            colNoProyek.includes(kw) ||
+                            colUraian.includes(kw) ||
+                            colNoInv.includes(kw) ||
+                            colStatusText.includes(kw) ||
+                            colStatusArr.some(s => s.includes(kw));
                     } else {
                         matchKeyword = row.textContent.toLowerCase().trim().includes(kw);
                     }

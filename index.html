@@ -2431,7 +2431,7 @@
             .chart-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .bottom-grid {
                 grid-template-columns: 1fr;
             }
@@ -2500,7 +2500,8 @@
             }
 
             .search-bar-top {
-                display: none; /* Hide top search on mobile or make it a popup */
+                display: none;
+                /* Hide top search on mobile or make it a popup */
             }
 
             .active-users-stack {
@@ -2548,39 +2549,98 @@
 
             .table-toolbar {
                 flex-direction: column;
+                padding: 12px;
+                gap: 15px;
+            }
+
+            #toolbar-semua-proyek {
+                flex-direction: column !important;
                 gap: 12px;
-                align-items: flex-start;
+                align-items: stretch !important;
             }
 
             .toolbar-group {
                 width: 100%;
-                justify-content: space-between;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 8px !important;
+            }
+            
+            /* SYMMETRICAL 4x2 GRID - EXECUTIVE SLATE STYLE */
+            .toolbar-group:last-child {
+                display: grid !important;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px !important;
+                width: 100%;
+            }
+            
+            #filter-container {
+                display: contents !important;
+            }
+            
+            .toolbar-group .btn-icon,
+            #filter-container .btn-icon {
+                height: 38px !important; /* Reduced size */
+                width: 100% !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 10px;
+                border: 1px solid var(--border-color);
+                background: var(--card-bg);
+                font-size: 14px;
+            }
+            
+            .toolbar-group div[style*="width: 1px"] {
+                display: none !important; /* Hide dividers */
             }
 
             .search-bar {
                 width: 100% !important;
+                height: 38px;
+            }
+            
+            .search-bar input {
+                font-size: 13px;
+            }
+
+            .btn-show-entries {
+                width: 100% !important;
+                height: 38px;
+                justify-content: space-between;
+                margin-top: 2px;
+                padding: 0 12px;
+                font-size: 12px;
             }
 
             .modal-content {
                 width: 95%;
-                max-height: 90vh;
+                max-height: 85vh;
+                border-radius: 16px;
             }
 
             .modal-body {
                 grid-template-columns: 1fr !important;
-                padding: 16px;
+                padding: 12px;
             }
 
             .login-box {
                 width: 90% !important;
-                padding: 32px 20px !important;
-                margin: 20px;
+                padding: 24px 20px !important;
+                margin: 0;
             }
 
             /* Overriding Style Specific Layouts */
-            #section-overview {
+            #section-overview,
+            :root[data-visual-style] #section-overview {
                 grid-template-columns: 1fr !important;
                 grid-template-areas: "banner" "kpi" "charts" "tables" !important;
+                gap: 16px !important;
+            }
+            
+            .bottom-grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
             }
         }
     </style>
@@ -4431,7 +4491,7 @@
         document.getElementById('btnToggleSidebar').addEventListener('click', function () {
             const sidebar = document.getElementById('mainSidebar');
             const overlay = document.getElementById('sidebarOverlay');
-            
+
             if (window.innerWidth <= 768) {
                 sidebar.classList.toggle('mobile-open');
                 overlay.classList.toggle('show');

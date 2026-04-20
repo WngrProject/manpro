@@ -3432,14 +3432,15 @@
                         <i class="fa-regular fa-calendar" style="color: #36B37E;"></i>
                     </button>
 
-                    <div class="active-users-stack" id="activeUsersStack" title="Pengguna Aktif"></div>
-
                     <div class="dropdown-wrapper" style="margin-left: 8px;">
                         <div class="user-profile" id="btnMyAccount" style="cursor: pointer;" title="Akun Saya">
-                            <div class="user-info">
+                            <div class="active-users-stack" id="activeUsersStack" title="Pengguna Aktif"></div>
+                            
+                            <!-- Dibunyikan agar JS tidak error -->
+                            <div class="user-info" style="display: none;">
                                 <span class="name" id="displayUsername" title="wngr.project@gmail.com">WN</span>
                             </div>
-                            <div class="avatar-glow-wrap">
+                            <div class="avatar-glow-wrap" style="display: none;">
                                 <div class="avatar" id="displayAvatar">WN</div>
                                 <span class="dot-online"></span>
                             </div>
@@ -4609,7 +4610,8 @@
                             `;
                             li.onclick = () => {
                                 closeModal('globalSearchModal');
-                                alert(`Data ditemukan di modul: ${dbTitle}`);
+                                const subMenuType = colName.startsWith('peta') ? 'map' : 'table';
+                                loadPage(dbTitle, colName, subMenuType, null);
                             };
                             listContainer.appendChild(li);
                         }

@@ -2660,6 +2660,28 @@
                 font-size: 11px;
                 border-radius: 8px;
             }
+            
+            /* DROPDOWN BOUNDARY PROTECTION - PHASE 8 */
+            .dropdown-menu {
+                max-width: calc(100vw - 32px) !important;
+                z-index: 10002 !important;
+            }
+            
+            /* Smart alignment for 4x2 grid columns 3 and 4 */
+            /* Indices 3, 4, 7, 8 in the flattened grid */
+            .toolbar-group > .dropdown-wrapper:nth-child(3) .dropdown-menu,
+            .toolbar-group > .dropdown-wrapper:nth-child(4) .dropdown-menu,
+            .toolbar-group > .dropdown-wrapper:nth-child(7) .dropdown-menu,
+            .toolbar-group > .dropdown-wrapper:nth-child(8) .dropdown-menu {
+                left: auto !important;
+                right: 0 !important;
+            }
+            
+            /* Ensure parents allow dropdowns to be seen */
+            .table-toolbar, 
+            .toolbar-group {
+                overflow: visible !important;
+            }
 
             .modal-content {
                 width: 95%;

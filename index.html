@@ -2496,12 +2496,11 @@
             }
 
             .topbar {
-                padding: 10px;
+                padding: 10px 15px;
             }
 
             .search-bar-top {
                 display: none;
-                /* Hide top search on mobile or make it a popup */
             }
 
             .active-users-stack {
@@ -2513,12 +2512,13 @@
             }
 
             .page-header {
-                font-size: 16px;
+                font-size: 18px;
             }
 
             .content {
-                margin: 10px;
-                padding: 10px;
+                margin: 8px;
+                padding: 12px;
+                border-radius: 16px;
             }
 
             .kpi-grid {
@@ -2527,28 +2527,61 @@
             }
 
             .kpi-card {
-                padding: 16px;
+                padding: 12px 16px;
                 min-height: auto;
+                flex-direction: row;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .kpi-top {
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+            }
+            
+            .kpi-trend {
+                font-size: 9px;
+                padding: 1px 4px;
+            }
+            
+            .kpi-bottom h2 {
+                font-size: 16px;
+                margin: 0;
+            }
+            
+            .kpi-bottom p {
+                font-size: 9px;
             }
 
             .ai-banner {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
+                align-items: center;
+                text-align: center;
+                gap: 12px;
                 padding: 16px;
+            }
+
+            .ai-left {
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
             }
 
             .btn-ai {
                 width: 100%;
                 justify-content: center;
+                padding: 10px;
+                font-size: 13px;
             }
 
             .chart-wrapper {
                 height: 300px;
+                padding: 12px;
             }
 
+            /* TABLE TOOLBAR REFINEMENTS - COMPACT 34px HEIGHT */
             .table-toolbar {
-                flex-direction: column;
                 padding: 12px;
                 gap: 15px;
             }
@@ -2566,7 +2599,7 @@
                 gap: 8px !important;
             }
             
-            /* SYMMETRICAL 4x2 GRID - EXECUTIVE SLATE STYLE */
+            /* SYMMETRICAL 4x2 GRID - 34px HEIGHT MATCHING TOPBAR */
             .toolbar-group:last-child {
                 display: grid !important;
                 grid-template-columns: repeat(4, 1fr);
@@ -2580,15 +2613,29 @@
             
             .toolbar-group .btn-icon,
             #filter-container .btn-icon {
-                height: 38px !important; /* Reduced size */
+                height: 34px !important; /* Unified 34px Height */
                 width: 100% !important;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                border-radius: 10px;
+                border-radius: 8px; /* Slightly tighter radius */
                 border: 1px solid var(--border-color);
                 background: var(--card-bg);
-                font-size: 14px;
+                font-size: 13px; /* Slightly smaller icons */
+                color: var(--text-muted);
+            }
+            
+            /* Restore 'Add Data' Button Branding & Icon Visibility */
+            .toolbar-group .action-add,
+            #btnTambahProyek {
+                background: var(--primary-blue) !important;
+                color: #ffffff !important;
+                border-color: var(--primary-hover) !important;
+                opacity: 1 !important;
+            }
+            
+            .toolbar-group .action-add i {
+                color: #ffffff !important;
             }
             
             .toolbar-group div[style*="width: 1px"] {
@@ -2597,20 +2644,21 @@
 
             .search-bar {
                 width: 100% !important;
-                height: 38px;
+                height: 34px !important;
             }
             
             .search-bar input {
-                font-size: 13px;
+                font-size: 12.5px;
             }
 
             .btn-show-entries {
                 width: 100% !important;
-                height: 38px;
+                height: 34px !important;
                 justify-content: space-between;
-                margin-top: 2px;
-                padding: 0 12px;
-                font-size: 12px;
+                margin-top: 0; /* Reset margin */
+                padding: 0 10px;
+                font-size: 11px;
+                border-radius: 8px;
             }
 
             .modal-content {

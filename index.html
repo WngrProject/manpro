@@ -4060,6 +4060,12 @@
             if (!e.target.closest('.dropdown-wrapper')) {
                 closeAllDropdowns();
             }
+            
+            // Menutup submenu navigasi jika user klik di luar sidebar (area konten)
+            if (!e.target.closest('.sidebar')) {
+                document.querySelectorAll('.nav-category').forEach(c => c.classList.remove('open'));
+                document.querySelectorAll('.submenu').forEach(s => s.classList.remove('open'));
+            }
         });
 
         document.getElementById('btnMyAccount').addEventListener('click', (e) => {

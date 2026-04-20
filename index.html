@@ -3838,6 +3838,17 @@
                             </tfoot>
                         </table>
                     </div>
+                    <div id="pagination-wrapper" style="display: none; justify-content: space-between; padding: 12px 20px; border-top: 1px solid var(--border-color); align-items: center; background: var(--card-bg); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                        <span id="pagination-info" style="color: var(--text-muted); font-size: 13px; font-weight: 500;"></span>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-secondary" id="btnPrevPage" style="padding: 6px 12px; font-size: 13px; cursor: pointer;">
+                                <i class="fa-solid fa-chevron-left" style="margin-right: 6px;"></i> Sebelumnya
+                            </button>
+                            <button class="btn btn-secondary" id="btnNextPage" style="padding: 6px 12px; font-size: 13px; cursor: pointer;">
+                                Selanjutnya <i class="fa-solid fa-chevron-right" style="margin-left: 6px;"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="section-map" class="card hidden"
@@ -4052,6 +4063,7 @@
         }
 
         window.entryLimit = 999999;
+        window.currentPage = 1;
 
         function closeAllDropdowns() {
             document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
@@ -5790,16 +5802,47 @@
                         sumMatGrand += parseFloat(row.cells[11].textContent.trim().replace(/,/g, "")) || 0;
                     }
 
-                    if (shownInTable < (window.entryLimit || 999999)) {
+                    let pageStart = (window.currentPage - 1) * (window.entryLimit || 999999);
+                    let pageEnd = window.currentPage * (window.entryLimit || 999999);
+
+                    if (shownInTable >= pageStart && shownInTable < pageEnd) {
                         row.style.display = '';
-                        shownInTable++;
                     } else {
                         row.style.display = 'none';
                     }
+                    shownInTable++;
                 } else {
                     row.style.display = 'none';
                 }
             });
+
+            let totalPages = Math.ceil(shownInTable / (window.entryLimit || 999999));
+            if (totalPages === 0) totalPages = 1;
+            
+            const btnPrev = document.getElementById('btnPrevPage');
+            const btnNext = document.getElementById('btnNextPage');
+            const pageInfo = document.getElementById('pagination-info');
+            const pagWrapper = document.getElementById('pagination-wrapper');
+            
+            if (btnPrev && btnNext && pageInfo && pagWrapper) {
+                if (window.entryLimit < 999999 && shownInTable > window.entryLimit) {
+                    pagWrapper.style.display = 'flex';
+                } else {
+                    pagWrapper.style.display = 'none';
+                }
+                
+                let startItem = shownInTable === 0 ? 0 : ((window.currentPage - 1) * window.entryLimit) + 1;
+                let endItem = window.currentPage * window.entryLimit;
+                if (endItem > shownInTable) endItem = shownInTable;
+                
+                pageInfo.textContent = `Menampilkan ${startItem} - ${endItem} dari ${shownInTable} data (Halaman ${window.currentPage}/${totalPages})`;
+                
+                btnPrev.disabled = window.currentPage <= 1;
+                btnNext.disabled = window.currentPage >= totalPages;
+                
+                btnPrev.style.opacity = window.currentPage <= 1 ? "0.5" : "1";
+                btnNext.style.opacity = window.currentPage >= totalPages ? "0.5" : "1";
+            }
 
             // Update DOM Summaries
             if (window.currentCollection === 'dball') {
@@ -5913,6 +5956,7 @@
                 opt.addEventListener('click', () => {
                     const val = parseInt(opt.getAttribute('data-value'));
                     window.entryLimit = val;
+                    window.currentPage = 1;
                     label.textContent = val >= 999999 ? 'Semua Data' : val;
                     menu.classList.remove('show');
                     processFilters();
@@ -5925,6 +5969,7 @@
             document.getElementById('inputSearchProyek').value = "";
             activeFilters = { keyword: "", bulan: [], tahun: [], pemberi: [], status: [] };
             window.entryLimit = 999999;
+            window.currentPage = 1;
             const labelLimit = document.getElementById('labelShowEntries');
             if (labelLimit) labelLimit.textContent = 'Semua Data';
             ['btnFilterBulan', 'btnFilterTahun', 'btnFilterPemberi', 'btnFilterStatus'].forEach(id => {
@@ -5940,6 +5985,21 @@
             window.currentSortCol = null;
             window.currentSortDir = 'asc';
             renderTable(window.currentCollection);
+        });
+
+        document.getElementById('btnPrevPage')?.addEventListener('click', () => {
+            if (window.currentPage > 1) {
+                window.currentPage--;
+                processFilters();
+            }
+        });
+
+        document.getElementById('btnNextPage')?.addEventListener('click', () => {
+            const btn = document.getElementById('btnNextPage');
+            if (btn && !btn.disabled) {
+                window.currentPage++;
+                processFilters();
+            }
         });
 
         // --- CRUD LOGIC ---

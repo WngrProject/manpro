@@ -2682,6 +2682,24 @@
             .toolbar-group {
                 overflow: visible !important;
             }
+            
+            /* PALETTE MENU MOBILE OPTIMIZATION - PHASE 9 */
+            .palette-menu {
+                min-width: 280px !important;
+                max-width: calc(100vw - 32px) !important;
+            }
+            
+            .palette-container {
+                flex-direction: column !important;
+                gap: 15px !important;
+            }
+            
+            .palette-section:last-child {
+                border-left: none !important;
+                border-top: 1px solid var(--border-color);
+                padding-left: 0 !important;
+                padding-top: 15px;
+            }
 
             .modal-content {
                 width: 95%;
@@ -3100,10 +3118,10 @@
                         <button class="btn-toggle" id="btnPaletteToggle" title="Pilih Skema Warna">
                             <i class="fa-solid fa-palette" style="color: var(--primary-grad-start);"></i>
                         </button>
-                        <div class="palette-menu" id="menuPalette" style="min-width: 320px;">
-                            <div style="display: flex; gap: 20px;">
+                        <div class="palette-menu" id="menuPalette">
+                            <div class="palette-container">
                                 <!-- Section Warna -->
-                                <div style="flex: 1;">
+                                <div class="palette-section">
                                     <p
                                         style="font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
                                         Skema Warna</p>
@@ -3134,7 +3152,7 @@
                                     </div>
                                 </div>
                                 <!-- Section Gaya -->
-                                <div style="flex: 1; border-left: 1px solid var(--border-color); padding-left: 15px;">
+                                <div class="palette-section">
                                     <p
                                         style="font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
                                         Gaya Visual</p>
@@ -3209,12 +3227,26 @@
                     border-radius: 12px;
                     box-shadow: var(--shadow-lg);
                     padding: 12px;
-                    min-width: 200px;
+                    min-width: 320px;
                     display: none;
                     flex-direction: column;
                     gap: 4px;
                     z-index: 99999;
                     backdrop-filter: blur(15px);
+                }
+
+                .palette-container {
+                    display: flex;
+                    gap: 20px;
+                }
+
+                .palette-section {
+                    flex: 1;
+                }
+
+                .palette-section:last-child {
+                    border-left: 1px solid var(--border-color);
+                    padding-left: 15px;
                 }
 
                 .palette-menu.show {

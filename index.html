@@ -869,15 +869,15 @@
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding-left: 16px;
+            gap: 10px;
+            padding: 4px 8px 4px 12px;
             transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 8px;
-            padding-right: 8px;
+            border-radius: 10px;
+            position: relative;
         }
 
         .user-profile:hover {
-            background-color: var(--border-color);
+            background-color: rgba(92, 85, 250, 0.08);
         }
 
         .user-info {
@@ -896,27 +896,94 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             color: var(--text-light);
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            background: rgba(92, 85, 250, 0.08);
+            padding: 1px 8px;
+            border-radius: 20px;
+        }
+
+        .avatar-glow-wrap {
+            position: relative;
+            flex-shrink: 0;
         }
 
         .dot-online {
-            width: 6px;
-            height: 6px;
+            position: absolute;
+            bottom: 1px;
+            right: 1px;
+            width: 8px;
+            height: 8px;
             background-color: #36B37E;
             border-radius: 50%;
-            display: inline-block;
+            display: block;
+            border: 2px solid var(--sidebar-bg);
+            z-index: 2;
         }
 
         .avatar {
-            width: 36px;
-            height: 36px;
-            background: url('https://ui-avatars.com/api/?name=Admin&background=random&color=fff') center/cover;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end));
             border-radius: 50%;
             border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffffff;
+            box-shadow: 0 0 16px rgba(92, 85, 250, 0.45), 0 0 30px rgba(92, 85, 250, 0.15);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .user-profile:hover .avatar {
+            box-shadow: 0 0 20px rgba(92, 85, 250, 0.6), 0 0 40px rgba(92, 85, 250, 0.25);
+        }
+
+        /* Glassmorphism Dropdown Header */
+        .dd-glass-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, rgba(92, 85, 250, 0.12), rgba(138, 132, 255, 0.04));
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dd-glass-header .dd-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(92, 85, 250, 0.4);
+            flex-shrink: 0;
+        }
+
+        .dd-glass-header .dd-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dd-glass-header .dd-info .dd-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .dd-glass-header .dd-info .dd-email {
+            font-size: 10px;
+            color: var(--text-light);
+            margin-top: 1px;
         }
 
         /* CONTENT AREA */
@@ -3273,13 +3340,23 @@
                         <div class="user-profile" id="btnMyAccount" style="cursor: pointer;" title="Akun Saya">
                             <div class="user-info">
                                 <span class="name" id="displayUsername" title="wngr.project@gmail.com">WN</span>
-                                <span class="role"><span class="dot-online"></span> <span
+                                <span class="role"><span
                                         id="displayRole">ADMIN</span></span>
                             </div>
-                            <div class="avatar" id="displayAvatar">U</div>
+                            <div class="avatar-glow-wrap">
+                                <div class="avatar" id="displayAvatar">WN</div>
+                                <span class="dot-online"></span>
+                            </div>
                         </div>
                         <div class="dropdown-menu" id="menuMyAccount"
-                            style="right: 0; left: auto; min-width: 180px; top: calc(100% + 12px);">
+                            style="right: 0; left: auto; min-width: 220px; top: calc(100% + 12px); backdrop-filter: blur(16px);">
+                            <div class="dd-glass-header">
+                                <div class="dd-avatar">WN</div>
+                                <div class="dd-info">
+                                    <span class="dd-name" id="ddDisplayName">WN</span>
+                                    <span class="dd-email" id="ddDisplayEmail">wngr.project@gmail.com</span>
+                                </div>
+                            </div>
                             <div class="dropdown-item" id="btnSettingsToggle">
                                 <i class="fa-solid fa-gear"
                                     style="color: var(--text-muted); font-size: 14px; width: 16px; text-align: center;"></i>

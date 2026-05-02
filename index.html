@@ -2234,6 +2234,12 @@
             transform: scale(1.1);
         }
 
+        td .btn-icon.btn-delete:hover {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
         .btn-link {
             color: var(--primary-blue);
             text-decoration: none;
@@ -4149,7 +4155,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, orderBy, query, where, addDoc, updateDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, orderBy, query, where, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCo-CYydpivABwE3NFJOaM45yT-nO1f4OY",
@@ -5433,7 +5439,7 @@
                 }
 
                 if (col === "Aksi") {
-                    headerHTML += `<th style="text-align: center; width: 60px;">${col}</th>`;
+                    headerHTML += `<th style="text-align: center; width: 90px;">${col}</th>`;
                 } else {
                     let thStyle = isNumeric ? 'text-align: right;' : '';
                     if (lowerCol === 'keterangan') {
@@ -5456,6 +5462,7 @@
                             bodyHTML += `<td style="text-align:center; display: flex; justify-content: center; gap: 8px;">
                                 <button class="btn-icon btn-view" data-id="${row.id}" onclick="openViewModal(this)" title="Lihat Data Detail" style="color: var(--primary-blue);"><i class="fa-solid fa-eye"></i></button>
                                 <button class="btn-icon btn-edit" data-id="${row.id}" onclick="openEditModal(this)" title="Edit Data"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-icon btn-delete" data-id="${row.id}" onclick="deleteData(this)" title="Hapus Data" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
                             </td>`;
                         } else {
                             bodyHTML += `<td style="text-align:center;"><button class="btn-icon btn-edit" data-id="${row.id}" onclick="openEditModal(this)" title="Edit Data"><i class="fa-solid fa-pen"></i></button></td>`;
@@ -6542,6 +6549,31 @@
             } finally {
                 btnSave.innerHTML = originalText;
                 btnSave.disabled = false;
+            }
+        }
+
+        window.deleteData = async function (btnElement) {
+            const dataId = btnElement.getAttribute('data-id');
+            if (!dataId) return;
+
+            const confirmDelete = confirm('Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.');
+            if (!confirmDelete) return;
+
+            try {
+                const docRef = doc(db, window.currentCollection, dataId);
+                await deleteDoc(docRef);
+
+                let history = JSON.parse(localStorage.getItem('dataHistory') || '[]');
+                let timestamp = new Date().toLocaleString('id-ID');
+                let colNameTitle = colNamesMapping[window.currentCollection] || window.currentCollection;
+                let user = sessionStorage.getItem('loggedUsername') || 'System';
+                history.unshift({ action: 'Menghapus data di', collectionName: colNameTitle, time: timestamp, user: user });
+                if (history.length > 50) history.pop();
+                localStorage.setItem('dataHistory', JSON.stringify(history));
+
+            } catch (error) {
+                console.error('Error saat menghapus data: ', error);
+                alert('Gagal menghapus data! Silakan periksa koneksi dan konsol browser.');
             }
         }
 
